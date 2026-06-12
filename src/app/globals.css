@@ -1,0 +1,21 @@
+:root {
+  --primary-pink: #ec2f64;
+  --primary-pink-hover: #d22656;
+  --text-dark: #222d3d;
+  --text-light: #7b8593;
+  --bg-input: #ffffff;
+  --border-input: #e0e4e9;
+  --border-focus: #aec1df;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-inter), sans-serif;
+  color: var(--text-dark);
+  background-color: #0f172a;
+}
