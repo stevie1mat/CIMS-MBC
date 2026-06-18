@@ -191,3 +191,30 @@ export async function getPaymentHistory(targetUserId = null) {
 
   return payments || []
 }
+
+export async function updateUserAvatar(userId, avatarPath) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Unauthorized' }
+
+  // Admin or self
+  if (user.id !== userId) {
+    const { data: currentUser } = await supabase.from('profiles').select('account_types(role)').eq('id', user.id).single()
+    const role = currentUser?.account_types?.role
+    if (role !== 'admin' && role !== 'super_admin') {
+      return { success: false, error: 'Unauthorized' }
+    }
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ avatar_path: avatarPath, avatar_bucket: 'avatars' })
+    .eq('id', userId)
+
+  if (error) {
+    console.error("Error updating avatar path:", error)
+    return { success: false, error: error.message }
+  }
+
+  return { success: true }
+}

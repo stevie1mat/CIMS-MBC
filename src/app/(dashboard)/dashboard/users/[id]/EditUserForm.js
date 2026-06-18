@@ -4,8 +4,9 @@ import { useState } from 'react'
 import { updateUser } from '@/app/actions/users'
 import styles from '@/components/dashboard/dashboard.module.css'
 import { Edit2, X, Save } from 'lucide-react'
+import AvatarUpload from './AvatarUpload'
 
-export default function EditUserForm({ user, groups, accountTypes }) {
+export default function EditUserForm({ user, groups, accountTypes, currentAvatarUrl, gravatarUrl }) {
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState(null)
@@ -23,6 +24,8 @@ export default function EditUserForm({ user, groups, accountTypes }) {
       setError(result.error)
     } else {
       setIsEditing(false)
+      // Optional: you could reload here to show fresh data, or rely on router.refresh() if updateUser does it
+      window.location.reload();
     }
     setIsSaving(false)
   }
@@ -56,6 +59,10 @@ export default function EditUserForm({ user, groups, accountTypes }) {
         </div>
         <form onSubmit={handleSubmit} className={styles.panelBody} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
+            <AvatarUpload userId={user.id} currentAvatarUrl={currentAvatarUrl} fallbackUrl={gravatarUrl} />
+          </div>
+
           {error && <div style={{ color: '#ef4444', backgroundColor: '#fef2f2', padding: '0.5rem', borderRadius: '4px' }}>{error}</div>}
 
           <div style={{ display: 'flex', gap: '1rem' }}>
@@ -84,15 +91,6 @@ export default function EditUserForm({ user, groups, accountTypes }) {
             </select>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.875rem', fontWeight: 500, color: '#475569' }}>Group</label>
-            <select name="group_id" defaultValue={user.group_id || ''} className={styles.input}>
-              <option value="">No Group</option>
-              {groups.map(g => (
-                <option key={g.id} value={g.id}>{g.name}</option>
-              ))}
-            </select>
-          </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
             <button type="button" onClick={() => setIsEditing(false)} className={styles.btnOutline}>Cancel</button>

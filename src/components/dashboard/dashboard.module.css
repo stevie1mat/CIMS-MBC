@@ -15,7 +15,7 @@
   flex-direction: column;
   position: fixed;
   height: 100vh;
-  box-shadow: 4px 0 24px rgba(0,0,0,0.02);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
   z-index: 10;
   padding-top: 1rem;
 }
@@ -123,7 +123,8 @@
 /* Main Content */
 .mainContent {
   flex-grow: 1;
-  margin-left: 260px; /* offset for fixed sidebar */
+  margin-left: 260px;
+  /* offset for fixed sidebar */
   display: flex;
   flex-direction: column;
 }
@@ -146,7 +147,7 @@
   padding: 10px 20px;
   border-radius: 100px;
   width: 400px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
   gap: 12px;
 }
 
@@ -180,7 +181,7 @@
   align-items: center;
   color: var(--text-dark);
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
   transition: transform 0.2s;
 }
 
@@ -234,7 +235,7 @@
   right: 60px;
   top: 30px;
   font-size: 120px;
-  color: rgba(255,255,255,0.1);
+  color: rgba(255, 255, 255, 0.1);
   transform: rotate(15deg);
 }
 
@@ -244,7 +245,7 @@
   right: 200px;
   bottom: -20px;
   font-size: 180px;
-  color: rgba(255,255,255,0.05);
+  color: rgba(255, 255, 255, 0.05);
 }
 
 .heroTag {
@@ -281,7 +282,7 @@
 
 .heroBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Rounded Cards */
@@ -299,13 +300,13 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .statCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
 .statIconBox {
@@ -335,9 +336,20 @@
   font-weight: 500;
 }
 
-.purpleBox { background: var(--primary-purple-light); color: var(--primary-purple); }
-.pinkBox { background: #fce7f3; color: #ec4899; }
-.blueBox { background: #e0f2fe; color: #0284c7; }
+.purpleBox {
+  background: var(--primary-purple-light);
+  color: var(--primary-purple);
+}
+
+.pinkBox {
+  background: #fce7f3;
+  color: #ec4899;
+}
+
+.blueBox {
+  background: #e0f2fe;
+  color: #0284c7;
+}
 
 .sectionTitle {
   font-size: 20px;
@@ -356,13 +368,13 @@
   background: white;
   border-radius: 24px;
   padding: 16px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
   transition: transform 0.3s ease;
 }
 
 .courseCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
 }
 
 .courseImage {
@@ -427,7 +439,7 @@
 .panel {
   background: white;
   border-radius: 24px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
   overflow: hidden;
   margin-bottom: 24px;
 }
@@ -555,7 +567,7 @@
   border-radius: 20px;
   margin-bottom: 32px;
   position: relative;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
 .profileCardWrapper {
@@ -570,7 +582,7 @@
   background: white;
   border-radius: 16px;
   padding: 24px 32px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -589,7 +601,7 @@
   height: 72px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .profileText h2 {
@@ -658,7 +670,7 @@
   background: white;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;

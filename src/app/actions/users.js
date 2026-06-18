@@ -9,7 +9,7 @@ export async function getUsers() {
   if (role !== 'admin' && role !== 'super_admin') return []
 
   const supabase = await createClient()
-  const { data: users } = await supabase
+  const { data: users, error } = await supabase
     .from('profiles')
     .select(`
       id,
@@ -18,17 +18,35 @@ export async function getUsers() {
       last_name,
       contact_no,
       registered_at,
-      account_types(name, role),
-      profile_groups(groups(name))
+      account_types(name, role)
     `)
     .order('registered_at', { ascending: false })
 
-  return users?.map(u => ({
-    ...u,
-    account_type_name: u.account_types?.name || 'User',
-    role: u.account_types?.role || 'student',
-    group_name: u.profile_groups?.[0]?.groups?.name || 'No Group'
-  })) || []
+  if (error) {
+    console.error("Error fetching users. Message:", error.message, "Details:", error.details, "Hint:", error.hint, "Code:", error.code)
+    return []
+  }
+
+  // Fetch groups separately to avoid foreign key ambiguity
+  const userIds = users.map(u => u.id)
+  let profileGroupsData = []
+  if (userIds.length > 0) {
+    const { data: pgroups } = await supabase
+      .from('profile_groups')
+      .select('profile_id, groups(name)')
+      .in('profile_id', userIds)
+    profileGroupsData = pgroups || []
+  }
+
+  return users?.map(u => {
+    const userGroup = profileGroupsData.find(pg => pg.profile_id === u.id)
+    return {
+      ...u,
+      account_type_name: u.account_types?.name || 'User',
+      role: u.account_types?.role || 'student',
+      group_name: userGroup?.groups?.name || 'No Group'
+    }
+  }) || []
 }
 
 export async function getGroupsAndAccountTypes() {
