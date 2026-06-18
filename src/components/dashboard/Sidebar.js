@@ -41,9 +41,14 @@ export default function Sidebar({ role = 'student' }) {
 
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.sidebarHeader}>
-        <div className={styles.sidebarLogo}>M</div>
-        <h2 className={styles.sidebarTitle}>MBC Portal</h2>
+      <div className={styles.sidebarHeader} style={{ padding: '2rem 1.5rem 1rem 1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ width: '100px', display: 'flex', justifyContent: 'center' }}>
+          <img 
+            src="https://mbcmumbai.com/wp-content/uploads/2021/08/WhatsApp_Image_2021-08-20_at_17.24.14-removebg-preview.png" 
+            alt="MBC Logo" 
+            style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+          />
+        </div>
       </div>
 
       <nav className={styles.sidebarNav}>
