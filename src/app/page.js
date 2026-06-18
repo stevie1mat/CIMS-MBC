@@ -1,5 +1,6 @@
 import styles from './page.module.css';
 import Image from 'next/image';
+import LoginForm from '@/components/auth/LoginForm';
 
 export default async function Login() {
   let verseText = "Do nothing out of selfish ambition or vain conceit. Rather, in humility value others above yourselves, not looking to your own interests but each of you to the interests of the others.";
@@ -47,26 +48,7 @@ export default async function Login() {
             <h1 className={styles.title}>MBC ADMIN PORTAL</h1>
           </div>
 
-          <form className={styles.form}>
-            <div className={styles.inputGroup}>
-              <input type="email" placeholder="Email" className={styles.input} required />
-            </div>
-            <div className={styles.inputGroup}>
-              <input type="password" placeholder="Password" className={styles.input} required />
-            </div>
-
-            <div className={styles.rememberMeGroup}>
-              <label className={styles.toggleSwitch}>
-                <input type="checkbox" className={styles.toggleInput} />
-                <span className={styles.toggleSlider}></span>
-              </label>
-              <span className={styles.rememberMeText}>Remember me</span>
-            </div>
-
-            <button type="submit" className={styles.submitBtn}>
-              SIGN IN
-            </button>
-          </form>
+          <LoginForm />
         </div>
       </div>
 

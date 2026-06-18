@@ -98,12 +98,33 @@
 
 .inputGroup {
   width: 100%;
+  position: relative;
+}
+
+.eyeButton {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.eyeButton:hover {
+  color: #0f172a;
 }
 
 .input {
   width: 100%;
   padding: 14px 16px;
-  border: 1px solid var(--border-input);
+  border: 1px solid #94a3b8;
+  background-color: #f8fafc;
   border-radius: 6px;
   font-size: 0.95rem;
   font-family: var(--font-inter), sans-serif;
@@ -113,7 +134,7 @@
 }
 
 .input::placeholder {
-  color: var(--text-light);
+  color: #64748b;
 }
 
 .input:focus {
@@ -217,3 +238,12 @@
   letter-spacing: 0.5px;
 }
 
+.errorAlert {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  text-align: center;
+}

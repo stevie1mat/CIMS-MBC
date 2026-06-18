@@ -1,11 +1,13 @@
 :root {
-  --primary-pink: #ec2f64;
-  --primary-pink-hover: #d22656;
-  --text-dark: #222d3d;
-  --text-light: #7b8593;
-  --bg-input: #ffffff;
-  --border-input: #e0e4e9;
-  --border-focus: #aec1df;
+  --primary-purple: #6366f1;
+  --primary-purple-hover: #4f46e5;
+  --primary-purple-light: #e0e7ff;
+  --text-dark: #0f172a;
+  --text-light: #64748b;
+  --bg-dashboard: #f3f4f6;
+  --bg-panel: #ffffff;
+  --border-color: #e2e8f0;
+  --bg-input: #f8fafc;
 }
 
 * {
@@ -17,5 +19,5 @@
 body {
   font-family: var(--font-inter), sans-serif;
   color: var(--text-dark);
-  background-color: #0f172a;
+  background-color: var(--bg-dashboard);
 }
