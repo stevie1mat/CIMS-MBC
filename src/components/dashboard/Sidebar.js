@@ -14,7 +14,6 @@ const ROLE_MENUS = {
     { name: 'Quizzes', path: '/dashboard/quizzes', icon: FileText },
     { name: 'Reports', path: '/dashboard/reports', icon: TableProperties },
     { name: 'Attendance', path: '/dashboard/attendance', icon: Users },
-    { name: 'Revenue', path: '/dashboard/revenue', icon: Receipt },
     { name: 'Settings', path: '/dashboard/settings', icon: Settings },
   ],
   teacher: [
