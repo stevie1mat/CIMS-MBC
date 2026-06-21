@@ -1,0 +1,1 @@
+ALTER TABLE public.quizzes ADD COLUMN IF NOT EXISTS final_results_sent boolean DEFAULT false;
