@@ -70,16 +70,13 @@ export default function Sidebar({ role = 'student' }: { role?: string }) {
             </Link>
           );
         })}
-      </nav>
-
-      <div className={styles.sidebarBottom}>
-        <form action={logoutAction}>
+        <form action={logoutAction} style={{ marginTop: '2rem' }}>
           <button type="submit" className={`${styles.navItem} ${styles.logoutBtn}`}>
             <LogOut size={18} className={styles.navIcon} />
             <span>Logout</span>
           </button>
         </form>
-      </div>
+      </nav>
     </aside>
   );
 }

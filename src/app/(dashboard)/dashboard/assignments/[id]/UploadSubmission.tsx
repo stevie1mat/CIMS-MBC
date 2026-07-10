@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { submitAssignment } from '@/app/actions/assignments'
 import styles from '@/components/dashboard/dashboard.module.css'
 import { UploadCloud, File } from 'lucide-react'
@@ -11,13 +11,13 @@ export default function UploadSubmission({ assignmentId }: { assignmentId: strin
   const [error, setError] = useState('')
   const fileInputRef = useRef(null)
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0])
     }
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!file) {
       setError('Please select a file to upload.')

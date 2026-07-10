@@ -14,7 +14,8 @@
   display: flex;
   flex-direction: column;
   position: fixed;
-  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
   z-index: 10;
   padding-top: 1rem;
@@ -108,7 +109,7 @@
 }
 
 .sidebarBottom {
-  margin-top: auto;
+  margin-top: 2rem;
   padding: 24px 16px;
 }
 
