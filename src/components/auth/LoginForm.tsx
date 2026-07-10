@@ -33,10 +33,7 @@ export default function LoginForm() {
         />
       </div>
       <div className={styles.inputGroup}>
-        <div className={styles.passwordHeader}>
-          <label className={styles.inputLabel}>PASSWORD</label>
-          <a href="#" className={styles.forgotPassword}>Forgot password?</a>
-        </div>
+        <label className={styles.inputLabel}>PASSWORD</label>
         <div style={{ position: 'relative' }}>
           <input 
             type={showPassword ? "text" : "password"} 

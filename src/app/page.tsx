@@ -2,6 +2,7 @@ import styles from './page.module.css';
 import Image from 'next/image';
 import LoginForm from '@/components/auth/LoginForm';
 import React from 'react';
+import { BookOpen, GraduationCap, Users, Library, Award, Calendar } from 'lucide-react';
 
 export default async function Login() {
   let verseText = "Do nothing out of selfish ambition or vain conceit. Rather, in humility value others above yourselves, not looking to your own interests but each of you to the interests of the others.";
@@ -31,6 +32,13 @@ export default async function Login() {
           />
           <div className={styles.overlay}></div>
         </div>
+
+        <div className={`${styles.floatingIcon} ${styles.icon1}`}><BookOpen size={48} /></div>
+        <div className={`${styles.floatingIcon} ${styles.icon2}`}><GraduationCap size={64} /></div>
+        <div className={`${styles.floatingIcon} ${styles.icon3}`}><Users size={40} /></div>
+        <div className={`${styles.floatingIcon} ${styles.icon4}`}><Library size={56} /></div>
+        <div className={`${styles.floatingIcon} ${styles.icon5}`}><Award size={48} /></div>
+        <div className={`${styles.floatingIcon} ${styles.icon6}`}><Calendar size={40} /></div>
 
         <div className={styles.logoContainer}>
           <span className={styles.logoText}>CIMS MBC PORTAL</span>
