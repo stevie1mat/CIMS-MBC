@@ -6,10 +6,10 @@ import styles from '@/components/dashboard/dashboard.module.css'
 import { UploadCloud, File } from 'lucide-react'
 
 export default function UploadSubmission({ assignmentId }: { assignmentId: string }) {
-  const [file, setFile] = useState(null)
+  const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const fileInputRef = useRef(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

@@ -1,5 +1,6 @@
 'use client'
 
+import type React from 'react'
 import { useState, useRef } from 'react'
 import { uploadQuestions } from '@/app/actions/questions'
 import { useRouter } from 'next/navigation'
@@ -8,14 +9,14 @@ import { UploadCloud, FileSpreadsheet, CheckCircle, AlertTriangle, Loader2 } fro
 
 export default function UploadForm({ quizzes }) {
   const router = useRouter()
-  const [file, setFile] = useState(null)
+  const [file, setFile] = useState<File | null>(null)
   const [quizId, setQuizId] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const fileInputRef = useRef(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0])
       setError('')
@@ -23,7 +24,7 @@ export default function UploadForm({ quizzes }) {
     }
   }
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setFile(e.dataTransfer.files[0])
@@ -32,11 +33,11 @@ export default function UploadForm({ quizzes }) {
     }
   }
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!quizId) {
       setError('Please select a target quiz.')
@@ -145,8 +146,8 @@ export default function UploadForm({ quizzes }) {
                 type="button" 
                 onClick={(e) => { e.stopPropagation(); setFile(null); if(fileInputRef.current) fileInputRef.current.value = '' }}
                 style={{ background: 'none', border: '1px solid #ef4444', color: '#ef4444', padding: '0.4rem 1rem', borderRadius: '999px', cursor: 'pointer', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: 500, transition: 'all 0.2s' }}
-                onMouseOver={(e) => { e.target.style.backgroundColor = '#fef2f2' }}
-                onMouseOut={(e) => { e.target.style.backgroundColor = 'transparent' }}
+                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#fef2f2' }}
+                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent' }}
               >
                 Remove File
               </button>
