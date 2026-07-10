@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, BookOpen, Receipt, Settings, LogOut, TableProperties, FileText } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, Receipt, Settings, LogOut, TableProperties, FileText, UserCheck } from 'lucide-react';
 import styles from './dashboard.module.css';
 import { logoutAction } from '@/app/actions/auth';
 
@@ -19,16 +19,18 @@ const ROLE_MENUS: Record<string, any[]> = {
   teacher: [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'My Profile', path: '/dashboard/profile', icon: Users },
-    { name: 'My Students', path: '/dashboard/students', icon: Users },
+    { name: 'My Attendance', path: '/dashboard/my-attendance', icon: UserCheck },
+    { name: 'My Students', path: '/dashboard/users?tab=students', icon: Users },
     { name: 'Question Bank', path: '/dashboard/questions', icon: BookOpen },
     { name: 'Quizzes', path: '/dashboard/quizzes', icon: FileText },
     { name: 'Reports', path: '/dashboard/reports', icon: TableProperties },
-    { name: 'Attendance', path: '/dashboard/attendance', icon: Users },
+    { name: 'Student Attendance', path: '/dashboard/attendance', icon: Users },
     { name: 'Assignments', path: '/dashboard/assignments', icon: BookOpen },
   ],
   student: [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'My Profile', path: '/dashboard/profile', icon: Users },
+    { name: 'My Attendance', path: '/dashboard/my-attendance', icon: UserCheck },
     { name: 'My Results', path: '/dashboard/results', icon: Receipt },
     { name: 'Assignments', path: '/dashboard/assignments', icon: BookOpen },
   ]
@@ -54,10 +56,11 @@ export default function Sidebar({ role = 'student' }: { role?: string }) {
         <div className={styles.navSectionTitle}>Overview</div>
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.path || pathname.startsWith(item.path + '/');
+          const itemPath = item.path.split('?')[0];
+          const isActive = pathname === itemPath || pathname.startsWith(itemPath + '/');
           
           // Special handling to not match exactly for dashboard
-          const isReallyActive = item.path === '/dashboard' ? pathname === '/dashboard' : isActive;
+          const isReallyActive = itemPath === '/dashboard' ? pathname === '/dashboard' : isActive;
 
           return (
             <Link 

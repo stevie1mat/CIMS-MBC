@@ -70,6 +70,135 @@ export async function getQuizActivity(targetUserId: string | null = null) {
   }
 }
 
+export async function getUserExamResults(targetUserId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
+
+  const { data, error } = await supabase
+    .from('quiz_attempts')
+    .select(`
+      id,
+      quiz_id,
+      status,
+      score_obtained,
+      percentage_obtained,
+      total_time_seconds,
+      started_at,
+      ended_at,
+      quizzes (
+        id,
+        name,
+        duration_minutes,
+        student_subject,
+        student_teacher
+      )
+    `)
+    .eq('profile_id', targetUserId)
+    .neq('status', 'open')
+    .order('ended_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching user exam results:', error)
+    return []
+  }
+
+  return data || []
+}
+
+export async function getTeacherExamSummary(targetUserId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
+
+  const { data: teacherProfile } = await supabase
+    .from('profiles')
+    .select('first_name, last_name')
+    .eq('id', targetUserId)
+    .single()
+
+  const teacherName = `${teacherProfile?.first_name || ''} ${teacherProfile?.last_name || ''}`.trim()
+
+  const { data: insertedQuizzes, error: insertedError } = await supabase
+    .from('quizzes')
+    .select(`
+      id,
+      name,
+      starts_at,
+      ends_at,
+      student_subject,
+      student_teacher,
+      inserted_by,
+      quiz_attempts (
+        id,
+        status,
+        score_obtained,
+        percentage_obtained,
+        ended_at,
+        profiles ( first_name, last_name, email )
+      )
+    `)
+    .eq('inserted_by', targetUserId)
+    .order('created_at', { ascending: false })
+
+  if (insertedError) {
+    console.error('Error fetching teacher inserted exams:', insertedError)
+  }
+
+  let namedQuizzes: any[] = []
+  if (teacherName) {
+    const { data, error } = await supabase
+      .from('quizzes')
+      .select(`
+        id,
+        name,
+        starts_at,
+        ends_at,
+        student_subject,
+        student_teacher,
+        inserted_by,
+        quiz_attempts (
+          id,
+          status,
+          score_obtained,
+          percentage_obtained,
+          ended_at,
+          profiles ( first_name, last_name, email )
+        )
+      `)
+      .ilike('student_teacher', `%${teacherName}%`)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching teacher named exams:', error)
+    }
+    namedQuizzes = data || []
+  }
+
+  const quizMap = new Map<number, any>()
+  ;[...(insertedQuizzes || []), ...namedQuizzes].forEach((quiz: any) => {
+    quizMap.set(quiz.id, quiz)
+  })
+
+  return Array.from(quizMap.values()).map((quiz: any) => {
+    const attempts = (quiz.quiz_attempts || []).filter((attempt: any) => attempt.status !== 'open')
+    const passed = attempts.filter((attempt: any) => attempt.status === 'pass').length
+    const averagePercentage = attempts.length > 0
+      ? attempts.reduce((total: number, attempt: any) => total + Number(attempt.percentage_obtained || 0), 0) / attempts.length
+      : 0
+
+    return {
+      ...quiz,
+      quiz_attempts: attempts,
+      attemptCount: attempts.length,
+      passed,
+      failed: attempts.length - passed,
+      averagePercentage,
+      subject: quiz.student_subject || 'Unassigned Subject',
+    }
+  }).sort((a, b) => a.subject.localeCompare(b.subject) || a.name.localeCompare(b.name))
+}
+
 export async function getCategoryProficiency(targetUserId: string | null = null) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

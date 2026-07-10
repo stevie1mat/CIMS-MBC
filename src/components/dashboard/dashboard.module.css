@@ -294,6 +294,19 @@
   margin-bottom: 32px;
 }
 
+.adminMetricGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 720px) {
+  .adminMetricGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .statCard {
   background: white;
   border-radius: 20px;

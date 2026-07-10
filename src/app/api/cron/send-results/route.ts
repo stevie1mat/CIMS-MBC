@@ -5,7 +5,6 @@ import * as XLSX from 'xlsx'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization')
@@ -14,6 +13,7 @@ export async function GET(request: Request) {
   }
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
+  const resend = new Resend(process.env.RESEND_API_KEY)
   const now = new Date().toISOString()
 
   try {

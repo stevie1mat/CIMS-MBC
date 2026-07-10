@@ -3,7 +3,9 @@ import {
   getQuizActivity, 
   getCategoryProficiency, 
   getIncorrectQuestions, 
-  getPaymentHistory 
+  getPaymentHistory,
+  getTeacherExamSummary,
+  getUserExamResults
 } from '@/app/actions/profile'
 import { getGroupsAndAccountTypes } from '@/app/actions/users'
 import { getUserRole } from '@/app/actions/auth'
@@ -12,7 +14,7 @@ import styles from '@/components/dashboard/dashboard.module.css'
 import { 
   Mail, Phone, Calendar, Shield, Users,
   Activity, CheckCircle, XCircle, Clock,
-  TrendingUp, TrendingDown, Eye, CreditCard, ArrowLeft
+  TrendingUp, TrendingDown, Eye, CreditCard, ArrowLeft, BookOpen, FileText
 } from 'lucide-react'
 import crypto from 'crypto'
 import Link from 'next/link'
@@ -36,18 +38,25 @@ export default async function AdminUserProfilePage({ params }: UserPageProps) {
   const { id } = await params
 
   const role = await getUserRole()
-  if (role !== 'admin' && role !== 'super_admin') {
+  const isAdmin = role === 'admin' || role === 'super_admin'
+  const isTeacher = role === 'teacher'
+  if (!isAdmin && !isTeacher) {
     redirect('/dashboard')
   }
 
   const profile = await getProfileDetails(id)
   if (!profile) return <div style={{ padding: '2rem' }}>User not found</div>
+  if (isTeacher && profile.account_types?.role !== 'student') {
+    redirect('/dashboard/users?tab=students')
+  }
 
   const activity = await getQuizActivity(id)
   const categories = await getCategoryProficiency(id)
   const incorrectQuestions = await getIncorrectQuestions(id)
   const paymentHistory = await getPaymentHistory(id)
-  const { groups, accountTypes } = await getGroupsAndAccountTypes()
+  const studentExamResults = await getUserExamResults(id)
+  const teacherExamSummary = profile.account_types?.role === 'teacher' ? await getTeacherExamSummary(id) : []
+  const { groups, accountTypes } = isAdmin ? await getGroupsAndAccountTypes() : { groups: [], accountTypes: [] }
 
   const emailHash = crypto.createHash('md5').update(profile.email?.toLowerCase() || '').digest('hex')
   const gravatarUrl = `https://www.gravatar.com/avatar/${emailHash}?s=150&d=mp`
@@ -73,6 +82,20 @@ export default async function AdminUserProfilePage({ params }: UserPageProps) {
     })
   }
 
+  const formatDuration = (seconds: number | null) => {
+    if (!seconds) return 'N/A'
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    return `${minutes}m ${remainingSeconds}s`
+  }
+
+  const teacherSubjects = teacherExamSummary.reduce((subjects: Record<string, any[]>, exam: any) => {
+    const subject = exam.subject || 'Unassigned Subject'
+    subjects[subject] = subjects[subject] || []
+    subjects[subject].push(exam)
+    return subjects
+  }, {})
+
   return (
     <div>
       <div className={styles.panelHeader} style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -85,13 +108,15 @@ export default async function AdminUserProfilePage({ params }: UserPageProps) {
           <h2 className={styles.panelTitle}>User Profile</h2>
         </div>
         
-        <EditUserForm 
-          user={profile} 
-          groups={groups} 
-          accountTypes={accountTypes} 
-          currentAvatarUrl={currentAvatarUrl}
-          gravatarUrl={gravatarUrl}
-        />
+        {isAdmin && (
+          <EditUserForm 
+            user={profile} 
+            groups={groups} 
+            accountTypes={accountTypes} 
+            currentAvatarUrl={currentAvatarUrl}
+            gravatarUrl={gravatarUrl}
+          />
+        )}
       </div>
 
       {/* Header Profile Section */}
@@ -163,6 +188,143 @@ export default async function AdminUserProfilePage({ params }: UserPageProps) {
           </div>
         )}
       </div>
+
+      {profile.account_types?.role === 'student' && (
+        <div className={styles.panel} style={{ marginBottom: '2rem' }}>
+          <div className={styles.panelHeader}>
+            <div>
+              <h3 className={styles.panelTitle}>Exam Results</h3>
+              <p style={{ margin: '0.25rem 0 0 0', color: '#64748b', fontSize: '0.9rem' }}>
+                Exams taken by this student with links to the full mark sheet.
+              </p>
+            </div>
+          </div>
+          <div style={{ overflowX: 'auto' }}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Exam</th>
+                  <th>Subject</th>
+                  <th>Teacher</th>
+                  <th>Submitted</th>
+                  <th>Score</th>
+                  <th>Result</th>
+                  <th>Time</th>
+                  <th style={{ textAlign: 'right' }}>Mark Sheet</th>
+                </tr>
+              </thead>
+              <tbody>
+                {studentExamResults.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>
+                      No completed exams found for this student.
+                    </td>
+                  </tr>
+                ) : (
+                  studentExamResults.map((attempt: any) => {
+                    const quiz = attempt.quizzes || {}
+                    return (
+                      <tr key={attempt.id} className={styles.tableRow}>
+                        <td>
+                          <strong>{quiz.name || 'Untitled Exam'}</strong>
+                        </td>
+                        <td>{quiz.student_subject || 'N/A'}</td>
+                        <td>{quiz.student_teacher || 'N/A'}</td>
+                        <td>{formatDateTime(attempt.ended_at || attempt.started_at)}</td>
+                        <td>
+                          <strong>{attempt.score_obtained || 0}</strong>
+                          <span style={{ color: '#64748b' }}> ({Number(attempt.percentage_obtained || 0).toFixed(1)}%)</span>
+                        </td>
+                        <td>
+                          <span className={`${styles.statusBadge} ${attempt.status === 'pass' ? styles.statusBadgeSuccess : styles.statusBadgeWarning}`}>
+                            {attempt.status}
+                          </span>
+                        </td>
+                        <td>{formatDuration(attempt.total_time_seconds)}</td>
+                        <td style={{ textAlign: 'right' }}>
+                          <Link href={`/dashboard/results/${attempt.id}`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`}>
+                            <Eye size={14} /> View
+                          </Link>
+                        </td>
+                      </tr>
+                    )
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {profile.account_types?.role === 'teacher' && isAdmin && (
+        <div className={styles.panel} style={{ marginBottom: '2rem' }}>
+          <div className={styles.panelHeader}>
+            <div>
+              <h3 className={styles.panelTitle}>Teacher Subjects & Exam Results</h3>
+              <p style={{ margin: '0.25rem 0 0 0', color: '#64748b', fontSize: '0.9rem' }}>
+                Subjects and exams associated with this teacher, including student result summaries.
+              </p>
+            </div>
+          </div>
+          <div className={styles.panelBody} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {Object.keys(teacherSubjects).length === 0 ? (
+              <div style={{ padding: '1rem', color: '#64748b', textAlign: 'center' }}>
+                No exams found for this teacher.
+              </div>
+            ) : (
+              Object.entries(teacherSubjects).map(([subject, exams]: [string, any[]]) => (
+                <div key={subject} style={{ border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '1rem', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <BookOpen size={20} color="#2563eb" />
+                      <strong style={{ color: '#0f172a' }}>{subject}</strong>
+                    </div>
+                    <span style={{ color: '#64748b', fontSize: '0.9rem' }}>{exams.length} exam{exams.length === 1 ? '' : 's'}</span>
+                  </div>
+
+                  <div style={{ overflowX: 'auto' }}>
+                    <table className={styles.table}>
+                      <thead>
+                        <tr>
+                          <th>Exam</th>
+                          <th>Teacher Label</th>
+                          <th>Attempts</th>
+                          <th>Passed</th>
+                          <th>Failed</th>
+                          <th>Average</th>
+                          <th style={{ textAlign: 'right' }}>Results</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {exams.map((exam: any) => (
+                          <tr key={exam.id} className={styles.tableRow}>
+                            <td>
+                              <strong>{exam.name}</strong>
+                              <span style={{ display: 'block', color: '#64748b', fontSize: '0.8rem' }}>
+                                {exam.ends_at ? `Ended ${formatDateTime(exam.ends_at)}` : 'No end date'}
+                              </span>
+                            </td>
+                            <td>{exam.student_teacher || 'N/A'}</td>
+                            <td>{exam.attemptCount}</td>
+                            <td style={{ color: '#166534', fontWeight: 600 }}>{exam.passed}</td>
+                            <td style={{ color: '#991b1b', fontWeight: 600 }}>{exam.failed}</td>
+                            <td>{Number(exam.averagePercentage || 0).toFixed(1)}%</td>
+                            <td style={{ textAlign: 'right' }}>
+                              <Link href={`/dashboard/quizzes/${exam.id}/attempts`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`}>
+                                <FileText size={14} /> View Results
+                              </Link>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
 
     </div>
   )

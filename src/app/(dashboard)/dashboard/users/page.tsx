@@ -9,29 +9,64 @@ export const metadata = {
   title: 'User Management | MBC Portal',
 }
 
-export default async function UsersListPage() {
+export default async function UsersListPage({ searchParams }: any) {
   const role = await getUserRole()
-  if (role !== 'admin' && role !== 'super_admin') {
+  const isAdmin = role === 'admin' || role === 'super_admin'
+  const isTeacher = role === 'teacher'
+  if (!isAdmin && !isTeacher) {
     redirect('/dashboard')
   }
 
-  const users = await getUsers()
+  // Handle Next.js 15+ searchParams Promise safely
+  const resolvedParams = await searchParams;
+  const activeTab = isTeacher ? 'students' : (resolvedParams?.tab || 'all');
+
+  const allUsers = await getUsers()
+  
+  // Filter users based on active tab
+  const users = allUsers.filter(u => {
+    if (activeTab === 'students') return u.role === 'student'
+    if (activeTab === 'teachers') return u.role === 'teacher'
+    if (activeTab === 'admins') return u.role === 'admin'
+    return true
+  })
+
+  const getTabStyle = (tabId: string) => ({
+    padding: '16px 20px',
+    borderBottom: activeTab === tabId ? '2px solid #2563eb' : '2px solid transparent',
+    color: activeTab === tabId ? '#2563eb' : '#64748b',
+    fontWeight: activeTab === tabId ? 600 : 500,
+    fontSize: '14px',
+    cursor: 'pointer',
+    display: 'inline-block',
+    textDecoration: 'none',
+    transition: 'all 0.2s ease',
+  });
 
   return (
     <div>
       <div className={styles.panel}>
-        <div className={styles.panelHeader} style={{ borderBottom: '1px solid #f1f5f9', padding: '20px 28px' }}>
-          <h2 className={styles.panelTitle}>User Management</h2>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            {/* Placeholder for future search/filter */}
-            <input 
-              type="text" 
-              placeholder="Search users..." 
-              className={styles.input} 
-              style={{ width: '250px', padding: '8px 16px', fontSize: '13px' }}
-            />
+        <div className={styles.panelHeader} style={{ padding: '20px 28px 0 28px', flexDirection: 'column', alignItems: 'flex-start', gap: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+            <h2 className={styles.panelTitle}>{isTeacher ? 'My Students' : 'User Management'}</h2>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <input 
+                type="text" 
+                placeholder="Search users..." 
+                className={styles.input} 
+                style={{ width: '250px', padding: '8px 16px', fontSize: '13px' }}
+              />
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #f1f5f9', width: '100%' }}>
+            {isAdmin && <Link href="/dashboard/users?tab=all" style={getTabStyle('all')}>All Users</Link>}
+            <Link href="/dashboard/users?tab=students" style={getTabStyle('students')}>Students</Link>
+            {isAdmin && <Link href="/dashboard/users?tab=teachers" style={getTabStyle('teachers')}>Teachers</Link>}
+            {isAdmin && <Link href="/dashboard/users?tab=admins" style={getTabStyle('admins')}>Admins</Link>}
           </div>
         </div>
+        
         <div style={{ overflowX: 'auto' }}>
           <table className={styles.table} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
@@ -44,7 +79,7 @@ export default async function UsersListPage() {
             </thead>
             <tbody>
               {users.length === 0 ? (
-                <tr><td colSpan={4} style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>No users found.</td></tr>
+                <tr><td colSpan={4} style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>No users found for this category.</td></tr>
               ) : (
                 users.map((u) => {
                   const initials = `${(u.first_name?.[0] || '').toUpperCase()}${(u.last_name?.[0] || '').toUpperCase()}` || 'U'

@@ -6,7 +6,7 @@ import { getUserRole } from './auth'
 
 export async function getUsers() {
   const role = await getUserRole()
-  if (role !== 'admin' && role !== 'super_admin') return []
+  if (role !== 'admin' && role !== 'super_admin' && role !== 'teacher') return []
 
   const supabase = await createClient()
   const { data: users, error } = await supabase
@@ -38,7 +38,7 @@ export async function getUsers() {
     profileGroupsData = pgroups || []
   }
 
-  return users?.map(u => {
+  const formattedUsers = users?.map(u => {
     const userGroup = profileGroupsData.find(pg => pg.profile_id === u.id)
     return {
       ...u,
@@ -47,6 +47,12 @@ export async function getUsers() {
       group_name: (userGroup?.groups as any)?.name || 'No Group'
     }
   }) || []
+
+  if (role === 'teacher') {
+    return formattedUsers.filter(u => u.role === 'student')
+  }
+
+  return formattedUsers
 }
 
 export async function getGroupsAndAccountTypes() {

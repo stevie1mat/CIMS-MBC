@@ -5,7 +5,12 @@ import { getSetting } from './settings'
 import { Resend } from 'resend'
 import * as XLSX from 'xlsx'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResendClient() {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error('RESEND_API_KEY is not configured')
+  }
+  return new Resend(process.env.RESEND_API_KEY)
+}
 
 export async function sendAttemptsCsvEmail(quizId: string | number, quizName: string, attemptsData: any[]) {
   try {
@@ -35,6 +40,7 @@ export async function sendAttemptsCsvEmail(quizId: string | number, quizName: st
     const targetEmailRaw = await getSetting('csv_export_email')
     const targetEmail = typeof targetEmailRaw === 'string' ? targetEmailRaw : 'mathewsteven1996@gmail.com'
 
+    const resend = getResendClient()
     const { data, error } = await resend.emails.send({
       from: 'MBC Portal <onboarding@resend.dev>',
       to: targetEmail,
@@ -65,6 +71,7 @@ export async function sendAttemptNotificationEmail(quizName: string, studentName
     const targetEmailRaw = await getSetting('csv_export_email')
     const targetEmail = typeof targetEmailRaw === 'string' ? targetEmailRaw : 'mathewsteven1996@gmail.com'
 
+    const resend = getResendClient()
     const { error } = await resend.emails.send({
       from: 'MBC Portal <onboarding@resend.dev>',
       to: targetEmail,
