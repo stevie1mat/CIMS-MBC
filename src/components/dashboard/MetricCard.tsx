@@ -19,13 +19,20 @@ export default function MetricCard({
   colorClass?: string;
   href?: string;
 }) {
-  // Map old color classes to new ones
+  const accentColor = colorClass === 'cardPink' ? '#ec4899' 
+                    : colorClass === 'cardYellow' ? '#f59e0b'
+                    : colorClass === 'cardGreen' ? '#10b981'
+                    : colorClass === 'cardBlue' ? '#3b82f6'
+                    : '#8b5cf6'; // Default purple
+
   const boxColor = colorClass === 'cardBlue' ? styles.blueBox 
                  : colorClass === 'cardPink' ? styles.pinkBox 
+                 : colorClass === 'cardYellow' ? styles.yellowBox
+                 : colorClass === 'cardGreen' ? styles.greenBox
                  : styles.purpleBox;
 
   const CardContent = (
-    <div className={styles.statCard} style={{ cursor: href ? 'pointer' : 'default' }}>
+    <div className={styles.statCard} style={{ cursor: href ? 'pointer' : 'default', '--card-accent': accentColor } as any}>
       <div className={`${styles.statIconBox} ${boxColor}`}>
         {icon}
       </div>
@@ -33,7 +40,7 @@ export default function MetricCard({
         <span className={styles.statValue}>{value}</span>
         <span className={styles.statLabel}>{title}</span>
         {trend !== undefined && (
-          <span style={{ fontSize: '11px', color: trend > 0 ? '#10b981' : '#ef4444', marginTop: '4px', fontWeight: 600 }}>
+          <span style={{ fontSize: '12px', color: trend > 0 ? '#10b981' : '#ef4444', marginTop: '8px', fontWeight: 700 }}>
             {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}% {trendLabel}
           </span>
         )}
