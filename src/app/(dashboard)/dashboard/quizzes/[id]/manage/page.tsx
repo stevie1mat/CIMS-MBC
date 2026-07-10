@@ -6,7 +6,7 @@ import { ArrowLeft, CheckCircle, FileText, HelpCircle, ListChecks, Trash2, Uploa
 import MetricCard from '@/components/dashboard/MetricCard'
 
 export const metadata = {
-  title: 'Manage Quiz Questions | MBC Portal',
+  title: 'Manage Exam Questions | MBC Portal',
 }
 
 type ManageQuizQuestionsPageProps = {
@@ -35,7 +35,7 @@ export default async function ManageQuizQuestionsPage({ params }: ManageQuizQues
           </Link>
           <Link href="/dashboard/quizzes">
             <button className={styles.btnOutline} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <ArrowLeft size={18} /> Back to Quizzes
+              <ArrowLeft size={18} /> Back to Exams
             </button>
           </Link>
         </div>
@@ -82,7 +82,7 @@ export default async function ManageQuizQuestionsPage({ params }: ManageQuizQues
                   <td colSpan={4} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <FileText size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>No questions uploaded</p>
-                    <p style={{ margin: '0.25rem 0 1rem 0', fontSize: '0.9rem' }}>Bulk upload questions from Excel to prepare this quiz.</p>
+                    <p style={{ margin: '0.25rem 0 1rem 0', fontSize: '0.9rem' }}>Bulk upload questions from Excel to prepare this exam.</p>
                     <Link href="/dashboard/questions/upload" className={`${styles.actionButton} ${styles.actionButtonPrimary}`} style={{ display: 'inline-flex' }}>
                       <UploadCloud size={14} /> Bulk Upload Questions
                     </Link>
@@ -120,7 +120,7 @@ export default async function ManageQuizQuestionsPage({ params }: ManageQuizQues
                           'use server'
                           await deleteQuestion(q.id, quiz.id)
                         }}>
-                          <button className={`${styles.actionButton} ${styles.actionButtonDanger}`} title="Delete from Quiz">
+                          <button className={`${styles.actionButton} ${styles.actionButtonDanger}`} title="Delete from Exam">
                             <Trash2 size={14} /> Delete
                           </button>
                         </form>

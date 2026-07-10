@@ -47,7 +47,7 @@ export default function ScheduleQuizForm({ quizzes }) {
 
       <div className={styles.scheduleGrid}>
         <label className={`${styles.formField} ${styles.scheduleField}`}>
-          <span>Quiz</span>
+          <span>Exam</span>
           <select name="quiz_id" className={`${styles.input} ${styles.scheduleInput}`} required defaultValue="">
             <option value="" disabled>Select a quiz</option>
             {quizzes.map((quiz) => (

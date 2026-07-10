@@ -35,7 +35,7 @@ export default async function AdminView({ user }: { user: any }) {
   const metrics = {
     totalUsers: totalUsers || 0,
     qbankSize: qbankSize || 0,
-    registeredQuizzes: registeredQuizzes || 0,
+    registeredQuizzes: registeredExams || 0,
     activeUsers,
     inactiveUsers,
     totalAssignments: totalAssignments || 0

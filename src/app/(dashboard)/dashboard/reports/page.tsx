@@ -1,3 +1,5 @@
+import { getUserRole } from '@/app/actions/auth'
+import { redirect } from 'next/navigation'
 import { getAllResults, deleteAttempt } from '@/app/actions/results'
 import styles from '@/components/dashboard/dashboard.module.css'
 import { CheckCircle, XCircle, RefreshCcw, TableProperties, TrendingUp, Users, Clock, Award } from 'lucide-react'
@@ -9,6 +11,11 @@ export const metadata = {
 }
 
 export default async function ReportsPage() {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') {
+    redirect('/dashboard')
+  }
+
   const results = await getAllResults()
 
   // Format date
@@ -78,7 +85,7 @@ export default async function ReportsPage() {
             <thead>
               <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Student Profile</th>
-                <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Quiz Name</th>
+                <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Exam Name</th>
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Date Taken</th>
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Marks</th>
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Status</th>

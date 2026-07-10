@@ -3,19 +3,20 @@ import { getUserRole } from '@/app/actions/auth'
 import styles from '@/components/dashboard/dashboard.module.css'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Plus, Edit, List, PlayCircle, FileText, CheckCircle, Clock, AlertCircle } from 'lucide-react'
+import { Plus, Edit, List, PlayCircle, FileText, CheckCircle, Clock, AlertCircle, TableProperties } from 'lucide-react'
 import MetricCard from '@/components/dashboard/MetricCard'
 import DeleteQuizButton from '@/components/dashboard/DeleteQuizButton'
 import ScheduleQuizForm from './ScheduleQuizForm'
 
 export const metadata = {
-  title: 'Quizzes | MBC Portal',
+  title: 'Exams | MBC Portal',
 }
 
 export default async function QuizzesPage() {
   const quizzes = await getQuizzes()
   const role = await getUserRole()
   const isStaff = role === 'admin' || role === 'teacher' || role === 'super_admin'
+  const isAdmin = role === 'admin' || role === 'super_admin'
 
   const now = new Date()
   const isQuizLive = (quiz) => {
@@ -79,44 +80,24 @@ export default async function QuizzesPage() {
       {/* Page Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>{isStaff ? 'Manage Quizzes' : 'Available Quizzes'}</h1>
+          <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>{isStaff ? 'Manage Exams' : 'Available Exams'}</h1>
           <p style={{ color: '#64748b', margin: 0 }}>
-            {isStaff ? 'Create and manage all test and assignment quizzes.' : 'Take a quiz to test your knowledge.'}
+            {isStaff ? 'Create and manage all test and assignment quizzes.' : 'Take an exam to test your knowledge.'}
           </p>
         </div>
         
-        {isStaff && (
+        {isAdmin && (
           <Link href="/dashboard/quizzes/new">
             <button className={styles.btnPrimary} style={{ padding: '0.6rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-              <Plus size={18} /> Create Quiz
+              <Plus size={18} /> Create Exam
             </button>
           </Link>
         )}
       </div>
 
-      {/* Metric Row */}
-      <div className={styles.cardGrid} style={{ marginBottom: '2rem' }}>
-        <MetricCard 
-          title="Total Quizzes" 
-          value={quizzes.length} 
-          icon={<FileText size={24} color="#3b82f6" />} 
-          colorClass="cardBlue"
-        />
-        <MetricCard 
-          title="Active Quizzes" 
-          value={activeQuizzes} 
-          icon={<PlayCircle size={24} color="#ec4899" />} 
-          colorClass="cardPink"
-        />
-        <MetricCard 
-          title="Requires Attention" 
-          value={quizzes.length - activeQuizzes} 
-          icon={<List size={24} color="#8b5cf6" />} 
-          colorClass="cardPurple"
-        />
-      </div>
 
-      {isStaff && (
+
+      {isAdmin && (
         <div className={styles.schedulePanel}>
           <ScheduleQuizForm quizzes={quizzes} />
         </div>
@@ -125,14 +106,14 @@ export default async function QuizzesPage() {
       {/* Main Table */}
       <div className={styles.panel}>
         <div className={styles.panelHeader}>
-          <h3 className={styles.panelTitle}>Quiz List</h3>
+          <h3 className={styles.panelTitle}>Exam List</h3>
         </div>
         
         <div style={{ overflowX: 'auto' }}>
           <table className={styles.table} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Quiz Name</th>
+                <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Exam Name</th>
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Duration</th>
                 {isStaff && <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Availability</th>}
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Questions</th>
@@ -144,8 +125,8 @@ export default async function QuizzesPage() {
                 <tr>
                   <td colSpan={isStaff ? 5 : 4} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <FileText size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
-                    <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No quizzes available</p>
-                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>{isStaff ? 'Click "Create Quiz" to add one.' : 'Check back when a quiz is live.'}</p>
+                    <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No exams available</p>
+                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>{isAdmin ? 'Click "Create Exam" to add one.' : 'Check back when an exam is live.'}</p>
                   </td>
                 </tr>
               ) : (
@@ -161,7 +142,7 @@ export default async function QuizzesPage() {
                             <FileText size={17} color="#3b82f6" />
                           </div>
                           <div>
-                            <Link href={isStaff ? `/dashboard/quizzes/${q.id}/edit` : `/dashboard/quizzes/${q.id}`} style={{ textDecoration: 'none' }}>
+                            <Link href={isAdmin ? `/dashboard/quizzes/${q.id}/edit` : `/dashboard/quizzes/${q.id}`} style={{ textDecoration: 'none' }}>
                               <strong style={{ color: '#0f172a', display: 'block', marginBottom: '2px' }}>{q.name}</strong>
                             </Link>
                             {q.description && <p className={styles.quizDescription}>{q.description}</p>}
@@ -202,13 +183,22 @@ export default async function QuizzesPage() {
                             </Link>
                           ) : (
                             <>
-                              <Link href={`/dashboard/quizzes/${q.id}/edit`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Edit Quiz">
-                                <Edit size={14} /> Edit
+                              {isAdmin && (
+                                <>
+                                  <Link href={`/dashboard/quizzes/${q.id}/edit`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Edit Exam">
+                                    <Edit size={14} /> Edit
+                                  </Link>
+                                  <Link href={`/dashboard/quizzes/${q.id}/manage`} className={styles.actionButton} title="Manage Questions">
+                                    <List size={14} /> Questions
+                                  </Link>
+                                </>
+                              )}
+                              <Link href={`/dashboard/quizzes/${q.id}/results`} className={`${styles.actionButton} ${styles.actionButtonSuccess}`} style={{ backgroundColor: '#10b981', color: 'white', border: 'none' }} title="View Marksheet">
+                                <TableProperties size={14} /> Marksheet
                               </Link>
-                              <Link href={`/dashboard/quizzes/${q.id}/manage`} className={styles.actionButton} title="Manage Questions">
-                                <List size={14} /> Questions
-                              </Link>
-                              <DeleteQuizButton quizId={q.id} deleteAction={deleteQuiz} />
+                              {isAdmin && (
+                                <DeleteQuizButton quizId={q.id} deleteAction={deleteQuiz} />
+                              )}
                             </>
                           )}
                         </div>

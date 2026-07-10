@@ -48,7 +48,7 @@ export default async function QuestionsPage() {
       {/* Metric Row */}
       <div className={styles.cardGrid} style={{ marginBottom: '2rem' }}>
         <MetricCard 
-          title="Total Quizzes" 
+          title="Total Exams" 
           value={totalQuizzes} 
           icon={<FileText size={24} color="#3b82f6" />} 
           colorClass="cardBlue"
@@ -58,12 +58,6 @@ export default async function QuestionsPage() {
           value={totalQuestions} 
           icon={<HelpCircle size={24} color="#ec4899" />} 
           colorClass="cardPink"
-        />
-        <MetricCard 
-          title="Storage Status" 
-          value="Healthy" 
-          icon={<Database size={24} color="#8b5cf6" />} 
-          colorClass="cardPurple"
         />
       </div>
 
@@ -77,7 +71,7 @@ export default async function QuestionsPage() {
           <table className={styles.table} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Quiz Name</th>
+                <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Exam Name</th>
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Total Questions</th>
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600, width: '150px', textAlign: 'center' }}>Actions</th>
               </tr>
@@ -88,7 +82,7 @@ export default async function QuestionsPage() {
                   <td colSpan={3} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <Database size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No quizzes found</p>
-                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>Create a Quiz first before you can upload questions to it.</p>
+                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>Create an Exam first before you can upload questions to it.</p>
                   </td>
                 </tr>
               ) : (

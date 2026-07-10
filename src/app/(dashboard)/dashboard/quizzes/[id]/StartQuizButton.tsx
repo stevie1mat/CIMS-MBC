@@ -38,7 +38,7 @@ export default function StartQuizButton({ quizId, openAttemptExists }: { quizId:
         disabled={loading}
       >
         <PlayCircle size={18} />
-        {loading ? (openAttemptExists ? 'Resuming...' : 'Starting...') : (openAttemptExists ? 'Resume Quiz' : 'Start Quiz')}
+        {loading ? (openAttemptExists ? 'Resuming...' : 'Starting...') : (openAttemptExists ? 'Resume Quiz' : 'Start Exam')}
       </button>
     </div>
   )

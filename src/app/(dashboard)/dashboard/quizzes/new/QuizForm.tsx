@@ -36,7 +36,7 @@ export default function QuizForm() {
       {error && <div className={styles.feesAlert} style={{ backgroundColor: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5' }}>{error}</div>}
       
       <div>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Quiz Name</label>
+        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Exam Name</label>
         <input 
           type="text" 
           name="name" 

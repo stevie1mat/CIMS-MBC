@@ -7,7 +7,7 @@ import EditQuizForm from './EditQuizForm'
 import MetricCard from '@/components/dashboard/MetricCard'
 
 export const metadata = {
-  title: 'Edit Quiz | MBC Portal',
+  title: 'Edit Exam | MBC Portal',
 }
 
 type EditQuizPageProps = {

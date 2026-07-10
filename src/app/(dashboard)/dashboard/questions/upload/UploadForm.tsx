@@ -40,7 +40,7 @@ export default function UploadForm({ quizzes }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!quizId) {
-      setError('Please select a target quiz.')
+      setError('Please select a target exam.')
       return
     }
     if (!file) {
@@ -101,7 +101,7 @@ export default function UploadForm({ quizzes }) {
       
       {/* Target Quiz Selection */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <label style={{ fontSize: '1.1rem', fontWeight: 600, color: '#334155' }}>Step 1: Select Target Quiz</label>
+        <label style={{ fontSize: '1.1rem', fontWeight: 600, color: '#334155' }}>Step 1: Select Target Exam</label>
         <select 
           className={styles.input} 
           value={quizId}
@@ -109,7 +109,7 @@ export default function UploadForm({ quizzes }) {
           required
           style={{ padding: '0.75rem', fontSize: '1rem', borderRadius: '0.5rem', border: '2px solid #e2e8f0', backgroundColor: '#f8fafc', cursor: 'pointer' }}
         >
-          <option value="" disabled>-- Select the quiz to add questions to --</option>
+          <option value="" disabled>-- Select the exam to add questions to --</option>
           {quizzes.map(q => (
             <option key={q.id} value={q.id}>{q.name}</option>
           ))}

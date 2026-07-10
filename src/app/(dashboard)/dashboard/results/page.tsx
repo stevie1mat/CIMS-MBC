@@ -46,7 +46,7 @@ export default async function StudentResultsPage() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Quiz Name</th>
+                <th>Exam Name</th>
                 <th>Date Taken</th>
                 <th>Marks</th>
                 <th>Actions</th>

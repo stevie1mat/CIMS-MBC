@@ -24,7 +24,7 @@ export async function GET(request: Request) {
       .eq('final_results_sent', false)
 
     if (quizError) throw quizError
-    if (!endedQuizzes || endedQuizzes.length === 0) {
+    if (!endedExams || endedQuizzes.length === 0) {
       return NextResponse.json({ message: 'No ended quizzes require export.' })
     }
 

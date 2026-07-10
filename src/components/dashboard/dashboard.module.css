@@ -8,15 +8,16 @@
 
 /* Sidebar */
 .sidebar {
-  width: 260px;
-  background-color: var(--bg-panel);
+  width: 270px;
+  background-color: #ffffff;
   color: var(--text-light);
   display: flex;
   flex-direction: column;
   position: fixed;
   height: 100dvh;
   overflow-y: auto;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+  border-right: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.01);
   z-index: 10;
   padding-top: 1rem;
 }
@@ -43,10 +44,11 @@
 
 .sidebarTitle {
   font-size: 20px;
+  font-family: var(--font-playfair), serif;
   font-weight: 800;
-  letter-spacing: -0.5px;
+  letter-spacing: 0.5px;
   margin: 0;
-  color: var(--text-dark);
+  color: #0f172a;
 }
 
 .sidebarNav {
@@ -69,10 +71,10 @@
 .navItem {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  color: var(--text-light);
+  padding: 14px 18px;
+  color: #64748b;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: transparent;
   border: none;
   border-radius: 12px;
@@ -81,31 +83,37 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
+  position: relative;
+  overflow: hidden;
 }
 
 .navItem:hover {
   background-color: #f8fafc;
-  color: var(--text-dark);
+  color: #0f172a;
+  transform: translateX(4px);
 }
 
 .navItemActive {
-  background-color: var(--primary-purple-light);
-  color: var(--primary-purple);
+  background: linear-gradient(90deg, #f5f3ff 0%, #ffffff 100%);
+  color: #7e22ce;
+  font-weight: 700;
+  box-shadow: inset 4px 0 0 #9333ea, 0 2px 8px rgba(147, 51, 234, 0.05);
 }
 
 .navItemActive:hover {
-  background-color: var(--primary-purple-light);
   transform: none;
 }
 
 .navIcon {
   margin-right: 14px;
-  opacity: 0.8;
+  opacity: 0.7;
   color: currentColor;
+  transition: opacity 0.3s ease;
 }
 
 .navItemActive .navIcon {
   opacity: 1;
+  color: #9333ea;
 }
 
 .sidebarBottom {
@@ -124,7 +132,7 @@
 /* Main Content */
 .mainContent {
   flex-grow: 1;
-  margin-left: 260px;
+  margin-left: 270px;
   /* offset for fixed sidebar */
   display: flex;
   flex-direction: column;

@@ -176,7 +176,7 @@ export async function getTeacherExamSummary(targetUserId: string) {
   }
 
   const quizMap = new Map<number, any>()
-  ;[...(insertedQuizzes || []), ...namedQuizzes].forEach((quiz: any) => {
+  ;[...(insertedExams || []), ...namedQuizzes].forEach((quiz: any) => {
     quizMap.set(quiz.id, quiz)
   })
 

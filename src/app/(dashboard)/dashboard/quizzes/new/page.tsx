@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
 export const metadata = {
-  title: 'Create Quiz | MBC Portal',
+  title: 'Create Exam | MBC Portal',
 }
 
 export default function NewQuizPage() {

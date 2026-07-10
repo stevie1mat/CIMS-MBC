@@ -14,7 +14,7 @@ export default function DeleteQuizButton({
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this quiz? This action cannot be undone and will delete all associated questions and attempts.')) {
+    if (window.confirm('Are you sure you want to delete this exam? This action cannot be undone and will delete all associated questions and attempts.')) {
       setIsDeleting(true)
       try {
         await deleteAction(quizId)
@@ -29,7 +29,7 @@ export default function DeleteQuizButton({
       onClick={handleDelete} 
       className={`${styles.actionButton} ${styles.actionButtonDanger}`}
       style={{ opacity: isDeleting ? 0.5 : 1 }}
-      title="Delete Quiz"
+      title="Delete Exam"
       disabled={isDeleting}
     >
       <Trash2 size={14} /> {isDeleting ? 'Deleting' : 'Delete'}

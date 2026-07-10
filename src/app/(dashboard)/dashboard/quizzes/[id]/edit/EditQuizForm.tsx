@@ -52,7 +52,7 @@ export default function EditQuizForm({ quiz }) {
         </div>
 
         <label className={styles.formField}>
-          <span>Quiz Name</span>
+          <span>Exam Name</span>
           <input name="name" className={styles.input} defaultValue={quiz.name || ''} required />
         </label>
       </section>
