@@ -139,7 +139,7 @@ export async function getSubmissions(assignmentId: number | string) {
     .from('assignment_submissions')
     .select(`
       *,
-      profiles(first_name, last_name, email)
+      profiles!assignment_submissions_profile_id_fkey(first_name, last_name, email)
     `)
     .eq('assignment_id', Number(assignmentId))
     .order('submitted_at', { ascending: false })

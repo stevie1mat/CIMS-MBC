@@ -94,7 +94,7 @@ export default async function QuizAttemptsPage({ params }: QuizAttemptsPageProps
                     <td style={{ padding: '1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#475569', fontWeight: 500 }}>
                         <Clock size={16} />
-                        {new Date(attempt.started_at).toLocaleDateString('en-US', {
+                        {new Date(attempt.started_at).toLocaleDateString('en-GB', {
                           month: 'short', day: 'numeric', year: 'numeric'
                         })}
                       </div>

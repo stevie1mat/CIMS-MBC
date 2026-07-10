@@ -39,7 +39,7 @@ export default async function AssignmentDetailsPage({ params }: AssignmentPagePr
   // Format date
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'No due date'
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('en-GB', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
     })
   }

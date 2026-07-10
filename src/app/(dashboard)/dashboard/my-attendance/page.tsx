@@ -60,7 +60,7 @@ export default async function MyAttendancePage() {
                 attendanceRecords.map((record) => (
                   <tr key={record.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background-color 0.2s' }}>
                     <td style={{ padding: '1rem', color: '#0f172a', fontWeight: 500 }}>
-                      {new Date(record.session_date).toLocaleDateString('en-US', {
+                      {new Date(record.session_date).toLocaleDateString('en-GB', {
                         weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
                       })}
                     </td>

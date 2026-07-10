@@ -104,9 +104,9 @@ export default async function AttendancePage({ searchParams }: any) {
             const localDate = new Date(year, month, day, 12, 0, 0);
             
             if (timeframe === 'month') {
-              return localDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+              return localDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
             } else {
-              return localDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+              return localDate.toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' });
             }
           })()} 
           icon={<Calendar size={24} color="#ec4899" />} 
