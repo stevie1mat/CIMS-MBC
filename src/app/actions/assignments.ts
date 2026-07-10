@@ -161,17 +161,36 @@ export async function submitAssignment(assignmentId: number | string, formData: 
 
   if (uploadError) return { error: uploadError.message }
 
-  // Create submission record
-  const { error: dbError } = await supabase
+  // Create or update submission record
+  const { data: existing } = await supabase
     .from('assignment_submissions')
-    .upsert([{
-      assignment_id: Number(assignmentId),
-      profile_id: user.id,
-      attachment_bucket: 'student-submissions',
-      attachment_path: filePath,
-      status: 'submitted',
-      submitted_at: new Date().toISOString()
-    }], { onConflict: 'assignment_id, profile_id' }) // Assuming one submission per assignment per user
+    .select('id')
+    .eq('assignment_id', Number(assignmentId))
+    .eq('profile_id', user.id)
+    .maybeSingle()
+
+  const submissionData = {
+    assignment_id: Number(assignmentId),
+    profile_id: user.id,
+    attachment_bucket: 'student-submissions',
+    attachment_path: filePath,
+    status: 'submitted',
+    submitted_at: new Date().toISOString()
+  }
+
+  let dbError;
+  if (existing) {
+    const { error } = await supabase
+      .from('assignment_submissions')
+      .update(submissionData)
+      .eq('id', existing.id)
+    dbError = error
+  } else {
+    const { error } = await supabase
+      .from('assignment_submissions')
+      .insert([submissionData])
+    dbError = error
+  }
 
   if (dbError) return { error: dbError.message }
 

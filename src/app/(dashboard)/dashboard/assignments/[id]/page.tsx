@@ -36,12 +36,19 @@ export default async function AssignmentDetailsPage({ params }: AssignmentPagePr
   
   if (isStudent) {
     mySubmission = await getMySubmission(id)
-    if (mySubmission) {
+    if (mySubmission && mySubmission.attachment_bucket && mySubmission.attachment_path) {
       const supabase = await createClient()
-      const { data } = supabase.storage
-        .from(mySubmission.attachment_bucket)
-        .getPublicUrl(mySubmission.attachment_path)
-      fileUrl = data.publicUrl
+      if (mySubmission.attachment_bucket === 'student-submissions') {
+        const { data } = await supabase.storage
+          .from(mySubmission.attachment_bucket)
+          .createSignedUrl(mySubmission.attachment_path, 60 * 60) // 1 hour expiry
+        fileUrl = data?.signedUrl || null
+      } else {
+        const { data } = supabase.storage
+          .from(mySubmission.attachment_bucket)
+          .getPublicUrl(mySubmission.attachment_path)
+        fileUrl = data.publicUrl
+      }
     }
   }
 
@@ -120,7 +127,7 @@ export default async function AssignmentDetailsPage({ params }: AssignmentPagePr
                     <CheckCircle size={24} /> Submitted Successfully
                   </div>
                   <p style={{ margin: '0 0 1.5rem 0', color: '#64748b' }}>
-                    Submitted on: {new Date(mySubmission.submitted_at).toLocaleString()}
+                    Submitted on: {formatDate(mySubmission.submitted_at)}
                   </p>
                   <a href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#6366f1', textDecoration: 'none', fontWeight: 600, backgroundColor: '#eef2ff', padding: '0.75rem 1.25rem', borderRadius: '8px', transition: 'all 0.2s' }}>
                     <FileText size={18} /> View Submitted File
