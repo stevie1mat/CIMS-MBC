@@ -10,7 +10,7 @@ export const metadata = {
 
 export default async function MyAttendancePage() {
   const role = await getUserRole()
-  if (role !== 'student') {
+  if (role !== 'student' && role !== 'teacher') {
     redirect('/dashboard')
   }
 

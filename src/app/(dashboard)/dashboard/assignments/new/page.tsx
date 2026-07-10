@@ -24,7 +24,7 @@ export default async function NewAssignmentPage() {
       </div>
 
       <div className={styles.panel}>
-        <div className={styles.panelBody}>
+        <div className={styles.panelBody} style={{ padding: '2rem' }}>
           <AssignmentForm categories={categories} />
         </div>
       </div>

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import crypto from 'crypto'
 
+import { getUserRole } from '@/app/actions/auth'
 import { createClient } from '@/lib/supabase/server'
 import AvatarUpload from '@/app/(dashboard)/dashboard/users/[id]/AvatarUpload'
 import EditProfileForm from './EditProfileForm'
@@ -22,6 +23,7 @@ export const metadata = {
 }
 
 export default async function ProfilePage() {
+  const role = await getUserRole()
   const profile = await getProfileDetails()
   const activity = await getQuizActivity()
   const categories = await getCategoryProficiency()
@@ -85,27 +87,29 @@ export default async function ProfilePage() {
 
 
         {/* Fees Card */}
-        <div className={styles.panel}>
-          <div className={styles.panelHeader}>
-            <h3 className={styles.panelTitle} style={{ fontSize: '1.2rem' }}>Fees</h3>
-          </div>
-          <div className={styles.panelBody} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><CreditCard size={18}/> Status</span>
-              <span style={{
-                padding: '0.25rem 0.75rem',
-                borderRadius: '9999px',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                backgroundColor: profile.fees_paid ? '#dcfce7' : '#fee2e2',
-                color: profile.fees_paid ? '#166534' : '#991b1b',
-                textTransform: 'capitalize'
-              }}>
-                {profile.fees_paid ? 'Paid' : 'Unpaid'}
-              </span>
+        {role === 'student' && (
+          <div className={styles.panel}>
+            <div className={styles.panelHeader}>
+              <h3 className={styles.panelTitle} style={{ fontSize: '1.2rem' }}>Fees</h3>
+            </div>
+            <div className={styles.panelBody} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><CreditCard size={18}/> Status</span>
+                <span style={{
+                  padding: '0.25rem 0.75rem',
+                  borderRadius: '9999px',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  backgroundColor: profile.fees_paid ? '#dcfce7' : '#fee2e2',
+                  color: profile.fees_paid ? '#166534' : '#991b1b',
+                  textTransform: 'capitalize'
+                }}>
+                  {profile.fees_paid ? 'Paid' : 'Unpaid'}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
     </div>

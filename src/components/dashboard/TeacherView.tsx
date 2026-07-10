@@ -24,7 +24,8 @@ export default async function TeacherView({ user }: { user?: any }) {
 
   return (
     <div>
-      <div style={{ marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1 style={{ fontSize: '2rem', margin: 0, color: '#0f172a' }}>Dashboard</h1>
         <StartClassButton />
       </div>
       

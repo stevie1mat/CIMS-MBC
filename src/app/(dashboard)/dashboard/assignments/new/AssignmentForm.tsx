@@ -32,7 +32,7 @@ export default function AssignmentForm({ categories = [] }: { categories?: any[]
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '600px' }}>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
       {error && <div className={styles.feesAlert} style={{ backgroundColor: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5' }}>{error}</div>}
       
       <div>
@@ -75,6 +75,17 @@ export default function AssignmentForm({ categories = [] }: { categories?: any[]
           className={styles.input} 
           required 
         />
+      </div>
+
+      <div>
+        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Attachment (Optional)</label>
+        <input 
+          type="file" 
+          name="attachment" 
+          className={styles.input} 
+          accept=".pdf,.doc,.docx,image/*"
+        />
+        <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>Upload a PDF, Word document, or image</p>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '1rem' }}>

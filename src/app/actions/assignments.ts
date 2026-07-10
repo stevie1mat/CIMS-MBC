@@ -49,6 +49,25 @@ export async function createAssignment(formData: FormData) {
   const description = formData.get('description') as string
   const due_at = formData.get('due_at') as string
   const category_id = formData.get('category_id') as string
+  const attachment = formData.get('attachment') as File | null
+
+  let attachment_bucket = null
+  let attachment_path = null
+
+  if (attachment && attachment.size > 0) {
+    const fileExt = attachment.name.split('.').pop()
+    const fileName = `${user.id}-${Date.now()}.${fileExt}`
+    const filePath = `assignments/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('library-assets')
+      .upload(filePath, attachment)
+
+    if (uploadError) return { error: `Upload failed: ${uploadError.message}` }
+    
+    attachment_bucket = 'library-assets'
+    attachment_path = filePath
+  }
 
   const { data, error } = await supabase
     .from('assignments')
@@ -57,7 +76,9 @@ export async function createAssignment(formData: FormData) {
       description,
       due_at: due_at ? new Date(due_at).toISOString() : null,
       created_by: user.id,
-      category_id: category_id ? Number(category_id) : null
+      category_id: category_id ? Number(category_id) : null,
+      attachment_bucket,
+      attachment_path
     }])
     .select()
     .single()

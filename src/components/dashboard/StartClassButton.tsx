@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { markAttendanceAndGetLink } from '@/app/actions/attendance'
+import { Video } from 'lucide-react'
 import styles from './dashboard.module.css'
 
 export default function StartClassButton() {
@@ -26,11 +27,12 @@ export default function StartClassButton() {
   return (
     <button 
       className={styles.btnBlue} 
-      style={{ width: '100%', padding: '1rem', fontSize: '1.1rem' }}
+      style={{ padding: '0.75rem 1.5rem', fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center', gap: '0.6rem', fontWeight: 700 }}
       onClick={handleStart}
       disabled={loading}
     >
-      {loading ? 'Starting...' : 'Start Class'}
+      <Video size={20} />
+      {loading ? 'STARTING...' : 'START CLASS'}
     </button>
   )
 }
