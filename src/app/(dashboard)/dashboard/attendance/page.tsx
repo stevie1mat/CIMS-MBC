@@ -27,7 +27,7 @@ export default async function AttendancePage({ searchParams }: any) {
   const searchParamsObj = await searchParams;
   const today = getISTDateString();
   const timeframe = (searchParamsObj?.timeframe as 'day' | 'week' | 'month') || 'day';
-  const activeTab = searchParamsObj?.tab || 'all';
+  const activeTab = role === 'teacher' ? 'students' : (searchParamsObj?.tab || 'all');
 
   let selectedDate = searchParamsObj?.date || today;
   if (timeframe === 'month' && selectedDate.length === 10) {
@@ -76,8 +76,12 @@ export default async function AttendancePage({ searchParams }: any) {
       {/* Page Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>Attendance Report</h1>
-          <p style={{ color: '#64748b', margin: 0 }}>View and manage user check-ins.</p>
+          <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>
+            {role === 'teacher' ? 'Student Attendance' : 'Attendance Report'}
+          </h1>
+          <p style={{ color: '#64748b', margin: 0 }}>
+            {role === 'teacher' ? 'View and manage student check-ins.' : 'View and manage user check-ins.'}
+          </p>
         </div>
         
         {/* Date Selector */}
@@ -86,49 +90,19 @@ export default async function AttendancePage({ searchParams }: any) {
         </div>
       </div>
 
-      {/* Metric Row */}
-      <div className={styles.cardGrid} style={{ marginBottom: '2rem' }}>
-        <MetricCard 
-          title={`Total Present (${timeframe})`} 
-          value={attendanceRecords.length} 
-          icon={<Users size={24} color="#3b82f6" />} 
-          colorClass="cardBlue"
-        />
-        <MetricCard 
-          title="Selected Date" 
-          value={(() => {
-            const parts = selectedDate.split('-');
-            const year = parseInt(parts[0], 10);
-            const month = parseInt(parts[1], 10) - 1;
-            const day = parts.length > 2 ? parseInt(parts[2], 10) : 1;
-            const localDate = new Date(year, month, day, 12, 0, 0);
-            
-            if (timeframe === 'month') {
-              return localDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
-            } else {
-              return localDate.toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' });
-            }
-          })()} 
-          icon={<Calendar size={24} color="#ec4899" />} 
-          colorClass="cardPink"
-        />
-        <MetricCard 
-          title="Status" 
-          value={attendanceRecords.length > 0 ? 'Active' : 'No Records'} 
-          icon={<CheckCircle size={24} color="#8b5cf6" />} 
-          colorClass="cardPurple"
-        />
-      </div>
+
 
       {/* Main Table */}
       <div className={styles.panel}>
         <div className={styles.panelHeader} style={{ padding: '20px 28px 0 28px', flexDirection: 'column', alignItems: 'flex-start', gap: '0px' }}>
           <h3 className={styles.panelTitle} style={{ marginBottom: '16px' }}>Attendance</h3>
-          <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #f1f5f9', width: '100%' }}>
-            <Link href={`/dashboard/attendance?date=${selectedDate}&timeframe=${timeframe}&tab=all`} style={getTabStyle('all')}>All Users</Link>
-            <Link href={`/dashboard/attendance?date=${selectedDate}&timeframe=${timeframe}&tab=students`} style={getTabStyle('students')}>Students</Link>
-            <Link href={`/dashboard/attendance?date=${selectedDate}&timeframe=${timeframe}&tab=teachers`} style={getTabStyle('teachers')}>Teachers</Link>
-          </div>
+          {role !== 'teacher' && (
+            <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #f1f5f9', width: '100%' }}>
+              <Link href={`/dashboard/attendance?date=${selectedDate}&timeframe=${timeframe}&tab=all`} style={getTabStyle('all')}>All Users</Link>
+              <Link href={`/dashboard/attendance?date=${selectedDate}&timeframe=${timeframe}&tab=students`} style={getTabStyle('students')}>Students</Link>
+              <Link href={`/dashboard/attendance?date=${selectedDate}&timeframe=${timeframe}&tab=teachers`} style={getTabStyle('teachers')}>Teachers</Link>
+            </div>
+          )}
         </div>
         
         <div style={{ overflowX: 'auto' }}>

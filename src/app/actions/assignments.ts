@@ -19,8 +19,8 @@ export async function getAssignments() {
     .select(`
       *,
       assignment_submissions(count),
-      categories:assignments_category_id_fkey(name),
-      profiles:assignments_created_by_fkey(first_name, last_name)
+      categories(name),
+      profiles(first_name, last_name)
     `)
     .order('due_at', { ascending: true })
 

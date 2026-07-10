@@ -25,6 +25,15 @@ export default async function AssignmentDetailsPage({ params }: AssignmentPagePr
   let mySubmission = null
   let fileUrl = null
   
+  let assignmentFileUrl = null
+  if (assignment.attachment_bucket && assignment.attachment_path) {
+    const supabase = await createClient()
+    const { data } = supabase.storage
+      .from(assignment.attachment_bucket)
+      .getPublicUrl(assignment.attachment_path)
+    assignmentFileUrl = data.publicUrl
+  }
+  
   if (isStudent) {
     mySubmission = await getMySubmission(id)
     if (mySubmission) {
@@ -46,57 +55,81 @@ export default async function AssignmentDetailsPage({ params }: AssignmentPagePr
 
   return (
     <div>
-      <div className={styles.panelHeader} style={{ marginBottom: '1rem' }}>
+      <div className={styles.panelHeader} style={{ marginBottom: '1.5rem' }}>
         <h2 className={styles.panelTitle}>Assignment Details</h2>
         <div style={{ display: 'flex', gap: '1rem' }}>
           {!isStudent && (
             <Link href={`/dashboard/assignments/${assignment.id}/edit`}>
               <button className={styles.btnPrimary} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Edit size={18} /> Edit Assignment
+                <Edit size={18} /> Edit
               </button>
             </Link>
           )}
           <Link href="/dashboard/assignments">
             <button className={styles.btnOutline} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <ArrowLeft size={18} /> Back to Assignments
+              <ArrowLeft size={18} /> Back
             </button>
           </Link>
         </div>
       </div>
 
       <div className={styles.panel}>
-        <div className={styles.panelBody}>
-          <h1 style={{ marginTop: 0, color: '#1e293b' }}>{assignment.title}</h1>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ef4444', marginBottom: '1.5rem', fontWeight: 500 }}>
-            <Calendar size={18} />
-            Due: {formatDate(assignment.due_at)}
+        <div className={styles.panelBody} style={{ padding: '3rem' }}>
+          <div style={{ marginBottom: '2.5rem' }}>
+            <h1 style={{ marginTop: 0, color: '#0f172a', fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.025em', marginBottom: '1rem' }}>
+              {assignment.title}
+            </h1>
+            
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#475569', backgroundColor: '#f1f5f9', padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.9rem', fontWeight: 500 }}>
+              <Calendar size={16} style={{ color: '#6366f1' }} />
+              Due: {formatDate(assignment.due_at)}
+            </div>
           </div>
 
-          <div style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '0.5rem', border: '1px solid #e2e8f0', marginBottom: '2rem', whiteSpace: 'pre-wrap' }}>
+          <div style={{ padding: '2rem', backgroundColor: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)', marginBottom: assignmentFileUrl ? '2rem' : '3rem', whiteSpace: 'pre-wrap', color: '#334155', lineHeight: '1.7' }}>
             {assignment.description}
           </div>
 
+          {assignmentFileUrl && (
+            <div style={{ marginBottom: '3rem' }}>
+              <h3 style={{ margin: '0 0 1rem 0', color: '#0f172a', fontSize: '1.1rem' }}>Attachment</h3>
+              <a 
+                href={assignmentFileUrl} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className={styles.attachmentLink}
+              >
+                <div style={{ padding: '0.5rem', backgroundColor: '#eef2ff', borderRadius: '8px' }}>
+                  <FileText size={20} color="#6366f1" />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ color: '#1e293b', fontWeight: 600 }}>Attachment</span>
+                  <span style={{ color: '#64748b', fontSize: '0.8rem' }}>Click to view or download</span>
+                </div>
+              </a>
+            </div>
+          )}
+
           {isStudent && (
-            <div>
-              <h3 style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Your Submission</h3>
+            <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '2.5rem' }}>
+              <h3 style={{ margin: '0 0 1.5rem 0', color: '#0f172a', fontSize: '1.25rem' }}>Your Submission</h3>
               
               {mySubmission ? (
-                <div style={{ padding: '1.5rem', backgroundColor: '#f0fdf4', borderRadius: '0.5rem', border: '1px solid #bbf7d0', marginTop: '1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#166534', fontWeight: 'bold', marginBottom: '1rem' }}>
-                    <CheckCircle size={20} /> Submitted Successfully
+                <div style={{ padding: '2rem', backgroundColor: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#059669', fontWeight: 600, fontSize: '1.1rem', marginBottom: '1rem' }}>
+                    <CheckCircle size={24} /> Submitted Successfully
                   </div>
-                  <p style={{ margin: '0 0 1rem 0', color: '#166534' }}>
+                  <p style={{ margin: '0 0 1.5rem 0', color: '#64748b' }}>
                     Submitted on: {new Date(mySubmission.submitted_at).toLocaleString()}
                   </p>
-                  <a href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#0ea5e9', textDecoration: 'none', fontWeight: 500 }}>
+                  <a href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#6366f1', textDecoration: 'none', fontWeight: 600, backgroundColor: '#eef2ff', padding: '0.75rem 1.25rem', borderRadius: '8px', transition: 'all 0.2s' }}>
                     <FileText size={18} /> View Submitted File
                   </a>
                   
                   {mySubmission.status === 'evaluated' && (
-                    <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #bbf7d0' }}>
-                      <p style={{ margin: 0, fontWeight: 'bold', color: '#92400e' }}>Grade Received:</p>
-                      <span style={{ fontSize: '2rem', fontWeight: 'bold', color: '#b45309' }}>{mySubmission.score}</span>
+                    <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px dashed #cbd5e1', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <p style={{ margin: 0, fontWeight: 600, color: '#475569' }}>Grade Received</p>
+                      <span style={{ fontSize: '2rem', fontWeight: 800, color: '#10b981' }}>{mySubmission.score}</span>
                     </div>
                   )}
                 </div>
