@@ -6,13 +6,17 @@ import { ArrowLeft, Calendar, FileText, CheckCircle } from 'lucide-react'
 import UploadSubmission from './UploadSubmission'
 import { createClient } from '@/lib/supabase/server'
 
-export async function generateMetadata({ params }) {
+type AssignmentPageProps = {
+  params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: AssignmentPageProps) {
   const { id } = await params
   const assignment = await getAssignment(id)
   return { title: `${assignment.title} | MBC Portal` }
 }
 
-export default async function AssignmentDetailsPage({ params }) {
+export default async function AssignmentDetailsPage({ params }: AssignmentPageProps) {
   const { id } = await params
   const assignment = await getAssignment(id)
   const role = await getUserRole()
@@ -33,7 +37,7 @@ export default async function AssignmentDetailsPage({ params }) {
   }
 
   // Format date
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | null) => {
     if (!dateString) return 'No due date'
     return new Date(dateString).toLocaleDateString('en-US', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -88,7 +92,7 @@ export default async function AssignmentDetailsPage({ params }) {
                   )}
                 </div>
               ) : (
-                <UploadSubmission assignmentId={assignment.id} />
+                <UploadSubmission assignmentId={String(assignment.id)} />
               )}
             </div>
           )}

@@ -50,7 +50,7 @@ export async function getQuizAttempts(quiz_id: string | number) {
       *,
       profiles ( email, first_name, last_name, avatar_path )
     `)
-    .eq('quiz_id', quiz_id)
+    .eq('quiz_id', Number(quiz_id))
     .order('started_at', { ascending: false })
 
   if (error) throw new Error(error.message)

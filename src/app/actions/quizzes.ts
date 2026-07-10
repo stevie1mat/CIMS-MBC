@@ -81,7 +81,7 @@ export async function updateQuiz(id: number | string, formData: FormData) {
   const { data: quiz, error } = await supabase
     .from('quizzes')
     .update(updates)
-    .eq('id', id)
+    .eq('id', Number(id))
     .select()
     .single()
 
@@ -110,7 +110,7 @@ export async function scheduleQuizLive(formData: FormData) {
       ends_at: endsAt ? new Date(endsAt).toISOString() : null,
       updated_at: new Date().toISOString(),
     })
-    .eq('id', quizId)
+    .eq('id', Number(quizId))
     .select()
     .single()
 
@@ -124,13 +124,13 @@ export async function scheduleQuizLive(formData: FormData) {
 
 export async function deleteQuiz(id: number | string) {
   const supabase = await createClient()
-  const { error } = await supabase.from('quizzes').delete().eq('id', id)
+  const { error } = await supabase.from('quizzes').delete().eq('id', Number(id))
   if (error) return { error: error.message }
   revalidatePath('/dashboard/quizzes')
   return { success: true }
 }
 
-export async function getQuiz(id: number | string) {
+export async function getQuiz(id: number | string): Promise<any> {
   const supabase = await createClient()
   const { data, error } = await supabase.from('quizzes').select(`
     *,
@@ -145,7 +145,7 @@ export async function getQuiz(id: number | string) {
         is_correct
       )
     )
-  `).eq('id', id).single()
+  `).eq('id', Number(id)).single()
   
   if (error) throw new Error(error.message)
   ;(data as any).quiz_questions = (data as any).questions || []

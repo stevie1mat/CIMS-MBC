@@ -44,7 +44,7 @@ export default async function UsersListPage() {
             </thead>
             <tbody>
               {users.length === 0 ? (
-                <tr><td colSpan="4" style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>No users found.</td></tr>
+                <tr><td colSpan={4} style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>No users found.</td></tr>
               ) : (
                 users.map((u) => {
                   const initials = `${(u.first_name?.[0] || '').toUpperCase()}${(u.last_name?.[0] || '').toUpperCase()}` || 'U'

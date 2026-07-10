@@ -12,7 +12,7 @@ export async function startQuizAttempt(quiz_id: number | string) {
   const { data: quiz, error: quizError } = await supabase
     .from('quizzes')
     .select('id, starts_at, ends_at, maximum_attempts')
-    .eq('id', quiz_id)
+    .eq('id', Number(quiz_id))
     .single()
 
   if (quizError || !quiz) return { error: 'Quiz not found' }
@@ -30,7 +30,7 @@ export async function startQuizAttempt(quiz_id: number | string) {
   const { data: existing } = await supabase
     .from('quiz_attempts')
     .select('id')
-    .eq('quiz_id', quiz_id)
+    .eq('quiz_id', Number(quiz_id))
     .eq('profile_id', user.id)
     .eq('status', 'open')
     .maybeSingle()
@@ -43,7 +43,7 @@ export async function startQuizAttempt(quiz_id: number | string) {
   const { count } = await supabase
     .from('quiz_attempts')
     .select('id', { count: 'exact', head: true })
-    .eq('quiz_id', quiz_id)
+    .eq('quiz_id', Number(quiz_id))
     .eq('profile_id', user.id)
 
   const maxAttempts = quiz.maximum_attempts || 1
@@ -89,7 +89,7 @@ export async function submitQuizAnswers(attempt_id: number | string, answers: Re
         )
       )
     `)
-    .eq('id', attempt_id)
+    .eq('id', Number(attempt_id))
     .eq('profile_id', user.id)
     .single()
 
@@ -161,7 +161,7 @@ export async function submitQuizAnswers(attempt_id: number | string, answers: Re
       score_obtained: totalScoreObtained,
       percentage_obtained: percentage
     })
-    .eq('id', attempt_id)
+    .eq('id', Number(attempt_id))
 
   if (updateError) return { error: updateError.message }
 

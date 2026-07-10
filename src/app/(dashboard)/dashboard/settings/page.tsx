@@ -20,14 +20,17 @@ export default async function SettingsPage() {
   if (typeof zoomLinkRaw === 'string') {
     try { zoomLink = JSON.parse(zoomLinkRaw) } catch (e) { zoomLink = zoomLinkRaw }
   } else {
-    zoomLink = zoomLinkRaw
+    zoomLink = typeof zoomLinkRaw === 'string' ? zoomLinkRaw : ''
   }
 
-  async function saveZoomLink(formData) {
+  async function saveZoomLink(formData: FormData) {
     'use server'
-    const link = formData.get('zoom_link')
+    const link = String(formData.get('zoom_link') || '')
     await updateSetting('zoom_meeting_link', link)
   }
+
+  const exportEmailRaw = await getSetting('csv_export_email')
+  const exportEmail = typeof exportEmailRaw === 'string' ? exportEmailRaw : 'mathewsteven1996@gmail.com'
 
   return (
     <div>
@@ -80,7 +83,7 @@ export default async function SettingsPage() {
 
           <form action={async (formData) => {
             'use server'
-            await updateSetting('csv_export_email', formData.get('email'))
+            await updateSetting('csv_export_email', String(formData.get('email') || ''))
           }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '600px' }}>
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Default CSV Export Email</label>
@@ -88,7 +91,7 @@ export default async function SettingsPage() {
                 type="email" 
                 name="email" 
                 className={styles.input} 
-                defaultValue={await getSetting('csv_export_email') || 'mathewsteven1996@gmail.com'}
+                defaultValue={exportEmail}
                 placeholder="admin@example.com"
                 required 
               />

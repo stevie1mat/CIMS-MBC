@@ -15,7 +15,7 @@ export default function QuizForm() {
     setLoading(true)
     setError('')
 
-    const formData = new FormData(e.target)
+    const formData = new FormData(e.currentTarget)
 
     try {
       const result = await createQuiz(formData)
@@ -51,7 +51,7 @@ export default function QuizForm() {
         <textarea 
           name="description" 
           className={styles.input} 
-          rows="3" 
+          rows={3} 
           placeholder="Instructions or details for the students"
         ></textarea>
       </div>

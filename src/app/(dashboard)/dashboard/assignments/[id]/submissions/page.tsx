@@ -11,7 +11,11 @@ export const metadata = {
   title: 'Assignment Submissions | MBC Portal',
 }
 
-export default async function AssignmentSubmissionsPage({ params }) {
+type AssignmentSubmissionsPageProps = {
+  params: Promise<{ id: string }>
+}
+
+export default async function AssignmentSubmissionsPage({ params }: AssignmentSubmissionsPageProps) {
   const { id } = await params
   const role = await getUserRole()
   if (role !== 'admin' && role !== 'teacher' && role !== 'super_admin') {
@@ -19,7 +23,7 @@ export default async function AssignmentSubmissionsPage({ params }) {
   }
 
   const assignment = await getAssignment(id)
-  const submissions = await getSubmissions(id)
+  const submissions = await getSubmissions(id) as any[]
   const supabase = await createClient()
 
   // Generate public URLs for files
@@ -31,7 +35,7 @@ export default async function AssignmentSubmissionsPage({ params }) {
   })
 
   // Format date
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
     })
@@ -63,7 +67,7 @@ export default async function AssignmentSubmissionsPage({ params }) {
             <tbody>
               {submissionsWithUrls.length === 0 ? (
                 <tr>
-                  <td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>
+                  <td colSpan={5} style={{ textAlign: 'center', padding: '2rem' }}>
                     No submissions yet.
                   </td>
                 </tr>

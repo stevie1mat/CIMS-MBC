@@ -85,7 +85,7 @@ export default async function QuestionsPage() {
             <tbody>
               {!quizzes || quizzes.length === 0 ? (
                 <tr>
-                  <td colSpan="3" style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
+                  <td colSpan={3} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <Database size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No quizzes found</p>
                     <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>Create a Quiz first before you can upload questions to it.</p>

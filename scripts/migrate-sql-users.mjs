@@ -34,8 +34,8 @@ if (!supabaseUrl || !serviceRoleKey) {
 
 if (typeof globalThis.WebSocket === 'undefined') {
   globalThis.WebSocket = class NoOpWebSocket {
-    constructor() {}
-    close() {}
+    constructor() { }
+    close() { }
   };
 }
 
@@ -87,33 +87,33 @@ async function upsertProfile(user, authUserId) {
 async function runMigration() {
   console.log('Reading SQL file...');
   const content = readFileSync(resolve(__dirname, '..', 'sql/u306526696_website.sql'), 'utf8');
-  
+
   // Find all INSERT INTO `savsoft_users` blocks
   const insertIndex = content.indexOf('INSERT INTO `savsoft_users`');
   if (insertIndex === -1) {
     console.log('Could not find any savsoft_users records.');
     return;
   }
-  
+
   const endIndex = content.indexOf(';', insertIndex);
   const insertBlock = content.substring(insertIndex, endIndex);
-  
+
   const valuesStart = insertBlock.indexOf('VALUES\n') + 7;
   const valuesStr = insertBlock.substring(valuesStart);
-  
+
   console.log('Parsing records from SQL...');
   const records = [];
   let inString = false;
   let currentRecord = [];
   let currentValue = "";
-  
+
   for (let i = 0; i < valuesStr.length; i++) {
     const char = valuesStr[i];
-    if (char === "'" && valuesStr[i-1] !== '\\') {
+    if (char === "'" && valuesStr[i - 1] !== '\\') {
       inString = !inString;
       continue;
     }
-    
+
     if (!inString) {
       if (char === '(' && currentValue.trim() === '') continue;
       if (char === ',') {
@@ -126,7 +126,7 @@ async function runMigration() {
         records.push(currentRecord);
         currentRecord = [];
         currentValue = "";
-        while(i + 1 < valuesStr.length && (valuesStr[i+1] === ',' || valuesStr[i+1] === '\n' || valuesStr[i+1] === '\r')) {
+        while (i + 1 < valuesStr.length && (valuesStr[i + 1] === ',' || valuesStr[i + 1] === '\n' || valuesStr[i + 1] === '\r')) {
           i++;
         }
         continue;
@@ -134,7 +134,7 @@ async function runMigration() {
     }
     currentValue += char;
   }
-  
+
   console.log(`Found ${records.length} user records to process.`);
   let created = 0;
   let updated = 0;
@@ -152,10 +152,25 @@ async function runMigration() {
     const lastName = r[4] ? r[4].replace(/^'|'$/g, '').trim() : '';
     const contactNo = r[5] ? r[5].replace(/^'|'$/g, '') : '';
     const checkStudent = r[27] ? r[27].replace(/^'|'$/g, '') : '';
-    
-    let role = 'student';
-    if (checkStudent === '0' || contactNo.startsWith('MBC#T')) role = 'teacher';
-    if (checkStudent === '3') role = 'admin';
+
+    const approvedTeachers = [
+      'prvovarghese@mbcmumbai.com',
+      'prmanukchacko@mbcmumbai.com',
+      'prbabuthankachan@mbcmumbai.com',
+      'prjohncm@mbcmumbai.com',
+      'prmathewtsamuel@mbcmumbai.com',
+      'prshenoycm@mbcmumbai.com',
+      'jithin.jose@mbcmumbai.com'
+    ];
+
+    let role;
+    if (approvedTeachers.includes(email.toLowerCase())) {
+      role = 'teacher';
+    } else {
+      console.log(`Skipping non-approved user: ${email}`);
+      skipped++;
+      continue;
+    }
 
     const userObj = { email, firstName, lastName, role };
     console.log(`Processing ${email} as ${role}...`);

@@ -160,7 +160,7 @@ export async function getQuestionsByQuiz(quizId: number | string) {
       *,
       question_options(*)
     `)
-    .eq('quiz_id', quizId)
+    .eq('quiz_id', Number(quizId))
     .order('created_at', { ascending: true })
 
   if (error) throw new Error(error.message)
@@ -183,7 +183,7 @@ export async function getQuestions() {
 
 export async function deleteQuestion(id: number | string, quizId?: number | string) {
   const supabase = await createClient()
-  const { error } = await supabase.from('questions').delete().eq('id', id)
+  const { error } = await supabase.from('questions').delete().eq('id', Number(id))
   if (error) return { error: error.message }
   if (quizId) {
     revalidatePath(`/dashboard/quizzes/${quizId}/manage`)

@@ -20,7 +20,11 @@ import EditUserForm from './EditUserForm'
 import AvatarUpload from './AvatarUpload'
 import { createClient } from '@/lib/supabase/server'
 
-export async function generateMetadata({ params }) {
+type UserPageProps = {
+  params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: UserPageProps) {
   const { id } = await params
   const profile = await getProfileDetails(id)
   return {
@@ -28,7 +32,7 @@ export async function generateMetadata({ params }) {
   }
 }
 
-export default async function AdminUserProfilePage({ params }) {
+export default async function AdminUserProfilePage({ params }: UserPageProps) {
   const { id } = await params
 
   const role = await getUserRole()
@@ -55,14 +59,14 @@ export default async function AdminUserProfilePage({ params }) {
     currentAvatarUrl = data?.publicUrl;
   }
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | null) => {
     if (!dateString) return 'N/A'
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric', month: 'long', day: 'numeric'
     })
   }
 
-  const formatDateTime = (dateString) => {
+  const formatDateTime = (dateString: string | null) => {
     if (!dateString) return 'N/A'
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'

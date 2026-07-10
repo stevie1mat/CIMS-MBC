@@ -123,7 +123,7 @@ export default function EditQuizForm({ quiz }) {
             <textarea
               name="exam_time_text"
               className={styles.input}
-              rows="2"
+              rows={2}
               defaultValue={quiz.exam_time_text || `The Exam duration is ${quiz.duration_minutes || 10} Mins.`}
             />
           </label>
@@ -133,7 +133,7 @@ export default function EditQuizForm({ quiz }) {
             <textarea
               name="exam_questions_text"
               className={styles.input}
-              rows="2"
+              rows={2}
               defaultValue={quiz.exam_questions_text || `You have to attempt all questions. ${defaultAttemptsText}`}
             />
           </label>
@@ -144,7 +144,7 @@ export default function EditQuizForm({ quiz }) {
           <textarea
             name="exam_result_text"
             className={styles.input}
-            rows="2"
+            rows={2}
             defaultValue={quiz.exam_result_text || 'Your result(score) will be displayed to you as soon as the exam is submitted.'}
           />
         </label>

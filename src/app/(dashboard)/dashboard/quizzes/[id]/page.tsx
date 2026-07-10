@@ -8,13 +8,17 @@ import StartQuizButton from './StartQuizButton'
 import MetricCard from '@/components/dashboard/MetricCard'
 import { createClient } from '@/lib/supabase/server'
 
-export async function generateMetadata({ params }) {
+type QuizPageProps = {
+  params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: QuizPageProps) {
   const { id } = await params
   const quiz = await getQuiz(id)
   return { title: `${quiz.name} | MBC Portal` }
 }
 
-export default async function QuizPortalPage({ params }) {
+export default async function QuizPortalPage({ params }: QuizPageProps) {
   const { id } = await params
   const role = await getUserRole()
   const isStudent = role === 'student'
@@ -41,13 +45,13 @@ export default async function QuizPortalPage({ params }) {
   const { count: attemptCount } = await supabase
     .from('quiz_attempts')
     .select('id', { count: 'exact', head: true })
-    .eq('quiz_id', id)
+    .eq('quiz_id', Number(id))
     .eq('profile_id', user?.id)
 
   const { data: openAttempt } = await supabase
     .from('quiz_attempts')
     .select('id')
-    .eq('quiz_id', id)
+    .eq('quiz_id', Number(id))
     .eq('profile_id', user?.id)
     .eq('status', 'open')
     .maybeSingle()

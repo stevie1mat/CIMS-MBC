@@ -15,7 +15,7 @@ export default function AssignmentForm({ categories = [] }: { categories?: any[]
     setLoading(true)
     setError('')
 
-    const formData = new FormData(e.target)
+    const formData = new FormData(e.currentTarget)
 
     try {
       const result = await createAssignment(formData)
@@ -61,7 +61,7 @@ export default function AssignmentForm({ categories = [] }: { categories?: any[]
         <textarea 
           name="description" 
           className={styles.input} 
-          rows="5" 
+          rows={5} 
           placeholder="What should the student do?"
           required
         ></textarea>

@@ -12,7 +12,11 @@ export const metadata = {
   title: 'Quiz Attempts | MBC Portal',
 }
 
-export default async function QuizAttemptsPage({ params }) {
+type QuizAttemptsPageProps = {
+  params: Promise<{ id: string }>
+}
+
+export default async function QuizAttemptsPage({ params }: QuizAttemptsPageProps) {
   const { id } = await params
   
   const role = await getUserRole()
@@ -67,7 +71,7 @@ export default async function QuizAttemptsPage({ params }) {
             <tbody>
               {attempts.length === 0 ? (
                 <tr>
-                  <td colSpan="4" style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
+                  <td colSpan={4} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <Users size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No attempts yet</p>
                     <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>Students have not attempted this quiz.</p>

@@ -9,9 +9,13 @@ export const metadata = {
   title: 'Exam Review | MBC Portal',
 }
 
-export default async function AnswerSheetPage({ params }: any) {
+type AnswerSheetPageProps = {
+  params: Promise<{ id: string }>
+}
+
+export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) {
   const { id } = await params
-  const attempt = await getAttemptDetails(id)
+  const attempt = await getAttemptDetails(Number(id))
 
   if (!attempt) {
     redirect('/dashboard/results')

@@ -1100,8 +1100,6 @@ export type Database = {
           avatar_path?: string | null
           connection_key?: string | null
           contact_no?: string | null
-          created_at?: string
-          email?: string | null
           real_email?: string | null
           created_at?: string
           email?: string | null

@@ -88,7 +88,7 @@ export default async function ReportsPage() {
             <tbody>
               {results.length === 0 ? (
                 <tr>
-                  <td colSpan="7" style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <TableProperties size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No reports available</p>
                     <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>Student attempts will appear here once they complete a quiz.</p>

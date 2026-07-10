@@ -10,7 +10,11 @@ export const metadata = {
   title: 'Edit Quiz | MBC Portal',
 }
 
-export default async function EditQuizPage({ params }) {
+type EditQuizPageProps = {
+  params: Promise<{ id: string }>
+}
+
+export default async function EditQuizPage({ params }: EditQuizPageProps) {
   const { id } = await params
   const quiz = await getQuiz(id)
   const role = await getUserRole()

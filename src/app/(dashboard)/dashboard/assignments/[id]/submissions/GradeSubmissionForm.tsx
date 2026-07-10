@@ -14,8 +14,8 @@ export default function GradeSubmissionForm({ submissionId, currentScore }: { su
     setLoading(true)
     setError('')
 
-    const formData = new FormData(e.target)
-    const score = formData.get('score')
+    const formData = new FormData(e.currentTarget)
+    const score = String(formData.get('score') || '')
 
     try {
       const result = await gradeSubmission(submissionId, score)

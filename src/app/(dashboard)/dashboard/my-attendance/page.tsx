@@ -51,7 +51,7 @@ export default async function MyAttendancePage() {
             <tbody>
               {attendanceRecords.length === 0 ? (
                 <tr>
-                  <td colSpan="3" style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
+                  <td colSpan={3} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <Calendar size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No attendance records found</p>
                   </td>

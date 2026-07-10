@@ -6,7 +6,11 @@ export const metadata = {
   title: 'Quiz Attempt | MBC Portal',
 }
 
-export default async function QuizAttemptPage({ params }) {
+type QuizAttemptPageProps = {
+  params: Promise<{ id: string }>
+}
+
+export default async function QuizAttemptPage({ params }: QuizAttemptPageProps) {
   const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -17,7 +21,7 @@ export default async function QuizAttemptPage({ params }) {
   const { data: attempt } = await supabase
     .from('quiz_attempts')
     .select('*')
-    .eq('quiz_id', id)
+    .eq('quiz_id', Number(id))
     .eq('profile_id', user.id)
     .eq('status', 'open')
     .single()
@@ -44,7 +48,7 @@ export default async function QuizAttemptPage({ params }) {
         )
       )
     `)
-    .eq('id', id)
+    .eq('id', Number(id))
     .single()
 
   if (!quiz) redirect('/dashboard/quizzes')

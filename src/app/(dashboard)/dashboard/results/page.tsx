@@ -55,7 +55,7 @@ export default async function StudentResultsPage() {
             <tbody>
               {results.length === 0 ? (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>
+                  <td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>
                     You have not completed any exams yet.
                   </td>
                 </tr>

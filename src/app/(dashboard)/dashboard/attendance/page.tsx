@@ -108,7 +108,7 @@ export default async function AttendancePage({ searchParams }) {
             <tbody>
               {attendanceRecords.length === 0 ? (
                 <tr>
-                  <td colSpan="4" style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
+                  <td colSpan={4} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <Users size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No attendance recorded</p>
                     <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>There are no student check-ins for {new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.</p>

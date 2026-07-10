@@ -9,7 +9,11 @@ export const metadata = {
   title: 'Manage Quiz Questions | MBC Portal',
 }
 
-export default async function ManageQuizQuestionsPage({ params }) {
+type ManageQuizQuestionsPageProps = {
+  params: Promise<{ id: string }>
+}
+
+export default async function ManageQuizQuestionsPage({ params }: ManageQuizQuestionsPageProps) {
   const { id } = await params
   const quiz = await getQuiz(id)
   const questions = await getQuestionsByQuiz(id)
@@ -75,7 +79,7 @@ export default async function ManageQuizQuestionsPage({ params }) {
             <tbody>
               {questions.length === 0 ? (
                 <tr>
-                  <td colSpan="4" style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
+                  <td colSpan={4} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <FileText size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>No questions uploaded</p>
                     <p style={{ margin: '0.25rem 0 1rem 0', fontSize: '0.9rem' }}>Bulk upload questions from Excel to prepare this quiz.</p>

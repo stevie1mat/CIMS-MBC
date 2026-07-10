@@ -33,7 +33,7 @@ export async function getAssignment(id: number | string) {
   const { data, error } = await supabase
     .from('assignments')
     .select('*')
-    .eq('id', id)
+    .eq('id', Number(id))
     .single()
 
   if (error) throw new Error(error.message)
@@ -69,7 +69,7 @@ export async function createAssignment(formData: FormData) {
 
 export async function deleteAssignment(id: number | string) {
   const supabase = await createClient()
-  const { error } = await supabase.from('assignments').delete().eq('id', id)
+  const { error } = await supabase.from('assignments').delete().eq('id', Number(id))
   if (error) return { error: error.message }
   revalidatePath('/dashboard/assignments')
   return { success: true }
@@ -120,7 +120,7 @@ export async function getSubmissions(assignmentId: number | string) {
       *,
       profiles(first_name, last_name, email)
     `)
-    .eq('assignment_id', assignmentId)
+    .eq('assignment_id', Number(assignmentId))
     .order('submitted_at', { ascending: false })
 
   if (error) throw new Error(error.message)
@@ -135,7 +135,7 @@ export async function getMySubmission(assignmentId: number | string) {
   const { data, error } = await supabase
     .from('assignment_submissions')
     .select('*')
-    .eq('assignment_id', assignmentId)
+    .eq('assignment_id', Number(assignmentId))
     .eq('profile_id', user.id)
     .single()
 
@@ -156,7 +156,7 @@ export async function gradeSubmission(submissionId: number | string, score: stri
       evaluated_by: user.id,
       evaluated_at: new Date().toISOString()
     })
-    .eq('id', submissionId)
+    .eq('id', Number(submissionId))
 
   if (error) return { error: error.message }
   revalidatePath(`/dashboard/assignments`)
