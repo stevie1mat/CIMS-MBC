@@ -56,42 +56,30 @@ export default async function StudentView({
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '1.5rem',
-        background: 'linear-gradient(135deg, #4f46e5 0%, #ec4899 100%)',
+        backgroundColor: '#ffffff',
         padding: '2.5rem 3rem',
         borderRadius: '20px',
-        boxShadow: '0 10px 25px -5px rgba(79, 70, 229, 0.4)',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
         marginBottom: '3rem',
-        color: 'white',
+        border: '1px solid #e2e8f0',
         overflow: 'hidden'
       }}>
-        {/* Decorative background circle */}
-        <div style={{
-          position: 'absolute',
-          top: '-50%',
-          right: '-10%',
-          width: '300px',
-          height: '300px',
-          background: 'radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)',
-          borderRadius: '50%',
-          pointerEvents: 'none'
-        }}></div>
-
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', zIndex: 1 }}>
           <div style={{ position: 'relative' }}>
             <img 
               src={avatarUrl || defaultAvatar}
               alt="Profile avatar" 
-              style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(255,255,255,0.8)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
+              style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #f8fafc', boxShadow: '0 4px 15px rgba(0,0,0,0.08)' }}
             />
             <Link href="/dashboard/profile" title="Edit Avatar">
-              <div style={{ position: 'absolute', bottom: 0, right: 0, background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', borderRadius: '50%', padding: '6px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.3)' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+              <div style={{ position: 'absolute', bottom: 0, right: 0, background: '#ffffff', borderRadius: '50%', padding: '6px', cursor: 'pointer', border: '1px solid #e2e8f0', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
               </div>
             </Link>
           </div>
           <div>
-            <h1 style={{ fontSize: '2rem', margin: '0 0 0.25rem 0', fontWeight: 800, textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>Welcome back, {user?.user_metadata?.first_name || 'Student'}!</h1>
-            <p style={{ margin: 0, fontSize: '1.1rem', opacity: 0.9 }}>Ready to continue learning?</p>
+            <h1 style={{ fontSize: '2rem', color: '#0f172a', margin: '0 0 0.25rem 0', fontWeight: 800 }}>Welcome back, {user?.user_metadata?.first_name || 'Student'}!</h1>
+            <p style={{ margin: 0, color: '#64748b', fontSize: '1.1rem' }}>Ready to continue learning?</p>
           </div>
         </div>
         <div style={{ minWidth: '220px', zIndex: 1 }}>
@@ -120,7 +108,7 @@ export default async function StudentView({
             {recentAssignments && recentAssignments.length > 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {recentAssignments.map((assignment: any) => (
-                  <div key={assignment.id} style={{ padding: '1.25rem', border: '1px solid #f1f5f9', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s', backgroundColor: '#ffffff', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }} onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                  <div key={assignment.id} className={styles.interactiveCard} style={{ padding: '1.25rem', border: '1px solid #f1f5f9', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#ffffff', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
                     <div>
                       <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem', fontSize: '1.05rem' }}>{assignment.title}</strong>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.85rem', color: '#64748b' }}>
@@ -168,7 +156,7 @@ export default async function StudentView({
             {activeExams && activeExams.length > 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {activeExams.map((exam: any) => (
-                  <div key={exam.id} style={{ padding: '1.25rem', border: '1px solid #f1f5f9', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s', backgroundColor: '#ffffff', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }} onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                  <div key={exam.id} className={styles.interactiveCard} style={{ padding: '1.25rem', border: '1px solid #f1f5f9', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#ffffff', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
                     <div>
                       <strong style={{ color: '#0f172a', display: 'block', marginBottom: '0.4rem', fontSize: '1.05rem' }}>{exam.name}</strong>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.85rem', color: '#64748b' }}>

@@ -88,6 +88,52 @@ export async function createAssignment(formData: FormData) {
   return { success: true, assignment: data }
 }
 
+export async function updateAssignment(id: number | string, formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+  
+  const title = formData.get('title') as string
+  const description = formData.get('description') as string
+  const due_at = formData.get('due_at') as string
+  const category_id = formData.get('category_id') as string
+  const attachment = formData.get('attachment') as File | null
+
+  let updateData: any = {
+    title,
+    description,
+    due_at: due_at ? new Date(due_at).toISOString() : null,
+    category_id: category_id ? Number(category_id) : null,
+  }
+
+  if (attachment && attachment.size > 0) {
+    const fileExt = attachment.name.split('.').pop()
+    const fileName = `${user.id}-${Date.now()}.${fileExt}`
+    const filePath = `assignments/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('library-assets')
+      .upload(filePath, attachment)
+
+    if (uploadError) return { error: `Upload failed: ${uploadError.message}` }
+    
+    updateData.attachment_bucket = 'library-assets'
+    updateData.attachment_path = filePath
+  }
+
+  const { data, error } = await supabase
+    .from('assignments')
+    .update(updateData)
+    .eq('id', Number(id))
+    .select()
+    .single()
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/assignments')
+  revalidatePath(`/dashboard/assignments/${id}`)
+  return { success: true, assignment: data }
+}
+
 export async function deleteAssignment(id: number | string) {
   const supabase = await createClient()
   const { error } = await supabase.from('assignments').delete().eq('id', Number(id))

@@ -2,7 +2,7 @@ import { getAssignments, deleteAssignment } from '@/app/actions/assignments'
 import { getUserRole } from '@/app/actions/auth'
 import styles from '@/components/dashboard/dashboard.module.css'
 import Link from 'next/link'
-import { Plus, Trash2, List, FileUp, Calendar } from 'lucide-react'
+import { Plus, Trash2, List, FileUp, Calendar, Eye } from 'lucide-react'
 
 export const metadata = {
   title: 'Assignments | MBC Portal',
@@ -98,6 +98,11 @@ export default async function AssignmentsPage() {
                           </Link>
                         ) : (
                           <>
+                            <Link href={`/dashboard/assignments/${a.id}`}>
+                              <button className={styles.btnOutline} style={{ padding: '0.25rem 0.5rem' }} title="View Details">
+                                <Eye size={16} />
+                              </button>
+                            </Link>
                             <Link href={`/dashboard/assignments/${a.id}/submissions`}>
                               <button className={styles.btnOutline} style={{ padding: '0.25rem 0.5rem' }} title="View Submissions">
                                 <List size={16} />

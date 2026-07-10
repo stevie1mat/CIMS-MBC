@@ -1,14 +1,42 @@
 'use client'
 
-import { useState } from 'react'
-import { createAssignment } from '@/app/actions/assignments'
+import { useState, useEffect } from 'react'
+import { createAssignment, updateAssignment } from '@/app/actions/assignments'
 import { useRouter } from 'next/navigation'
 import styles from '@/components/dashboard/dashboard.module.css'
 
-export default function AssignmentForm({ categories = [] }: { categories?: any[] }) {
+export default function AssignmentForm({ categories = [], initialData = null }: { categories?: any[], initialData?: any }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [formDataState, setFormDataState] = useState({
+    title: '',
+    category_id: '',
+    description: '',
+    due_at: ''
+  })
+
+  useEffect(() => {
+    if (initialData) {
+      // Format datetime-local string (YYYY-MM-DDThh:mm)
+      let formattedDate = ''
+      if (initialData.due_at) {
+        const d = new Date(initialData.due_at)
+        formattedDate = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+      }
+      
+      setFormDataState({
+        title: initialData.title || '',
+        category_id: initialData.category_id || '',
+        description: initialData.description || '',
+        due_at: formattedDate
+      })
+    }
+  }, [initialData])
+
+  const handleChange = (e) => {
+    setFormDataState(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -18,14 +46,17 @@ export default function AssignmentForm({ categories = [] }: { categories?: any[]
     const formData = new FormData(e.currentTarget)
 
     try {
-      const result = await createAssignment(formData)
+      const result = initialData 
+        ? await updateAssignment(initialData.id, formData)
+        : await createAssignment(formData)
+        
       if (result.error) {
         setError(result.error)
       } else {
         router.push('/dashboard/assignments')
       }
     } catch (err) {
-      setError(err.message || 'Failed to create assignment')
+      setError(err.message || 'Failed to save assignment')
     } finally {
       setLoading(false)
     }
@@ -43,12 +74,14 @@ export default function AssignmentForm({ categories = [] }: { categories?: any[]
           className={styles.input} 
           required 
           placeholder="e.g., Essay on Genesis"
+          value={formDataState.title}
+          onChange={handleChange}
         />
       </div>
 
       <div>
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Subject (Category)</label>
-        <select name="category_id" className={styles.input} required>
+        <select name="category_id" className={styles.input} required value={formDataState.category_id} onChange={handleChange}>
           <option value="">Select a Subject...</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>{c.name}</option>
@@ -64,6 +97,8 @@ export default function AssignmentForm({ categories = [] }: { categories?: any[]
           rows={5} 
           placeholder="What should the student do?"
           required
+          value={formDataState.description}
+          onChange={handleChange}
         ></textarea>
       </div>
 
@@ -74,6 +109,8 @@ export default function AssignmentForm({ categories = [] }: { categories?: any[]
           name="due_at" 
           className={styles.input} 
           required 
+          value={formDataState.due_at}
+          onChange={handleChange}
         />
       </div>
 
@@ -85,12 +122,14 @@ export default function AssignmentForm({ categories = [] }: { categories?: any[]
           className={styles.input} 
           accept=".pdf,.doc,.docx,image/*"
         />
-        <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>Upload a PDF, Word document, or image</p>
+        <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>
+          {initialData?.attachment_path ? 'Upload a new file to replace the existing attachment.' : 'Upload a PDF, Word document, or image'}
+        </p>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '1rem' }}>
         <button type="submit" className={styles.btnPrimary} disabled={loading}>
-          {loading ? 'Creating...' : 'Create Assignment'}
+          {loading ? 'Saving...' : (initialData ? 'Update Assignment' : 'Create Assignment')}
         </button>
       </div>
     </form>

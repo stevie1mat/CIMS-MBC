@@ -2,7 +2,7 @@ import { getAssignment, getMySubmission } from '@/app/actions/assignments'
 import { getUserRole } from '@/app/actions/auth'
 import styles from '@/components/dashboard/dashboard.module.css'
 import Link from 'next/link'
-import { ArrowLeft, Calendar, FileText, CheckCircle } from 'lucide-react'
+import { ArrowLeft, Calendar, FileText, CheckCircle, Edit } from 'lucide-react'
 import UploadSubmission from './UploadSubmission'
 import { createClient } from '@/lib/supabase/server'
 
@@ -48,11 +48,20 @@ export default async function AssignmentDetailsPage({ params }: AssignmentPagePr
     <div>
       <div className={styles.panelHeader} style={{ marginBottom: '1rem' }}>
         <h2 className={styles.panelTitle}>Assignment Details</h2>
-        <Link href="/dashboard/assignments">
-          <button className={styles.btnOutline} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ArrowLeft size={18} /> Back to Assignments
-          </button>
-        </Link>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          {!isStudent && (
+            <Link href={`/dashboard/assignments/${assignment.id}/edit`}>
+              <button className={styles.btnPrimary} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Edit size={18} /> Edit Assignment
+              </button>
+            </Link>
+          )}
+          <Link href="/dashboard/assignments">
+            <button className={styles.btnOutline} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <ArrowLeft size={18} /> Back to Assignments
+            </button>
+          </Link>
+        </div>
       </div>
 
       <div className={styles.panel}>
