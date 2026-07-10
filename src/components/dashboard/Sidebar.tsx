@@ -10,6 +10,7 @@ const ROLE_MENUS: Record<string, any[]> = {
   admin: [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Users', path: '/dashboard/users', icon: Users },
+    { name: 'Subjects', path: '/dashboard/subjects', icon: BookOpen },
     { name: 'Question Bank', path: '/dashboard/questions', icon: BookOpen },
     { name: 'Quizzes', path: '/dashboard/quizzes', icon: FileText },
     { name: 'Reports', path: '/dashboard/reports', icon: TableProperties },

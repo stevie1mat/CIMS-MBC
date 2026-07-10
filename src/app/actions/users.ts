@@ -1,8 +1,11 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { getUserRole } from './auth'
+import { Database } from '@/lib/supabase/types'
 
 export async function getUsers() {
   const role = await getUserRole()
@@ -38,6 +41,8 @@ export async function getUsers() {
     profileGroupsData = pgroups || []
   }
 
+  const hiddenTestAccounts = new Set(['mbc student', 'mbc teacher'])
+
   const formattedUsers = users?.map(u => {
     const userGroup = profileGroupsData.find(pg => pg.profile_id === u.id)
     return {
@@ -46,6 +51,9 @@ export async function getUsers() {
       role: (u.account_types as any)?.role || 'student',
       group_name: (userGroup?.groups as any)?.name || 'No Group'
     }
+  }).filter(u => {
+    const fullName = `${u.first_name || ''} ${u.last_name || ''}`.trim().toLowerCase()
+    return !hiddenTestAccounts.has(fullName)
   }) || []
 
   if (role === 'teacher') {
@@ -109,4 +117,73 @@ export async function updateUser(userId: string, formData: FormData) {
   revalidatePath('/dashboard/users')
   
   return { success: true }
+}
+
+export async function createUser(formData: FormData) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Unauthorized' }
+
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!serviceRoleKey) return { error: 'SUPABASE_SERVICE_ROLE_KEY is not configured.' }
+
+  const email = String(formData.get('email') || '').trim().toLowerCase()
+  const password = String(formData.get('password') || '')
+  const firstName = String(formData.get('first_name') || '').trim()
+  const lastName = String(formData.get('last_name') || '').trim()
+  const contactNo = String(formData.get('contact_no') || '').trim()
+  const accountTypeId = formData.get('account_type_id') ? Number(formData.get('account_type_id')) : null
+  const groupId = formData.get('group_id') ? Number(formData.get('group_id')) : null
+
+  if (!email || !password || !firstName || !lastName || !accountTypeId) {
+    return { error: 'Email, password, first name, last name, and account type are required.' }
+  }
+
+  const adminSupabase = createSupabaseClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    serviceRoleKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  )
+
+  const { data: authData, error: authError } = await adminSupabase.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: {
+      first_name: firstName,
+      last_name: lastName,
+    },
+  })
+
+  if (authError) return { error: authError.message }
+  const newUserId = authData.user?.id
+  if (!newUserId) return { error: 'User was created without an id.' }
+
+  const { error: profileError } = await adminSupabase
+    .from('profiles')
+    .upsert({
+      id: newUserId,
+      email,
+      first_name: firstName,
+      last_name: lastName,
+      contact_no: contactNo || null,
+      account_type_id: accountTypeId,
+    })
+
+  if (profileError) return { error: profileError.message }
+
+  if (groupId) {
+    const { error: groupError } = await adminSupabase
+      .from('profile_groups')
+      .insert({ profile_id: newUserId, group_id: groupId })
+
+    if (groupError) return { error: groupError.message }
+  }
+
+  revalidatePath('/dashboard/users')
+  redirect(`/dashboard/users/${newUserId}`)
 }

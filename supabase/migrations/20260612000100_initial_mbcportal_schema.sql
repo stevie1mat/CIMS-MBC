@@ -538,12 +538,6 @@ values
   (4, 'Group 3', 2500, 90, 'Extended access group')
 on conflict (legacy_gid) do nothing;
 
-insert into public.categories (legacy_cid, name)
-values
-  (1, 'General knowledge'),
-  (2, 'Math')
-on conflict (name) do nothing;
-
 insert into public.levels (legacy_lid, name)
 values
   (1, 'Easy'),

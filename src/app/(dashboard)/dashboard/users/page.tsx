@@ -3,7 +3,7 @@ import { getUserRole } from '@/app/actions/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import styles from '@/components/dashboard/dashboard.module.css'
-import { Eye } from 'lucide-react'
+import { Eye, UserPlus } from 'lucide-react'
 
 export const metadata = {
   title: 'User Management | MBC Portal',
@@ -50,6 +50,13 @@ export default async function UsersListPage({ searchParams }: any) {
           <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
             <h2 className={styles.panelTitle}>{isTeacher ? 'My Students' : 'User Management'}</h2>
             <div style={{ display: 'flex', gap: '12px' }}>
+              {isAdmin && (
+                <Link href="/dashboard/users/new">
+                  <button className={styles.btnPrimary} style={{ padding: '8px 14px', display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px' }}>
+                    <UserPlus size={15} /> New User
+                  </button>
+                </Link>
+              )}
               <input 
                 type="text" 
                 placeholder="Search users..." 

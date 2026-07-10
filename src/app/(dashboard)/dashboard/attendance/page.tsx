@@ -18,8 +18,14 @@ export default async function AttendancePage({ searchParams }: any) {
     redirect('/dashboard')
   }
 
+  const getISTDateString = () => {
+    const formatter = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' });
+    const parts = formatter.formatToParts(new Date());
+    return `${parts.find(p => p.type === 'year')?.value}-${parts.find(p => p.type === 'month')?.value}-${parts.find(p => p.type === 'day')?.value}`;
+  };
+
   const searchParamsObj = await searchParams;
-  const today = new Date().toISOString().split('T')[0];
+  const today = getISTDateString();
   const timeframe = (searchParamsObj?.timeframe as 'day' | 'week' | 'month') || 'day';
   const activeTab = searchParamsObj?.tab || 'all';
 
@@ -43,6 +49,7 @@ export default async function AttendancePage({ searchParams }: any) {
 
   const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {
+      timeZone: 'Asia/Kolkata',
       month: 'short',
       day: 'numeric',
       year: 'numeric',

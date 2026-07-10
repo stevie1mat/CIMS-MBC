@@ -22,44 +22,43 @@ export default function LoginForm() {
       )}
 
       <div className={styles.inputGroup}>
+        <label className={styles.inputLabel}>EMAIL</label>
         <input 
           type="email" 
           name="email"
-          placeholder="Email" 
+          placeholder="hello@example.com" 
           className={styles.input} 
           required 
           disabled={isPending}
         />
       </div>
       <div className={styles.inputGroup}>
-        <input 
-          type={showPassword ? "text" : "password"} 
-          name="password"
-          placeholder="Password" 
-          className={styles.input} 
-          required 
-          disabled={isPending}
-        />
-        <button 
-          type="button" 
-          onClick={togglePasswordVisibility} 
-          className={styles.eyeButton}
-          aria-label={showPassword ? "Hide password" : "Show password"}
-        >
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </button>
-      </div>
-
-      <div className={styles.rememberMeGroup}>
-        <label className={styles.toggleSwitch}>
-          <input type="checkbox" className={styles.toggleInput} name="remember" />
-          <span className={styles.toggleSlider}></span>
-        </label>
-        <span className={styles.rememberMeText}>Remember me</span>
+        <div className={styles.passwordHeader}>
+          <label className={styles.inputLabel}>PASSWORD</label>
+          <a href="#" className={styles.forgotPassword}>Forgot password?</a>
+        </div>
+        <div style={{ position: 'relative' }}>
+          <input 
+            type={showPassword ? "text" : "password"} 
+            name="password"
+            placeholder="••••••••" 
+            className={styles.input} 
+            required 
+            disabled={isPending}
+          />
+          <button 
+            type="button" 
+            onClick={togglePasswordVisibility} 
+            className={styles.eyeButton}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
       </div>
 
       <button type="submit" className={styles.submitBtn} disabled={isPending}>
-        {isPending ? 'SIGNING IN...' : 'SIGN IN'}
+        {isPending ? 'Signing in...' : 'Sign in'}
       </button>
     </form>
   )

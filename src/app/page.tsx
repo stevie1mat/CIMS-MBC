@@ -20,44 +20,54 @@ export default async function Login() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.background}>
-        <Image
-          src="/campus_bg.jpg"
-          alt="MBC Campus Background"
-          fill
-          priority
-          className={styles.bgImage}
-        />
-        <div className={styles.overlay}></div>
-      </div>
-
-      <div className={styles.loginCard}>
-        <div className={styles.verseBanner}>
-          <p>{verseText}</p>
-          <span className={styles.verseReference}>{verseRef}</span>
+      <div className={styles.leftPane}>
+        <div className={styles.background}>
+          <Image
+            src="/campus_bg.jpg"
+            alt="MBC Campus Background"
+            fill
+            priority
+            className={styles.bgImage}
+          />
+          <div className={styles.overlay}></div>
         </div>
 
-        <div className={styles.cardContent}>
-          <div className={styles.logoContainer}>
+        <div className={styles.logoContainer}>
+          <span className={styles.logoText}>CIMS MBC PORTAL</span>
+        </div>
+
+        <div className={styles.leftContent}>
+          <div className={styles.mainTextContainer}>
+            <h1 className={styles.heroTitle}>Equipping leaders<br/>for tomorrow.</h1>
+            <p className={styles.heroSubtitle}>
+              {verseText}
+            </p>
+            <p className={styles.heroReference}>{verseRef}</p>
+          </div>
+        </div>
+
+        <div className={styles.footer}>
+          <p>© {new Date().getFullYear()} MBC Mumbai. All rights reserved.</p>
+        </div>
+      </div>
+
+      <div className={styles.rightPane}>
+        <div className={styles.loginFormContainer}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
             <img
               src="https://mbcmumbai.com/wp-content/uploads/2021/08/WhatsApp_Image_2021-08-20_at_17.24.14-removebg-preview.png"
               alt="MBC Logo"
               width={120}
               height={120}
-              className={styles.logoImage}
+              style={{ objectFit: 'contain' }}
             />
-            <h1 className={styles.title}>MBC ADMIN PORTAL</h1>
           </div>
-
+          <h2 className={styles.welcomeTitle}>Welcome back</h2>
+          <p className={styles.welcomeSubtitle}>Enter your credentials to access your account</p>
+          
           <LoginForm />
         </div>
       </div>
-
-      <div className={styles.footer}>
-        <p>© MBC MUMBAI 2026</p>
-      </div>
-
-
     </div>
   );
 }
