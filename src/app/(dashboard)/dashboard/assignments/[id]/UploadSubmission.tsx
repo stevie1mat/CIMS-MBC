@@ -5,7 +5,7 @@ import { submitAssignment } from '@/app/actions/assignments'
 import styles from '@/components/dashboard/dashboard.module.css'
 import { UploadCloud, File } from 'lucide-react'
 
-export default function UploadSubmission({ assignmentId }) {
+export default function UploadSubmission({ assignmentId }: { assignmentId: string }) {
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
