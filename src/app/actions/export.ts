@@ -32,7 +32,8 @@ export async function sendAttemptsCsvEmail(quizId: string | number, quizName: st
     const csvString = XLSX.utils.sheet_to_csv(ws)
     const csvBuffer = Buffer.from(csvString, 'utf-8')
 
-    const targetEmail = await getSetting('csv_export_email') || 'mathewsteven1996@gmail.com'
+    const targetEmailRaw = await getSetting('csv_export_email')
+    const targetEmail = typeof targetEmailRaw === 'string' ? targetEmailRaw : 'mathewsteven1996@gmail.com'
 
     const { data, error } = await resend.emails.send({
       from: 'MBC Portal <onboarding@resend.dev>',
@@ -61,7 +62,8 @@ export async function sendAttemptsCsvEmail(quizId: string | number, quizName: st
 
 export async function sendAttemptNotificationEmail(quizName: string, studentName: string, studentEmail: string, score: number, percentage: number) {
   try {
-    const targetEmail = await getSetting('csv_export_email') || 'mathewsteven1996@gmail.com'
+    const targetEmailRaw = await getSetting('csv_export_email')
+    const targetEmail = typeof targetEmailRaw === 'string' ? targetEmailRaw : 'mathewsteven1996@gmail.com'
 
     const { error } = await resend.emails.send({
       from: 'MBC Portal <onboarding@resend.dev>',

@@ -39,7 +39,7 @@ export async function markAttendanceAndGetLink() {
   if (typeof linkRaw === 'string') {
     try { zoomLink = JSON.parse(linkRaw) } catch (e) { zoomLink = linkRaw }
   } else if (linkRaw) {
-    zoomLink = linkRaw as string
+    zoomLink = String(linkRaw)
   }
 
   return { success: true, link: zoomLink }
@@ -53,7 +53,7 @@ export async function getAttendanceByDate(date: string) {
     .from('attendance_records')
     .select(`
       id, recorded_at,
-      profiles ( email, first_name, last_name )
+      profiles ( email, first_name, last_name, avatar_path )
     `)
     .eq('session_date', date)
     .order('recorded_at', { ascending: true })

@@ -31,7 +31,7 @@ export async function getAllResults() {
     .select(`
       *,
       quizzes ( name, duration_minutes ),
-      profiles ( email, first_name, last_name )
+      profiles ( email, first_name, last_name, avatar_path )
     `)
     .neq('status', 'open')
     .order('ended_at', { ascending: false })
