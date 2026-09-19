@@ -45,7 +45,7 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
   const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0
 
   const now = new Date()
-  const hasExamEnded = quiz.ends_at ? new Date(quiz.ends_at) < now : false
+  const hasExamEnded = quiz.ends_at ? new Date(quiz.ends_at) < now : true // If no end date, it's open-ended, so allow immediately
   const canViewReview = isStaff || hasExamEnded
 
   return (
