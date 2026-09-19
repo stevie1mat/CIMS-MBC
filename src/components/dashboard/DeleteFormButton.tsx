@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useFormStatus } from 'react-dom'
 import { Trash2, AlertTriangle } from 'lucide-react'
 import styles from './dashboard.module.css'
@@ -14,6 +14,18 @@ export default function DeleteFormButton({
 }) {
   const { pending } = useFormStatus()
   const [showModal, setShowModal] = useState(false)
+  const [wasPending, setWasPending] = useState(false)
+
+  // Close modal automatically when the server action finishes
+  useEffect(() => {
+    if (pending) {
+      setWasPending(true)
+    }
+    if (!pending && wasPending) {
+      setShowModal(false)
+      setWasPending(false)
+    }
+  }, [pending, wasPending])
 
   return (
     <>
@@ -37,7 +49,7 @@ export default function DeleteFormButton({
         }}
       >
         <Trash2 size={14} /> 
-        {pending ? 'Removing...' : label}
+        {pending && !showModal ? 'Removing...' : label}
       </button>
 
       {showModal && (
@@ -83,7 +95,6 @@ export default function DeleteFormButton({
               <button 
                 type="submit" 
                 className={styles.btnPrimary}
-                onClick={() => { if(!pending) setShowModal(false) }}
                 style={{ flex: 1, padding: '12px', fontSize: '14px', borderRadius: '8px', backgroundColor: '#ef4444', borderColor: '#ef4444' }}
                 disabled={pending}
               >
