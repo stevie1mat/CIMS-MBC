@@ -45,10 +45,11 @@ export async function getUsers() {
 
   const formattedUsers = users?.map(u => {
     const userGroup = profileGroupsData.find(pg => pg.profile_id === u.id)
+    const rawRole = (u.account_types as any)?.role || 'student'
     return {
       ...u,
       account_type_name: (u.account_types as any)?.name || 'User',
-      role: (u.account_types as any)?.role || 'student',
+      role: rawRole === 'super_admin' ? 'admin' : rawRole,
       group_name: (userGroup?.groups as any)?.name || 'No Group'
     }
   }).filter(u => {
@@ -67,11 +68,11 @@ export async function getGroupsAndAccountTypes() {
   const supabase = await createClient()
   
   const { data: groups } = await supabase.from('groups').select('id, name')
-  const { data: accountTypes } = await supabase.from('account_types').select('id, name')
+  const { data: accountTypes } = await supabase.from('account_types').select('id, name, role')
   
   return {
     groups: groups || [],
-    accountTypes: accountTypes || []
+    accountTypes: (accountTypes || []).filter(at => at.role !== 'super_admin')
   }
 }
 
@@ -187,3 +188,29 @@ export async function createUser(formData: FormData) {
   revalidatePath('/dashboard/users')
   redirect(`/dashboard/users/${newUserId}`)
 }
+
+export async function deleteUser(userId: string) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Unauthorized' }
+
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!serviceRoleKey) return { error: 'SUPABASE_SERVICE_ROLE_KEY is not configured.' }
+
+  const adminSupabase = createSupabaseClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    serviceRoleKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  )
+
+  const { error } = await adminSupabase.auth.admin.deleteUser(userId)
+  if (error) return { error: error.message }
+
+  revalidatePath('/dashboard/users')
+  return { success: true }
+}
+

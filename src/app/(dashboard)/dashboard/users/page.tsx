@@ -5,6 +5,7 @@ import Link from 'next/link'
 import styles from '@/components/dashboard/dashboard.module.css'
 import { Eye, UserPlus } from 'lucide-react'
 import UserSearchInput from './UserSearchInput'
+import DeleteUserButton from './DeleteUserButton'
 
 export const metadata = {
   title: 'User Management | MBC Portal',
@@ -194,14 +195,19 @@ export default async function UsersListPage({ searchParams }: any) {
                         </span>
                       </td>
                       <td style={{ padding: '16px 28px', textAlign: 'right' }}>
-                        <Link href={`/dashboard/users/${u.id}`}>
-                          <button className={styles.btnOutline} style={{ 
-                            padding: '6px 12px', display: 'inline-flex', alignItems: 'center', gap: '6px', 
-                            fontSize: '12px', borderRadius: '100px'
-                          }}>
-                            <Eye size={14} /> View
-                          </button>
-                        </Link>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                          <Link href={`/dashboard/users/${u.id}`}>
+                            <button className={styles.btnOutline} style={{ 
+                              padding: '6px 12px', display: 'inline-flex', alignItems: 'center', gap: '6px', 
+                              fontSize: '12px', borderRadius: '100px'
+                            }}>
+                              <Eye size={14} /> View
+                            </button>
+                          </Link>
+                          {isAdmin && (
+                            <DeleteUserButton userId={u.id} userName={`${u.first_name || ''} ${u.last_name || ''}`.trim() || u.email || 'User'} />
+                          )}
+                        </div>
                       </td>
                     </tr>
                   )
