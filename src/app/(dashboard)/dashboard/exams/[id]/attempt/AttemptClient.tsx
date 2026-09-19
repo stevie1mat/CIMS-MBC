@@ -14,7 +14,8 @@ export default function AttemptClient({ quiz, attempt }) {
   const [error, setError] = useState('')
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-
+  const [isMapOpen, setIsMapOpen] = useState(false)
+  
   // Calculate remaining time
   useEffect(() => {
     const startedAt = new Date(attempt.started_at).getTime()
@@ -91,7 +92,10 @@ export default function AttemptClient({ quiz, attempt }) {
 
   const progressPercentage = (Object.keys(answers).length / questions.length) * 100
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '6rem', minHeight: 'calc(100vh - 100px)', display: 'flex', flexDirection: 'column' }}>
+    <div className={styles.examLayout}>
+      {/* Left Main Content */}
+      <div className={styles.examMain}>
+        <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', paddingBottom: '6rem' }}>
       {/* Sticky Header with Timer & Progress */}
       <div style={{ 
         position: 'sticky', 
@@ -281,6 +285,87 @@ export default function AttemptClient({ quiz, attempt }) {
           </div>
         </div>
       </div>
+        </div>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      <div 
+        className={`${styles.examSidebarOverlay} ${isMapOpen ? styles.examSidebarOverlayActive : ''}`} 
+        onClick={() => setIsMapOpen(false)} 
+      />
+
+      {/* Right Sidebar for Question Navigation */}
+      <div className={`${styles.examSidebar} ${isMapOpen ? styles.examSidebarOpen : ''}`}>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.5rem', marginTop: 0 }}>Questions Map</h3>
+        <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1.5rem', marginTop: 0 }}>Select a question to jump to it directly.</p>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.5rem' }}>
+          {questions.map((q: any, idx: number) => {
+            const isAnswered = answers.hasOwnProperty(q.id);
+            const isCurrent = currentQuestionIndex === idx;
+            
+            let bgColor = '#f1f5f9';
+            let textColor = '#64748b';
+            let border = '1px solid #e2e8f0';
+
+            if (isCurrent) {
+              border = '2px solid #3b82f6';
+            }
+            if (isAnswered) {
+              bgColor = '#dcfce7';
+              textColor = '#166534';
+              if (!isCurrent) border = '1px solid #bbf7d0';
+            }
+
+            return (
+              <button
+                key={q.id}
+                type="button"
+                onClick={() => {
+                  setCurrentQuestionIndex(idx)
+                  setIsMapOpen(false) // auto close on mobile after selection
+                }}
+                style={{
+                  aspectRatio: '1',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  backgroundColor: bgColor,
+                  color: textColor,
+                  border: border,
+                  transition: 'all 0.15s'
+                }}
+              >
+                {idx + 1}
+              </button>
+            )
+          })}
+        </div>
+        
+        <div style={{ marginTop: 'auto', paddingTop: '2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', fontSize: '0.85rem', color: '#475569' }}>
+            <span style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: '#dcfce7', border: '1px solid #bbf7d0' }}></span> Answered
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', fontSize: '0.85rem', color: '#475569' }}>
+            <span style={{ width: '12px', height: '12px', borderRadius: '4px', backgroundColor: '#f1f5f9', border: '1px solid #e2e8f0' }}></span> Unanswered
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#475569' }}>
+            <span style={{ width: '12px', height: '12px', borderRadius: '4px', border: '2px solid #3b82f6' }}></span> Current
+          </div>
+        </div>
+      </div>
+      
+      {/* Mobile Toggle Button */}
+      <button 
+        className={styles.examSidebarToggle} 
+        onClick={() => setIsMapOpen(true)}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+      </button>
     </div>
   )
 }

@@ -23,6 +23,14 @@ export default function DashboardLayoutWrapper({
     setIsSidebarOpen(false)
   }, [pathname])
 
+  if (pathname.endsWith('/attempt')) {
+    return (
+      <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', display: 'flex', flexDirection: 'column' }}>
+        {children}
+      </div>
+    )
+  }
+
   return (
     <div className={styles.dashboardContainer}>
       {/* Mobile overlay */}

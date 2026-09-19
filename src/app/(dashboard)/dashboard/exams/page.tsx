@@ -180,9 +180,16 @@ export default async function QuizzesPage() {
                           ) : (
                             <>
                               {isAdmin && (
-                                <Link href={`/dashboard/exams/${q.id}/edit`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Edit Exam">
-                                  <Edit size={14} /> Edit
-                                </Link>
+                                <>
+                                  <Link href={`/dashboard/exams/${q.id}/edit`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Edit Exam">
+                                    <Edit size={14} /> Edit
+                                  </Link>
+                                  {availability.label === 'Ended' && (
+                                    <Link href={`/dashboard/exams/${q.id}/attempts`} className={`${styles.actionButton}`} style={{ backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1' }} title="Export Results">
+                                      <TableProperties size={14} /> Export Results
+                                    </Link>
+                                  )}
+                                </>
                               )}
                             </>
                           )}

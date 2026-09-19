@@ -41,7 +41,7 @@ export default async function QuizAttemptsPage({ params }: QuizAttemptsPageProps
           <p style={{ color: '#64748b', margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>Attempts</p>
         </div>
         <Link href={`/dashboard/exams/${id}/edit`} style={{ textDecoration: 'none' }}>
-          <button className={styles.btnOutline} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <button className={styles.btnPrimary} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ArrowLeft size={18} /> Back to Exam
           </button>
         </Link>

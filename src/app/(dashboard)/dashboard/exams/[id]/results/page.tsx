@@ -138,7 +138,17 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
                          </span>
                       </td>
                       <td style={{ padding: '1rem', textAlign: 'right' }}>
-                        <DeleteAttemptButton attemptId={attempt.id} quizId={id} />
+                        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                          <Link 
+                            href={`/dashboard/results/${attempt.id}`}
+                            className={styles.actionButton}
+                            style={{ backgroundColor: '#f1f5f9', color: '#475569', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600 }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            View
+                          </Link>
+                          <DeleteAttemptButton attemptId={attempt.id} quizId={id} />
+                        </div>
                       </td>
                     </tr>
                   )

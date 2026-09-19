@@ -1765,5 +1765,89 @@
   border-bottom-right-radius: 12px;
   border-right: 1px solid #f1f5f9;
 }
+
+/* Exam Attempt Layout */
+.examLayout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  position: relative;
+}
+
+.examMain {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+}
+
+.examSidebar {
+  width: 320px;
+  background-color: #ffffff;
+  border-left: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+.examSidebarToggle {
+  display: none;
+}
+
+.examSidebarOverlay {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .examMain {
+    padding: 1rem;
+  }
+  .examSidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    transform: translateX(100%);
+    border-left: none;
+    box-shadow: -4px 0 25px rgba(0, 0, 0, 0.1);
+  }
+  .examSidebarOpen {
+    transform: translateX(0);
+  }
+  .examSidebarToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 2rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #10b981;
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    border: none;
+    z-index: 40;
+    cursor: pointer;
+  }
+  .examSidebarOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 45;
+  }
+  .examSidebarOverlayActive {
+    display: block;
+  }
+}
 .premiumTableRow:hover td:first-child { border-left-color: #e2e8f0; }
 .premiumTableRow:hover td:last-child { border-right-color: #e2e8f0; }

@@ -44,7 +44,9 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
   const incorrectCount = totalQuestions - correctCount
   const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0
 
-
+  const now = new Date()
+  const hasExamEnded = quiz.ends_at ? new Date(quiz.ends_at) < now : false
+  const canViewReview = isStaff || hasExamEnded
 
   return (
     <div style={{ width: '100%', paddingBottom: '4rem' }}>
@@ -149,169 +151,178 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
       </div>
 
       {/* Questions Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-          Question Review
-        </h2>
-        <div style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>
-          {totalQuestions} questions
-        </div>
-      </div>
-
-      {/* Questions Grid */}
-      <div className={styles.questionGrid}>
-        {questions.map((question, index) => {
-          const options = [...(question.question_options || [])].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
-          const userAnswerId = userAnswersMap[question.id]
-          const isUserCorrect = options.some(opt => opt.id === userAnswerId && opt.is_correct)
-          const isUnanswered = !userAnswerId
-
-          let cardBorderTop = '#e2e8f0'
-          if (!isUnanswered) {
-            cardBorderTop = isUserCorrect ? '#10b981' : '#ef4444'
-          }
-
-          return (
-            <div key={question.id} style={{
-              backgroundColor: '#ffffff',
-              borderRadius: '20px',
-              border: '1px solid #e2e8f0',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.04)',
-              overflow: 'hidden',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-            }}>
-              {/* Colored top accent */}
-              <div style={{ height: '4px', background: cardBorderTop }} />
-
-              <div style={{ padding: '1.75rem' }}>
-                {/* Question header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', gap: '1rem' }}>
-                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', flex: 1 }}>
-                    <div style={{
-                      width: '32px', height: '32px', borderRadius: '10px',
-                      background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontWeight: 800, fontSize: '0.85rem', color: '#475569', flexShrink: 0
-                    }}>
-                      {index + 1}
-                    </div>
-                    <h3 style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 600, margin: 0, lineHeight: 1.6 }}>
-                      {question.question_text}
-                    </h3>
-                  </div>
-                  {userAnswerId ? (
-                    isUserCorrect ? (
-                      <div style={{
-                        display: 'flex', alignItems: 'center', gap: '0.35rem',
-                        color: '#10b981', backgroundColor: '#ecfdf5',
-                        padding: '0.3rem 0.85rem', borderRadius: '9999px',
-                        fontSize: '0.8rem', fontWeight: 700, flexShrink: 0,
-                        border: '1px solid #a7f3d0'
-                      }}>
-                        <CheckCircle size={14} /> Correct
-                      </div>
-                    ) : (
-                      <div style={{
-                        display: 'flex', alignItems: 'center', gap: '0.35rem',
-                        color: '#ef4444', backgroundColor: '#fef2f2',
-                        padding: '0.3rem 0.85rem', borderRadius: '9999px',
-                        fontSize: '0.8rem', fontWeight: 700, flexShrink: 0,
-                        border: '1px solid #fecaca'
-                      }}>
-                        <XCircle size={14} /> Incorrect
-                      </div>
-                    )
-                  ) : (
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: '0.35rem',
-                      color: '#f59e0b', backgroundColor: '#fffbeb',
-                      padding: '0.3rem 0.85rem', borderRadius: '9999px',
-                      fontSize: '0.8rem', fontWeight: 700, flexShrink: 0,
-                      border: '1px solid #fde68a'
-                    }}>
-                      <AlertCircle size={14} /> Skipped
-                    </div>
-                  )}
-                </div>
-
-                {/* Options */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                  {options.map((opt, optIdx) => {
-                    const isSelected = userAnswerId === opt.id
-                    const isCorrect = opt.is_correct
-
-                    let bgColor = '#f8fafc'
-                    let borderColor = '#f1f5f9'
-                    let badgeBgColor = '#e2e8f0'
-                    let badgeColor = '#64748b'
-                    let textColor = '#475569'
-                    let fontWeight = 500
-
-                    if (isCorrect) {
-                      bgColor = '#ecfdf5'
-                      borderColor = '#86efac'
-                      badgeBgColor = '#10b981'
-                      badgeColor = '#ffffff'
-                      textColor = '#065f46'
-                      fontWeight = 600
-                    } else if (isSelected && !isCorrect) {
-                      bgColor = '#fef2f2'
-                      borderColor = '#fca5a5'
-                      badgeBgColor = '#ef4444'
-                      badgeColor = '#ffffff'
-                      textColor = '#991b1b'
-                      fontWeight = 600
-                    }
-
-                    return (
-                      <div
-                        key={opt.id}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '0.85rem 1rem',
-                          borderRadius: '12px',
-                          border: `1.5px solid ${borderColor}`,
-                          backgroundColor: bgColor,
-                          transition: 'all 0.15s ease'
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                          <div style={{
-                            width: '30px',
-                            height: '30px',
-                            borderRadius: '8px',
-                            backgroundColor: badgeBgColor,
-                            color: badgeColor,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            fontWeight: 700,
-                            fontSize: '0.8rem',
-                            flexShrink: 0
-                          }}>
-                            {letters[optIdx] || optIdx + 1}
-                          </div>
-                          <span style={{ fontSize: '0.95rem', color: textColor, fontWeight }}>
-                            {opt.option_text}
-                          </span>
-                        </div>
-
-                        {isCorrect && (
-                          <CheckCircle size={18} color="#10b981" style={{ flexShrink: 0 }} />
-                        )}
-                        {isSelected && !isCorrect && (
-                          <XCircle size={18} color="#ef4444" style={{ flexShrink: 0 }} />
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
+      {canViewReview ? (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', marginTop: '2rem' }}>
+            <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+              Question Review
+            </h2>
+            <div style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>
+              {totalQuestions} questions
             </div>
-          )
-        })}
-      </div>
+          </div>
+
+          {/* Questions Grid */}
+          <div className={styles.questionGrid}>
+            {questions.map((question, index) => {
+              const options = [...(question.question_options || [])].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
+              const userAnswerId = userAnswersMap[question.id]
+              const isUserCorrect = options.some(opt => opt.id === userAnswerId && opt.is_correct)
+              const isUnanswered = !userAnswerId
+
+              let cardBorderTop = '#e2e8f0'
+              if (!isUnanswered) {
+                cardBorderTop = isUserCorrect ? '#10b981' : '#ef4444'
+              }
+
+              return (
+                <div key={question.id} style={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: '20px',
+                  border: '1px solid #e2e8f0',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.04)',
+                  overflow: 'hidden',
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                }}>
+                  {/* Colored top accent */}
+                  <div style={{ height: '4px', background: cardBorderTop }} />
+
+                  <div style={{ padding: '1.75rem' }}>
+                    {/* Question header */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', gap: '1rem' }}>
+                      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', flex: 1 }}>
+                        <div style={{
+                          width: '32px', height: '32px', borderRadius: '10px',
+                          background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontWeight: 800, fontSize: '0.85rem', color: '#475569', flexShrink: 0
+                        }}>
+                          {index + 1}
+                        </div>
+                        <h3 style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 600, margin: 0, lineHeight: 1.6 }}>
+                          {question.question_text}
+                        </h3>
+                      </div>
+                      {userAnswerId ? (
+                        isUserCorrect ? (
+                          <div style={{
+                            display: 'flex', alignItems: 'center', gap: '0.35rem',
+                            color: '#10b981', backgroundColor: '#ecfdf5',
+                            padding: '0.3rem 0.85rem', borderRadius: '9999px',
+                            fontSize: '0.8rem', fontWeight: 700, flexShrink: 0,
+                            border: '1px solid #a7f3d0'
+                          }}>
+                            <CheckCircle size={14} /> Correct
+                          </div>
+                        ) : (
+                          <div style={{
+                            display: 'flex', alignItems: 'center', gap: '0.35rem',
+                            color: '#ef4444', backgroundColor: '#fef2f2',
+                            padding: '0.3rem 0.85rem', borderRadius: '9999px',
+                            fontSize: '0.8rem', fontWeight: 700, flexShrink: 0,
+                            border: '1px solid #fecaca'
+                          }}>
+                            <XCircle size={14} /> Incorrect
+                          </div>
+                        )
+                      ) : (
+                        <div style={{
+                          display: 'flex', alignItems: 'center', gap: '0.35rem',
+                          color: '#f59e0b', backgroundColor: '#fffbeb',
+                          padding: '0.3rem 0.85rem', borderRadius: '9999px',
+                          fontSize: '0.8rem', fontWeight: 700, flexShrink: 0,
+                          border: '1px solid #fde68a'
+                        }}>
+                          <AlertCircle size={14} /> Skipped
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Options */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                      {options.map((opt, optIdx) => {
+                        const isSelected = userAnswerId === opt.id
+                        const isCorrect = opt.is_correct
+
+                        let bgColor = '#f8fafc'
+                        let borderColor = '#f1f5f9'
+                        let badgeBgColor = '#e2e8f0'
+                        let badgeColor = '#64748b'
+                        let textColor = '#475569'
+                        let fontWeight = 500
+
+                        if (isCorrect) {
+                          bgColor = '#ecfdf5'
+                          borderColor = '#86efac'
+                          badgeBgColor = '#10b981'
+                          badgeColor = '#ffffff'
+                          textColor = '#065f46'
+                          fontWeight = 600
+                        } else if (isSelected && !isCorrect) {
+                          bgColor = '#fef2f2'
+                          borderColor = '#fca5a5'
+                          badgeBgColor = '#ef4444'
+                          badgeColor = '#ffffff'
+                          textColor = '#991b1b'
+                          fontWeight = 600
+                        }
+
+                        return (
+                          <div
+                            key={opt.id}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '0.85rem 1rem',
+                              borderRadius: '12px',
+                              border: `1.5px solid ${borderColor}`,
+                              backgroundColor: bgColor,
+                              transition: 'all 0.15s ease'
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                              <div style={{
+                                width: '30px',
+                                height: '30px',
+                                borderRadius: '8px',
+                                backgroundColor: badgeBgColor,
+                                color: badgeColor,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                fontWeight: 700,
+                                fontSize: '0.8rem',
+                                flexShrink: 0
+                              }}>
+                                {letters[optIdx] || optIdx + 1}
+                              </div>
+                              <span style={{ fontSize: '0.95rem', color: textColor, fontWeight }}>
+                                {opt.option_text}
+                              </span>
+                            </div>
+
+                            {isCorrect && (
+                              <CheckCircle size={18} color="#10b981" style={{ flexShrink: 0 }} />
+                            )}
+                            {isSelected && !isCorrect && (
+                              <XCircle size={18} color="#ef4444" style={{ flexShrink: 0 }} />
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </>
+      ) : (
+        <div style={{ marginTop: '3rem', padding: '3rem 2rem', backgroundColor: '#f8fafc', borderRadius: '16px', textAlign: 'center', border: '1px solid #e2e8f0' }}>
+          <AlertCircle size={48} color="#94a3b8" style={{ margin: '0 auto 1rem auto' }} />
+          <h3 style={{ color: '#0f172a', fontWeight: 700, fontSize: '1.35rem', margin: 0 }}>Full marksheet will be available soon</h3>
+        </div>
+      )}
     </div>
   )
 }
