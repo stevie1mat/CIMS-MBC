@@ -82,7 +82,7 @@ export async function getAttemptDetails(id: number) {
     .select(`
       *,
       quizzes (
-        id, name, duration_minutes,
+        id, name, duration_minutes, ends_at, view_answer,
         questions (
           id, question_text, question_type,
           question_options (
