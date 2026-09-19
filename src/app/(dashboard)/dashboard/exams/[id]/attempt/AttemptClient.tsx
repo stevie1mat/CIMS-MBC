@@ -258,20 +258,24 @@ export default function AttemptClient({ quiz, attempt }) {
             {isLastQuestion && (
               <button 
                 type="button" 
-                onClick={() => handleSubmit(new Event('submit'))}
+                onClick={() => {
+                  if (window.confirm('Are you sure you want to submit the exam?')) {
+                    handleSubmit(new Event('submit') as any)
+                  }
+                }}
                 disabled={isSubmitting}
                 style={{ 
                   padding: '0.75rem 1.5rem', 
                   backgroundColor: '#ffffff', 
-                  color: '#ef4444', 
-                  border: '1px solid #fca5a5',
+                  color: '#10b981', 
+                  border: '1px solid #6ee7b7',
                   borderRadius: '12px', 
                   fontWeight: 600, 
                   cursor: isSubmitting ? 'not-allowed' : 'pointer',
                   transition: 'all 0.2s'
                 }}
               >
-                {isSubmitting ? 'Ending...' : 'End Exam?'}
+                {isSubmitting ? 'Submitting...' : 'Submit Exam'}
               </button>
             )}
           </div>

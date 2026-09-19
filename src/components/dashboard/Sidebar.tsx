@@ -11,7 +11,6 @@ const ROLE_MENUS: Record<string, any[]> = {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Users', path: '/dashboard/users', icon: Users },
     { name: 'Subjects', path: '/dashboard/subjects', icon: BookOpen },
-    { name: 'Question Bank', path: '/dashboard/questions', icon: BookOpen },
     { name: 'Exams', path: '/dashboard/exams', icon: FileText },
     { name: 'Reports', path: '/dashboard/reports', icon: TableProperties },
     { name: 'Attendance', path: '/dashboard/attendance', icon: Users },

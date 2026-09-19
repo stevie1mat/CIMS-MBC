@@ -6,13 +6,26 @@ import { CalendarClock } from 'lucide-react'
 import { scheduleQuizLive } from '@/app/actions/quizzes'
 import styles from '@/components/dashboard/dashboard.module.css'
 
-export default function ScheduleQuizForm({ quizzes }) {
+export default function ScheduleQuizForm({ quizzes, defaultQuizId = "" }: { quizzes: any[], defaultQuizId?: string }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
-  const handleSubmit = async (event) => {
+  const defaultQuiz = quizzes.find(q => q.id.toString() === defaultQuizId) || quizzes[0]
+  
+  const formatDateForInput = (dateString?: string) => {
+    if (!dateString) return ''
+    const d = new Date(dateString)
+    if (isNaN(d.getTime())) return ''
+    // format to YYYY-MM-DDThh:mm in local time
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+  }
+
+  const defaultStartsAt = formatDateForInput(defaultQuiz?.starts_at)
+  const defaultEndsAt = formatDateForInput(defaultQuiz?.ends_at)
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setLoading(true)
     setMessage('')
@@ -26,7 +39,7 @@ export default function ScheduleQuizForm({ quizzes }) {
         setMessage('Exam schedule updated for all students.')
         router.refresh()
       }
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message || 'Failed to schedule exam')
     } finally {
       setLoading(false)
@@ -46,24 +59,27 @@ export default function ScheduleQuizForm({ quizzes }) {
       </div>
 
       <div className={styles.scheduleGrid}>
-        <label className={`${styles.formField} ${styles.scheduleField}`}>
-          <span>Exam</span>
-          <select name="quiz_id" className={`${styles.input} ${styles.scheduleInput}`} required defaultValue="">
-            <option value="" disabled>Select an exam</option>
-            {quizzes.map((quiz) => (
-              <option key={quiz.id} value={quiz.id}>{quiz.name}</option>
-            ))}
-          </select>
-        </label>
-
+        {quizzes.length > 1 ? (
+          <label className={`${styles.formField} ${styles.scheduleField}`}>
+            <span>Exam</span>
+            <select name="quiz_id" className={`${styles.input} ${styles.scheduleInput}`} required defaultValue={defaultQuizId}>
+              <option value="" disabled>Select an exam</option>
+              {quizzes.map((quiz) => (
+                <option key={quiz.id} value={quiz.id}>{quiz.name}</option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <input type="hidden" name="quiz_id" value={quizzes[0]?.id || defaultQuizId} />
+        )}
         <label className={`${styles.formField} ${styles.scheduleField}`}>
           <span>Available From</span>
-          <input type="datetime-local" name="starts_at" className={`${styles.input} ${styles.scheduleInput}`} required />
+          <input type="datetime-local" name="starts_at" className={`${styles.input} ${styles.scheduleInput}`} required defaultValue={defaultStartsAt} />
         </label>
 
         <label className={`${styles.formField} ${styles.scheduleField}`}>
           <span>Available Until</span>
-          <input type="datetime-local" name="ends_at" className={`${styles.input} ${styles.scheduleInput}`} />
+          <input type="datetime-local" name="ends_at" className={`${styles.input} ${styles.scheduleInput}`} defaultValue={defaultEndsAt} />
         </label>
 
         <button type="submit" className={styles.btnPrimary} disabled={loading}>

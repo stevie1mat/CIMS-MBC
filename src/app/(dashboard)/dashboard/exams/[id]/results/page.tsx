@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { ArrowLeft, Users, CheckCircle, Percent } from 'lucide-react'
 import MetricCard from '@/components/dashboard/MetricCard'
 import styles from '@/components/dashboard/dashboard.module.css'
+import ExportButtons from '../attempts/ExportButtons'
+import DeleteAttemptButton from '../attempts/DeleteAttemptButton'
 
 export const metadata = {
   title: 'Exam Marksheet | MBC Portal',
@@ -53,13 +55,13 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>Marksheet</h1>
-          <p style={{ color: '#64748b', margin: 0, fontWeight: 500 }}>{quiz.name}</p>
+          <h1 style={{ fontSize: '2rem', margin: '0 0 0.25rem 0', color: '#0f172a' }}>{quiz.name}</h1>
+          <p style={{ color: '#64748b', margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>Marksheet</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Link href="/dashboard/exams">
+          <Link href={`/dashboard/exams/${id}/edit`} style={{ textDecoration: 'none' }}>
             <button className={styles.btnPrimary} style={{ padding: '0.6rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-              <ArrowLeft size={18} /> Back to Exams
+              <ArrowLeft size={18} /> Back to Exam
             </button>
           </Link>
         </div>
@@ -69,8 +71,9 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
 
       {/* Marksheet Table */}
       <div className={styles.panel}>
-        <div className={styles.panelHeader}>
+        <div className={styles.panelHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 className={styles.panelTitle}>Student Results</h3>
+          <ExportButtons quiz={quiz} attempts={attempts} />
         </div>
         <div className={styles.panelBody} style={{ padding: 0, overflowX: 'auto' }}>
           <table className={styles.table}>
@@ -82,12 +85,13 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600, textAlign: 'center' }}>Score</th>
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600, textAlign: 'center' }}>Percentage</th>
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600, textAlign: 'center' }}>Status</th>
+                <th style={{ padding: '1rem', color: '#475569', fontWeight: 600, textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {attempts?.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No attempts yet.</p>
                     <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>Students haven't taken this exam.</p>
                   </td>
@@ -132,6 +136,9 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
                          <span className={`${styles.statusBadge} ${attempt.status === 'completed' ? styles.statusBadgeSuccess : styles.statusBadgeWarning}`}>
                            {attempt.status || 'in_progress'}
                          </span>
+                      </td>
+                      <td style={{ padding: '1rem', textAlign: 'right' }}>
+                        <DeleteAttemptButton attemptId={attempt.id} quizId={id} />
                       </td>
                     </tr>
                   )

@@ -1644,6 +1644,33 @@
   .quizDetailLayout {
     grid-template-columns: 1fr;
   }
+  .bannerContainer {
+    height: 160px;
+    margin-bottom: 24px;
+  }
+  .profileCardWrapper {
+    margin-top: -40px;
+    padding: 0 16px;
+  }
+  .profileCard {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 16px;
+    gap: 16px;
+  }
+  .profileInfo {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .profileActions {
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+  }
+  .profileActions > * {
+    flex: 1;
+    min-width: 0; /* allows buttons to shrink evenly */
+  }
 }
 
 .mobileMenuBtn {

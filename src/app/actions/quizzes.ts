@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
 export async function getQuizzes() {
   const supabase = await createClient()
@@ -23,6 +24,8 @@ export async function createQuiz(formData: FormData) {
   const duration_minutes = parseInt(formData.get('duration_minutes') as string || '10', 10)
   const pass_percentage = parseFloat(formData.get('pass_percentage') as string || '50')
   const maximum_attempts = parseInt(formData.get('maximum_attempts') as string || '1', 10)
+  const student_subject = formData.get('student_subject') as string || null
+  const student_teacher = formData.get('student_teacher') as string || null
   
   const { data: quiz, error } = await supabase
     .from('quizzes')
@@ -32,6 +35,8 @@ export async function createQuiz(formData: FormData) {
       duration_minutes,
       pass_percentage,
       maximum_attempts,
+      student_subject,
+      student_teacher,
     }])
     .select()
     .single()
@@ -145,9 +150,10 @@ export async function getQuiz(id: number | string): Promise<any> {
         is_correct
       )
     )
-  `).eq('id', Number(id)).single()
+  `).eq('id', Number(id)).maybeSingle()
   
   if (error) throw new Error(error.message)
+  if (!data) redirect('/dashboard/exams')
   ;(data as any).quiz_questions = (data as any).questions || []
   return data
 }

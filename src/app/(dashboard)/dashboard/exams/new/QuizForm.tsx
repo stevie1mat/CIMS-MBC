@@ -82,6 +82,28 @@ export default function QuizForm() {
         </div>
       </div>
 
+      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ flex: '1 1 200px' }}>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Subject</label>
+          <input 
+            type="text" 
+            name="student_subject" 
+            className={styles.input} 
+            placeholder="Enter subject name"
+          />
+        </div>
+        
+        <div style={{ flex: '1 1 200px' }}>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Teacher</label>
+          <input 
+            type="text" 
+            name="student_teacher" 
+            className={styles.input} 
+            placeholder="Enter teacher name"
+          />
+        </div>
+      </div>
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
         <button type="submit" className={styles.btnPrimary} disabled={loading}>
           {loading ? 'Creating...' : 'Create & Add Questions'}

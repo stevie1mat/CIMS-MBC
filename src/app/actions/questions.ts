@@ -190,3 +190,66 @@ export async function deleteQuestion(id: number | string, quizId?: number | stri
   }
   return { success: true }
 }
+
+export async function bulkDeleteQuestions(ids: (number | string)[], quizId?: number | string) {
+  const supabase = await createClient()
+  
+  // supabase .in() requires an array of values
+  const { error } = await supabase.from('questions').delete().in('id', ids.map(id => Number(id)))
+  
+  if (error) return { error: error.message }
+  if (quizId) {
+    revalidatePath(`/dashboard/exams/${quizId}/manage`)
+  }
+  return { success: true }
+}
+
+
+export async function updateQuestion(
+  quizId: number | string,
+  questionId: number,
+  questionText: string,
+  questionType: string,
+  description: string,
+  options: { id?: number; text: string; isCorrect: boolean }[]
+) {
+  const supabase = await createClient()
+  
+  // 1. Update the question record
+  const { error: qError } = await supabase
+    .from('questions')
+    .update({ 
+      question_text: questionText,
+      question_type: questionType,
+      description: description
+    })
+    .eq('id', questionId)
+
+  if (qError) return { error: qError.message }
+
+  // 2. We'll simply delete old options and insert new ones to avoid complex diff logic
+  const { error: delError } = await supabase
+    .from('question_options')
+    .delete()
+    .eq('question_id', questionId)
+    
+  if (delError) return { error: delError.message }
+
+  // 3. Insert new options
+  const optionsToInsert = options.map(opt => ({
+    question_id: questionId,
+    option_text: opt.text,
+    is_correct: opt.isCorrect
+  }))
+
+  if (optionsToInsert.length > 0) {
+    const { error: optError } = await supabase
+      .from('question_options')
+      .insert(optionsToInsert)
+      
+    if (optError) return { error: optError.message }
+  }
+
+  revalidatePath(`/dashboard/exams/${quizId}/manage`)
+  return { success: true }
+}

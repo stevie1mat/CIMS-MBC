@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { updateQuiz } from '@/app/actions/quizzes'
+import { updateQuiz, deleteQuiz } from '@/app/actions/quizzes'
 import styles from '@/components/dashboard/dashboard.module.css'
 import { Clock, FileText, Info } from 'lucide-react'
+import DeleteQuizButton from '@/components/dashboard/DeleteQuizButton'
 
-export default function EditQuizForm({ quiz }) {
+export default function EditQuizForm({ quiz, isAdmin }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -47,7 +48,7 @@ export default function EditQuizForm({ quiz }) {
           <FileText size={20} />
           <div>
             <h4>Basic Details</h4>
-            <p>The quiz name shown across the portal.</p>
+            <p>The exam name shown across the portal.</p>
           </div>
         </div>
 
@@ -62,7 +63,7 @@ export default function EditQuizForm({ quiz }) {
           <Clock size={20} />
           <div>
             <h4>Attempt Settings</h4>
-            <p>Set the time limit and allowed attempts for this quiz.</p>
+            <p>Set the time limit and allowed attempts for this exam.</p>
           </div>
         </div>
 
@@ -84,7 +85,7 @@ export default function EditQuizForm({ quiz }) {
           <Info size={20} />
           <div>
             <h4>Student Page Content</h4>
-            <p>This is the exact content students see before starting the quiz.</p>
+            <p>This is the exact content students see before starting the exam.</p>
           </div>
         </div>
 
@@ -94,7 +95,8 @@ export default function EditQuizForm({ quiz }) {
             <input
               name="student_subject"
               className={styles.input}
-              defaultValue={quiz.student_subject || 'Leading with Integrity'}
+              defaultValue={quiz.student_subject || ''}
+              placeholder="Enter subject name"
             />
           </label>
 
@@ -103,7 +105,8 @@ export default function EditQuizForm({ quiz }) {
             <input
               name="student_teacher"
               className={styles.input}
-              defaultValue={quiz.student_teacher || 'Pr. Benji Mathew'}
+              defaultValue={quiz.student_teacher || ''}
+              placeholder="Enter teacher name"
             />
           </label>
         </div>
@@ -113,7 +116,8 @@ export default function EditQuizForm({ quiz }) {
           <input
             name="exam_instructions_title"
             className={styles.input}
-            defaultValue={quiz.exam_instructions_title || 'Instructions For The Exam'}
+            defaultValue={quiz.exam_instructions_title || ''}
+            placeholder="Enter instructions heading"
           />
         </label>
 
@@ -124,7 +128,8 @@ export default function EditQuizForm({ quiz }) {
               name="exam_time_text"
               className={styles.input}
               rows={2}
-              defaultValue={quiz.exam_time_text || `The Exam duration is ${quiz.duration_minutes || 10} Mins.`}
+              defaultValue={quiz.exam_time_text || ''}
+              placeholder="Enter time details for students"
             />
           </label>
 
@@ -134,7 +139,8 @@ export default function EditQuizForm({ quiz }) {
               name="exam_questions_text"
               className={styles.input}
               rows={2}
-              defaultValue={quiz.exam_questions_text || `You have to attempt all questions. ${defaultAttemptsText}`}
+              defaultValue={quiz.exam_questions_text || ''}
+              placeholder="Enter questions info for students"
             />
           </label>
         </div>
@@ -145,17 +151,23 @@ export default function EditQuizForm({ quiz }) {
             name="exam_result_text"
             className={styles.input}
             rows={2}
-            defaultValue={quiz.exam_result_text || 'Your result(score) will be displayed to you as soon as the exam is submitted.'}
+            defaultValue={quiz.exam_result_text || ''}
+            placeholder="Enter result info for students"
           />
         </label>
       </section>
 
-      <div className={styles.formActions}>
+      <div className={styles.formActions} style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '2rem' }}>
+        {isAdmin && (
+          <div style={{ marginRight: 'auto' }}>
+            <DeleteQuizButton quizId={quiz.id} deleteAction={deleteQuiz} />
+          </div>
+        )}
         <button type="button" className={styles.btnOutline} onClick={() => router.push('/dashboard/exams')}>
           Cancel
         </button>
         <button type="submit" className={styles.btnPrimary} disabled={loading}>
-          {loading ? 'Saving...' : 'Save Quiz'}
+          {loading ? 'Saving...' : 'Save Exam'}
         </button>
       </div>
     </form>

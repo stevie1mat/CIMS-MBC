@@ -2,11 +2,9 @@
 
 import { useState } from 'react'
 import * as XLSX from 'xlsx'
-import { Download, Mail } from 'lucide-react'
-import { sendAttemptsCsvEmail } from '@/app/actions/export'
+import { Download } from 'lucide-react'
 
 export default function ExportButtons({ quiz, attempts }) {
-  const [isEmailing, setIsEmailing] = useState(false)
 
   const formatData = () => {
     return attempts.map(attempt => ({
@@ -27,21 +25,7 @@ export default function ExportButtons({ quiz, attempts }) {
     XLSX.writeFile(wb, `${quiz.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_attempts.csv`, { bookType: 'csv' })
   }
 
-  const handleEmail = async () => {
-    setIsEmailing(true)
-    try {
-      const res = await sendAttemptsCsvEmail(quiz.id, quiz.name, attempts)
-      if (res.error) {
-        alert(`Error: ${res.error}`)
-      } else {
-        alert(res.message || 'Email sent successfully!')
-      }
-    } catch (e) {
-      alert('An unexpected error occurred.')
-    } finally {
-      setIsEmailing(false)
-    }
-  }
+
 
   return (
     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
@@ -67,29 +51,7 @@ export default function ExportButtons({ quiz, attempts }) {
         Download CSV
       </button>
 
-      <button 
-        onClick={handleEmail}
-        disabled={isEmailing}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '0.35rem',
-          padding: '0.5rem 1rem',
-          backgroundColor: '#f0f9ff',
-          color: '#0369a1',
-          border: '1px solid #bae6fd',
-          borderRadius: '8px',
-          fontWeight: 600,
-          fontSize: '0.875rem',
-          cursor: isEmailing ? 'not-allowed' : 'pointer',
-          opacity: isEmailing ? 0.7 : 1,
-          transition: 'all 0.2s',
-        }}
-        title="Email CSV to Default Address"
-      >
-        <Mail size={16} />
-        {isEmailing ? 'Sending...' : 'Email CSV'}
-      </button>
+
     </div>
   )
 }

@@ -35,14 +35,8 @@ export default async function QuestionsPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>Question Bank</h1>
-          <p style={{ color: '#64748b', margin: 0 }}>Manage the central repository of questions across all quizzes.</p>
+          <p style={{ color: '#64748b', margin: 0 }}>Manage the central repository of questions across all exams.</p>
         </div>
-        
-        <Link href="/dashboard/questions/upload">
-          <button className={styles.btnPrimary} style={{ padding: '0.6rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-            <UploadCloud size={18} /> Bulk Upload Questions
-          </button>
-        </Link>
       </div>
 
       {/* Metric Row */}
@@ -64,7 +58,7 @@ export default async function QuestionsPage() {
       {/* Main Table */}
       <div className={styles.panel}>
         <div className={styles.panelHeader}>
-          <h3 className={styles.panelTitle}>Questions by Quiz</h3>
+          <h3 className={styles.panelTitle}>Questions by Exam</h3>
         </div>
         
         <div style={{ overflowX: 'auto' }}>
@@ -81,7 +75,7 @@ export default async function QuestionsPage() {
                 <tr>
                   <td colSpan={3} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <Database size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
-                    <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No quizzes found</p>
+                    <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No exams found</p>
                     <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>Create an Exam first before you can upload questions to it.</p>
                   </td>
                 </tr>

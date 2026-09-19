@@ -87,7 +87,7 @@ export default async function QuizzesPage() {
         </div>
         
         {isAdmin && (
-          <Link href="/dashboard/exams/new">
+          <Link href="/dashboard/exams/new" style={{ textDecoration: 'none' }}>
             <button className={styles.btnPrimary} style={{ padding: '0.6rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
               <Plus size={18} /> Create Exam
             </button>
@@ -97,11 +97,7 @@ export default async function QuizzesPage() {
 
 
 
-      {isAdmin && (
-        <div className={styles.schedulePanel}>
-          <ScheduleQuizForm quizzes={quizzes} />
-        </div>
-      )}
+
 
       {/* Main Table */}
       <div className={styles.panel}>
@@ -117,7 +113,7 @@ export default async function QuizzesPage() {
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Duration</th>
                 {isStaff && <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Availability</th>}
                 <th style={{ padding: '1rem', color: '#475569', fontWeight: 600 }}>Questions</th>
-                <th style={{ padding: '1rem', color: '#475569', fontWeight: 600, width: '360px', textAlign: 'center' }}>Actions</th>
+                <th style={{ padding: '1rem', color: '#475569', fontWeight: 600, width: '120px', textAlign: 'center' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -184,20 +180,9 @@ export default async function QuizzesPage() {
                           ) : (
                             <>
                               {isAdmin && (
-                                <>
-                                  <Link href={`/dashboard/exams/${q.id}/edit`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Edit Exam">
-                                    <Edit size={14} /> Edit
-                                  </Link>
-                                  <Link href={`/dashboard/exams/${q.id}/manage`} className={styles.actionButton} title="Manage Questions">
-                                    <List size={14} /> Questions
-                                  </Link>
-                                </>
-                              )}
-                              <Link href={`/dashboard/exams/${q.id}/results`} className={`${styles.actionButton} ${styles.actionButtonSuccess}`} style={{ backgroundColor: '#10b981', color: 'white', border: 'none' }} title="View Marksheet">
-                                <TableProperties size={14} /> Marksheet
-                              </Link>
-                              {isAdmin && (
-                                <DeleteQuizButton quizId={q.id} deleteAction={deleteQuiz} />
+                                <Link href={`/dashboard/exams/${q.id}/edit`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Edit Exam">
+                                  <Edit size={14} /> Edit
+                                </Link>
                               )}
                             </>
                           )}
