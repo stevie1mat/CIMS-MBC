@@ -3,6 +3,7 @@ import { BookOpen, Link2, Trash2 } from 'lucide-react'
 import { getUserRole } from '@/app/actions/auth'
 import { assignSubjectTeacher, createSubject, deleteSubject, getSubjectsPageData, removeSubjectTeacher } from '@/app/actions/subjects'
 import styles from '@/components/dashboard/dashboard.module.css'
+import DeleteFormButton from '@/components/dashboard/DeleteFormButton'
 
 export const metadata = {
   title: 'Subjects | MBC Portal',
@@ -131,9 +132,7 @@ export default async function SubjectsPage() {
                     <td style={{ textAlign: 'right' }}>
                       <form action={deleteSubjectAction}>
                         <input type="hidden" name="subject_id" value={subject.id} />
-                        <button type="submit" className={`${styles.actionButton} ${styles.actionButtonDanger}`}>
-                          <Trash2 size={14} /> Remove
-                        </button>
+                        <DeleteFormButton message={`Are you sure you want to completely remove the subject "${subject.name}"? This action cannot be undone.`} />
                       </form>
                     </td>
                   </tr>
@@ -177,9 +176,7 @@ export default async function SubjectsPage() {
                       <td style={{ textAlign: 'right' }}>
                         <form action={removeSubjectTeacherAction}>
                           <input type="hidden" name="assignment_id" value={assignment.id} />
-                          <button type="submit" className={`${styles.actionButton} ${styles.actionButtonDanger}`}>
-                            <Trash2 size={14} /> Remove
-                          </button>
+                          <DeleteFormButton message={`Are you sure you want to unassign this teacher from "${subject?.name || 'this subject'}"?`} />
                         </form>
                       </td>
                     </tr>
