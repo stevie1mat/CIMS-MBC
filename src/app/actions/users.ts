@@ -72,7 +72,12 @@ export async function getGroupsAndAccountTypes() {
   
   return {
     groups: groups || [],
-    accountTypes: (accountTypes || []).filter(at => at.role !== 'super_admin')
+    accountTypes: (accountTypes || [])
+      .filter(at => at.role !== 'super_admin')
+      .map(at => ({
+        ...at,
+        name: at.name === 'User' ? 'Student' : at.name
+      }))
   }
 }
 
