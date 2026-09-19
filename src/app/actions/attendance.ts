@@ -104,7 +104,7 @@ export async function getAttendanceData(date: string, timeframe: 'day' | 'week' 
     .from('attendance_records')
     .select(`
       id, recorded_at, session_date,
-      profiles ( email, first_name, last_name, avatar_path, account_types(role) )
+      profiles ( id, email, first_name, last_name, avatar_path, account_types(role) )
     `)
     .gte('session_date', startDate)
     .lte('session_date', endDate)
@@ -128,6 +128,22 @@ export async function getMyAttendance() {
 
   if (error) {
     console.error("Error fetching my attendance:", error)
+    return []
+  }
+  return data || []
+}
+
+export async function getUserAttendance(userId: string) {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('attendance_records')
+    .select('id, recorded_at, session_date')
+    .eq('profile_id', userId)
+    .order('session_date', { ascending: false })
+
+  if (error) {
+    console.error("Error fetching user attendance:", error)
     return []
   }
   return data || []

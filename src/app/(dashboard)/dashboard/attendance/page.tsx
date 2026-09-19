@@ -3,7 +3,7 @@ import { getUserRole } from '@/app/actions/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import styles from '@/components/dashboard/dashboard.module.css'
-import { Calendar, Search, Users, Clock, CheckCircle } from 'lucide-react'
+import { Calendar, Search, Users, Clock, CheckCircle, Eye } from 'lucide-react'
 import MetricCard from '@/components/dashboard/MetricCard'
 import AttendanceFilter from './AttendanceFilter'
 import crypto from 'crypto'
@@ -113,7 +113,7 @@ export default async function AttendancePage({ searchParams }: any) {
                 <th style={{ padding: '1rem 28px', color: '#475569', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase' }}>Email Address</th>
                 <th style={{ padding: '1rem 28px', color: '#475569', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase' }}>Role</th>
                 <th style={{ padding: '1rem 28px', color: '#475569', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase' }}>Time Joined</th>
-                <th style={{ padding: '1rem 28px', color: '#475569', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase' }}>Status</th>
+                <th style={{ padding: '1rem 28px', color: '#475569', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -169,18 +169,15 @@ export default async function AttendancePage({ searchParams }: any) {
                           {formatDateTime(record.recorded_at)}
                         </div>
                       </td>
-                      <td style={{ padding: '1rem 28px' }}>
-                        <span style={{
-                          padding: '0.35rem 0.75rem',
-                          borderRadius: '9999px',
-                          fontSize: '0.85rem',
-                          fontWeight: 600,
-                          backgroundColor: '#dcfce7',
-                          color: '#166534',
-                          display: 'inline-block'
-                        }}>
-                          Present
-                        </span>
+                      <td style={{ padding: '1rem 28px', textAlign: 'right' }}>
+                        <Link href={`/dashboard/users/${record.profiles?.id}`}>
+                          <button className={styles.btnOutline} style={{ 
+                            padding: '6px 12px', display: 'inline-flex', alignItems: 'center', gap: '6px', 
+                            fontSize: '12px', borderRadius: '100px'
+                          }}>
+                            <Eye size={14} /> View
+                          </button>
+                        </Link>
                       </td>
                     </tr>
                   )

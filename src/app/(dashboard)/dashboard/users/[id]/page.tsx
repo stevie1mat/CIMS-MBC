@@ -7,6 +7,7 @@ import {
   getTeacherExamSummary,
   getUserExamResults
 } from '@/app/actions/profile'
+import { getUserAttendance } from '@/app/actions/attendance'
 import { getGroupsAndAccountTypes } from '@/app/actions/users'
 import { getUserRole } from '@/app/actions/auth'
 import { redirect } from 'next/navigation'
@@ -56,6 +57,7 @@ export default async function AdminUserProfilePage({ params }: UserPageProps) {
   const paymentHistory = await getPaymentHistory(id)
   const studentExamResults = await getUserExamResults(id)
   const teacherExamSummary = profile.account_types?.role === 'teacher' ? await getTeacherExamSummary(id) : []
+  const attendanceRecords = await getUserAttendance(id)
   const { groups, accountTypes } = isAdmin ? await getGroupsAndAccountTypes() : { groups: [], accountTypes: [] }
 
   const emailHash = crypto.createHash('md5').update(profile.email?.toLowerCase() || '').digest('hex')
@@ -187,6 +189,70 @@ export default async function AdminUserProfilePage({ params }: UserPageProps) {
             </div>
           </div>
         )}
+      </div>
+
+      <div className={styles.panel} style={{ marginBottom: '2rem' }}>
+        <div className={styles.panelHeader}>
+          <div>
+            <h3 className={styles.panelTitle}>Attendance History</h3>
+            <p style={{ margin: '0.25rem 0 0 0', color: '#64748b', fontSize: '0.9rem' }}>
+              Check-in records for this user.
+            </p>
+          </div>
+        </div>
+        <div style={{ overflowX: 'auto', maxHeight: '400px' }}>
+          <table className={styles.table}>
+            <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8fafc', zIndex: 1 }}>
+              <tr>
+                <th>Date</th>
+                <th>Time Joined</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {attendanceRecords.length === 0 ? (
+                <tr>
+                  <td colSpan={3} style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>
+                    No attendance records found for this user.
+                  </td>
+                </tr>
+              ) : (
+                attendanceRecords.map((record: any) => (
+                  <tr key={record.id} className={styles.tableRow}>
+                    <td>
+                      <strong>
+                        {new Date(record.session_date + 'T12:00:00Z').toLocaleDateString('en-GB', {
+                          weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+                        })}
+                      </strong>
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#475569' }}>
+                        <Clock size={16} />
+                        {formatDateTime(record.recorded_at)}
+                      </div>
+                    </td>
+                    <td>
+                      <span style={{
+                        padding: '0.25rem 0.75rem',
+                        borderRadius: '9999px',
+                        fontSize: '0.85rem',
+                        fontWeight: 600,
+                        backgroundColor: '#dcfce7',
+                        color: '#166534',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.25rem'
+                      }}>
+                        <CheckCircle size={14} /> Present
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {profile.account_types?.role === 'student' && (
