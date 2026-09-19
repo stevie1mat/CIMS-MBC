@@ -5,10 +5,15 @@ import { createQuiz } from '@/app/actions/quizzes'
 import { useRouter } from 'next/navigation'
 import styles from '@/components/dashboard/dashboard.module.css'
 
-export default function QuizForm() {
+export default function QuizForm({ subjects = [], assignments = [] }: { subjects?: any[], assignments?: any[] }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [selectedSubject, setSelectedSubject] = useState('')
+
+  const availableTeachers = assignments
+    .filter(a => a.category_id.toString() === selectedSubject && a.profiles)
+    .map(a => a.profiles)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -16,6 +21,11 @@ export default function QuizForm() {
     setError('')
 
     const formData = new FormData(e.currentTarget)
+    // Map the ID back to the subject name for backwards compatibility with the quizzes table
+    const subject = subjects.find(s => s.id.toString() === formData.get('student_subject'))
+    if (subject) {
+      formData.set('student_subject', subject.name)
+    }
 
     try {
       const result = await createQuiz(formData)
@@ -85,27 +95,50 @@ export default function QuizForm() {
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ flex: '1 1 200px' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Subject</label>
-          <input 
-            type="text" 
+          <select 
             name="student_subject" 
             className={styles.input} 
-            placeholder="Enter subject name"
-          />
+            required
+            value={selectedSubject}
+            onChange={(e) => setSelectedSubject(e.target.value)}
+          >
+            <option value="">Select subject</option>
+            {subjects.map(s => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </select>
         </div>
         
         <div style={{ flex: '1 1 200px' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Teacher</label>
-          <input 
-            type="text" 
+          <select 
             name="student_teacher" 
             className={styles.input} 
-            placeholder="Enter teacher name"
-          />
+            required
+            disabled={!selectedSubject || availableTeachers.length === 0}
+          >
+            <option value="">
+              {!selectedSubject 
+                ? 'Select a subject first' 
+                : availableTeachers.length === 0 
+                  ? 'No teachers assigned' 
+                  : 'Select teacher'}
+            </option>
+            {availableTeachers.map(t => (
+              <option key={t.id} value={`${t.first_name || ''} ${t.last_name || ''}`.trim()}>
+                {t.first_name} {t.last_name} ({t.email})
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
-        <button type="submit" className={styles.btnPrimary} disabled={loading}>
+        <button 
+          type="submit" 
+          className={styles.btnPrimary}
+          disabled={loading}
+        >
           {loading ? 'Creating...' : 'Create & Add Questions'}
         </button>
       </div>

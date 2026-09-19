@@ -15,7 +15,7 @@ export default async function AdminView({ user }: { user: any }) {
     supabase.from('assignments').select('*', { count: 'exact', head: true })
   ]);
 
-  const { data: allProfiles } = await supabase.from('profiles').select('status, account_types(role)');
+  const { data: allProfiles } = await supabase.from('profiles').select('status, first_name, last_name, account_types(role)');
   
   let activeUsers = 0;
   let inactiveUsers = 0;
@@ -23,7 +23,12 @@ export default async function AdminView({ user }: { user: any }) {
   let teacherCount = 0;
   let adminCount = 0;
 
+  const hiddenTestAccounts = new Set(['mbc student', 'mbc teacher']);
+
   allProfiles?.forEach(p => {
+    const fullName = `${p.first_name || ''} ${p.last_name || ''}`.trim().toLowerCase();
+    if (hiddenTestAccounts.has(fullName)) return;
+
     if (p.status === 'active') activeUsers++;
     else inactiveUsers++;
 

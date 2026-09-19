@@ -2,12 +2,25 @@ import QuizForm from './QuizForm'
 import styles from '@/components/dashboard/dashboard.module.css'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
 
 export const metadata = {
   title: 'Create Exam | MBC Portal',
 }
 
-export default function NewQuizPage() {
+export default async function NewQuizPage() {
+  const supabase = await createClient()
+  
+  const [{ data: subjects }, { data: assignments }] = await Promise.all([
+    supabase.from('categories').select('id, name').order('name'),
+    supabase
+      .from('subject_teachers' as any)
+      .select(`
+        category_id,
+        profiles ( id, first_name, last_name, email )
+      `)
+  ])
+
   return (
     <div>
       <div className={styles.panelHeader} style={{ marginBottom: '1rem' }}>
@@ -21,7 +34,10 @@ export default function NewQuizPage() {
 
       <div className={styles.panel}>
         <div className={styles.panelBody} style={{ paddingTop: '24px' }}>
-          <QuizForm />
+          <QuizForm 
+            subjects={subjects || []} 
+            assignments={assignments || []} 
+          />
         </div>
       </div>
     </div>
