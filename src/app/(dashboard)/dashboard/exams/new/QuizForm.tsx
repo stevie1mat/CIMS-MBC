@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createQuiz } from '@/app/actions/quizzes'
 import { useRouter } from 'next/navigation'
 import styles from '@/components/dashboard/dashboard.module.css'
@@ -10,10 +10,20 @@ export default function QuizForm({ subjects = [], assignments = [] }: { subjects
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [selectedSubject, setSelectedSubject] = useState('')
+  const [selectedTeacher, setSelectedTeacher] = useState('')
 
   const availableTeachers = assignments
     .filter(a => a.category_id.toString() === selectedSubject && a.profiles)
     .map(a => a.profiles)
+
+  useEffect(() => {
+    if (availableTeachers.length === 1) {
+      const t = availableTeachers[0];
+      setSelectedTeacher(`${t.first_name || ''} ${t.last_name || ''}`.trim());
+    } else {
+      setSelectedTeacher('');
+    }
+  }, [selectedSubject])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -116,6 +126,8 @@ export default function QuizForm({ subjects = [], assignments = [] }: { subjects
             className={styles.input} 
             required
             disabled={!selectedSubject || availableTeachers.length === 0}
+            value={selectedTeacher}
+            onChange={(e) => setSelectedTeacher(e.target.value)}
           >
             <option value="">
               {!selectedSubject 
