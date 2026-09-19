@@ -41,7 +41,7 @@ export default async function Login() {
         <div className={`${styles.floatingIcon} ${styles.icon6}`}><Calendar size={40} /></div>
 
         <div className={styles.logoContainer}>
-          <span className={styles.logoText}>CIMS MBC PORTAL</span>
+          <span className={styles.logoText}>MBC CIMS PORTAL</span>
         </div>
 
         <div className={styles.leftContent}>

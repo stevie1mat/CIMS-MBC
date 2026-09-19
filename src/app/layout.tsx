@@ -13,8 +13,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata = {
-  title: "MBC Student Portal",
-  description: "MBC Student Portal Login",
+  title: "MBC CIMS PORTAL",
+  description: "MBC CIMS PORTAL",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
