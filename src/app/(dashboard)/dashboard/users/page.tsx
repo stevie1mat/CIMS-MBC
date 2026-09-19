@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import styles from '@/components/dashboard/dashboard.module.css'
 import { Eye, UserPlus } from 'lucide-react'
+import UserSearchInput from './UserSearchInput'
 
 export const metadata = {
   title: 'User Management | MBC Portal',
@@ -20,16 +21,57 @@ export default async function UsersListPage({ searchParams }: any) {
   // Handle Next.js 15+ searchParams Promise safely
   const resolvedParams = await searchParams;
   const activeTab = isTeacher ? 'students' : (resolvedParams?.tab || 'all');
+  const searchQuery = (resolvedParams?.query || '').toLowerCase();
 
   const allUsers = await getUsers()
   
-  // Filter users based on active tab
-  const users = allUsers.filter(u => {
-    if (activeTab === 'students') return u.role === 'student'
-    if (activeTab === 'teachers') return u.role === 'teacher'
-    if (activeTab === 'admins') return u.role === 'admin'
-    return true
+  // Calculate counts for each category
+  const studentCount = allUsers.filter(u => u.role === 'student').length
+  const teacherCount = allUsers.filter(u => u.role === 'teacher').length
+  const adminCount = allUsers.filter(u => u.role === 'admin').length
+  const allCount = allUsers.length
+
+  const sortBy = resolvedParams?.sort || 'name';
+  const sortOrder = resolvedParams?.order || 'asc';
+
+  // Filter users based on active tab and search query
+  let users = allUsers.filter(u => {
+    // Tab filter
+    let tabMatch = true
+    if (activeTab === 'students') tabMatch = u.role === 'student'
+    else if (activeTab === 'teachers') tabMatch = u.role === 'teacher'
+    else if (activeTab === 'admins') tabMatch = u.role === 'admin'
+
+    // Search filter
+    let searchMatch = true
+    if (searchQuery) {
+      const fullName = `${u.first_name || ''} ${u.last_name || ''}`.toLowerCase()
+      const email = (u.email || '').toLowerCase()
+      searchMatch = fullName.includes(searchQuery) || email.includes(searchQuery)
+    }
+
+    return tabMatch && searchMatch
   })
+
+  // Sort users
+  users = users.sort((a, b) => {
+    let aVal = '', bVal = '';
+    if (sortBy === 'role') {
+      aVal = a.role || '';
+      bVal = b.role || '';
+    } else if (sortBy === 'email') {
+      aVal = a.email || '';
+      bVal = b.email || '';
+    } else {
+      // Default to name
+      aVal = `${a.first_name || ''} ${a.last_name || ''}`.toLowerCase();
+      bVal = `${b.first_name || ''} ${b.last_name || ''}`.toLowerCase();
+    }
+    
+    if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
+    return 0;
+  });
 
   const getTabStyle = (tabId: string) => ({
     padding: '16px 20px',
@@ -42,6 +84,30 @@ export default async function UsersListPage({ searchParams }: any) {
     textDecoration: 'none',
     transition: 'all 0.2s ease',
   });
+
+  const getHeaderLink = (column: string, label: string) => {
+    const isSorted = sortBy === column;
+    const nextOrder = isSorted && sortOrder === 'asc' ? 'desc' : 'asc';
+    return (
+      <Link 
+        href={`/dashboard/users?tab=${activeTab}&sort=${column}&order=${nextOrder}${searchQuery ? `&query=${searchQuery}` : ''}`}
+        style={{ 
+          color: '#64748b', 
+          textDecoration: 'none', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '4px' 
+        }}
+      >
+        {label}
+        {isSorted && (
+          <span style={{ fontSize: '10px' }}>
+            {sortOrder === 'asc' ? '▲' : '▼'}
+          </span>
+        )}
+      </Link>
+    );
+  };
 
   return (
     <div>
@@ -57,20 +123,15 @@ export default async function UsersListPage({ searchParams }: any) {
                   </button>
                 </Link>
               )}
-              <input 
-                type="text" 
-                placeholder="Search users..." 
-                className={styles.input} 
-                style={{ width: '250px', padding: '8px 16px', fontSize: '13px' }}
-              />
+              <UserSearchInput />
             </div>
           </div>
           
           <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #f1f5f9', width: '100%' }}>
-            {isAdmin && <Link href="/dashboard/users?tab=all" style={getTabStyle('all')}>All Users</Link>}
-            <Link href="/dashboard/users?tab=students" style={getTabStyle('students')}>Students</Link>
-            {isAdmin && <Link href="/dashboard/users?tab=teachers" style={getTabStyle('teachers')}>Teachers</Link>}
-            {isAdmin && <Link href="/dashboard/users?tab=admins" style={getTabStyle('admins')}>Admins</Link>}
+            {isAdmin && <Link href="/dashboard/users?tab=all" style={getTabStyle('all')}>All Users ({allCount})</Link>}
+            <Link href="/dashboard/users?tab=students" style={getTabStyle('students')}>Students ({studentCount})</Link>
+            {isAdmin && <Link href="/dashboard/users?tab=teachers" style={getTabStyle('teachers')}>Teachers ({teacherCount})</Link>}
+            {isAdmin && <Link href="/dashboard/users?tab=admins" style={getTabStyle('admins')}>Admins ({adminCount})</Link>}
           </div>
         </div>
         
@@ -78,9 +139,15 @@ export default async function UsersListPage({ searchParams }: any) {
           <table className={styles.table} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ backgroundColor: '#fcfcfc', borderBottom: '1px solid #e2e8f0' }}>
-                <th style={{ padding: '16px 28px', color: '#64748b', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>User</th>
-                <th style={{ padding: '16px 28px', color: '#64748b', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Email</th>
-                <th style={{ padding: '16px 28px', color: '#64748b', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Role</th>
+                <th style={{ padding: '16px 28px', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  {getHeaderLink('name', 'User')}
+                </th>
+                <th style={{ padding: '16px 28px', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  {getHeaderLink('email', 'Email')}
+                </th>
+                <th style={{ padding: '16px 28px', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  {getHeaderLink('role', 'Role')}
+                </th>
                 <th style={{ padding: '16px 28px', color: '#64748b', fontWeight: 600, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
