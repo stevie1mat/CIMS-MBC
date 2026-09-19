@@ -46,7 +46,7 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
 
   const now = new Date()
   const hasExamEnded = quiz.ends_at ? new Date(quiz.ends_at) < now : true // If no end date, it's open-ended, so allow immediately
-  const canViewReview = isStaff || hasExamEnded
+  const canViewReview = isStaff || (quiz.view_answer !== false && hasExamEnded)
 
   return (
     <div style={{ width: '100%', paddingBottom: '4rem' }}>
@@ -320,7 +320,14 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
       ) : (
         <div style={{ marginTop: '3rem', padding: '3rem 2rem', backgroundColor: '#f8fafc', borderRadius: '16px', textAlign: 'center', border: '1px solid #e2e8f0' }}>
           <AlertCircle size={48} color="#94a3b8" style={{ margin: '0 auto 1rem auto' }} />
-          <h3 style={{ color: '#0f172a', fontWeight: 700, fontSize: '1.35rem', margin: 0 }}>Full marksheet will be available soon</h3>
+          {quiz.view_answer === false ? (
+            <h3 style={{ color: '#0f172a', fontWeight: 700, fontSize: '1.35rem', margin: 0 }}>Marksheet is not published for this exam</h3>
+          ) : (
+            <>
+              <h3 style={{ color: '#0f172a', fontWeight: 700, fontSize: '1.35rem', margin: '0 0 0.5rem 0' }}>Full marksheet will be available soon</h3>
+              <p style={{ margin: 0, color: '#64748b' }}>The detailed answers will be revealed once the scheduled end time for this exam has passed.</p>
+            </>
+          )}
         </div>
       )}
     </div>

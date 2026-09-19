@@ -40,7 +40,7 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
         email
       )
     `)
-    .eq('quiz_id', id)
+    .eq('quiz_id', Number(id))
     .order('created_at', { ascending: false })
 
   // Calculate metrics
