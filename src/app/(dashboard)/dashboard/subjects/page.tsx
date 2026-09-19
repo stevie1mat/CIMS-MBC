@@ -108,75 +108,60 @@ export default async function SubjectsPage() {
 
       <div className={styles.panel}>
         <div className={styles.panelHeader}>
-          <h3 className={styles.panelTitle}>Subjects</h3>
+          <h3 className={styles.panelTitle}>All Subjects</h3>
         </div>
         <div style={{ overflowX: 'auto' }}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Subject</th>
+                <th>Subject Name</th>
+                <th>Assigned Teacher(s)</th>
                 <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {subjects.length === 0 ? (
                 <tr>
-                  <td colSpan={2} style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>
+                  <td colSpan={3} style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>
                     No subjects added yet.
                   </td>
                 </tr>
               ) : (
-                subjects.map((subject: any) => (
-                  <tr key={subject.id} className={styles.tableRow}>
-                    <td><strong>{subject.name}</strong></td>
-                    <td style={{ textAlign: 'right' }}>
-                      <form action={deleteSubjectAction}>
-                        <input type="hidden" name="subject_id" value={subject.id} />
-                        <DeleteFormButton message={`Are you sure you want to completely remove the subject "${subject.name}"? This action cannot be undone.`} />
-                      </form>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className={styles.panel} style={{ marginTop: '1.5rem' }}>
-        <div className={styles.panelHeader}>
-          <h3 className={styles.panelTitle}>Subjects Assigned to Teachers</h3>
-        </div>
-        <div style={{ overflowX: 'auto' }}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Teacher</th>
-                <th>Email</th>
-                <th style={{ textAlign: 'right' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assignments.length === 0 ? (
-                <tr>
-                  <td colSpan={4} style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>
-                    No teacher assignments yet.
-                  </td>
-                </tr>
-              ) : (
-                assignments.map((assignment: any) => {
-                  const subject = assignment.categories
-                  const teacher = assignment.profiles
+                subjects.map((subject: any) => {
+                  const subjectAssignments = assignments.filter((a: any) => a.category_id === subject.id);
+                  
                   return (
-                    <tr key={assignment.id} className={styles.tableRow}>
-                      <td><strong>{subject?.name || 'Unknown Subject'}</strong></td>
-                      <td>{`${teacher?.first_name || ''} ${teacher?.last_name || ''}`.trim() || 'Unknown Teacher'}</td>
-                      <td>{teacher?.email || 'N/A'}</td>
-                      <td style={{ textAlign: 'right' }}>
-                        <form action={removeSubjectTeacherAction}>
-                          <input type="hidden" name="assignment_id" value={assignment.id} />
-                          <DeleteFormButton message={`Are you sure you want to unassign this teacher from "${subject?.name || 'this subject'}"?`} />
+                    <tr key={subject.id} className={styles.tableRow}>
+                      <td style={{ verticalAlign: 'top', paddingTop: '16px' }}><strong>{subject.name}</strong></td>
+                      <td style={{ verticalAlign: 'top', paddingTop: '12px', paddingBottom: '12px' }}>
+                        {subjectAssignments.length === 0 ? (
+                          <span style={{ color: '#94a3b8', fontStyle: 'italic', display: 'inline-block', marginTop: '4px' }}>Unassigned</span>
+                        ) : (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            {subjectAssignments.map((a: any) => {
+                              const teacher = a.profiles;
+                              const teacherName = `${teacher?.first_name || ''} ${teacher?.last_name || ''}`.trim() || 'Unknown Teacher';
+                              return (
+                                <div key={a.id} style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '6px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', width: 'fit-content' }}>
+                                  <span style={{ fontSize: '14px', fontWeight: 500 }}>{teacherName}</span>
+                                  <form action={removeSubjectTeacherAction} style={{ margin: 0, padding: 0, display: 'flex' }}>
+                                    <input type="hidden" name="assignment_id" value={a.id} />
+                                    <DeleteFormButton 
+                                      variant="text" 
+                                      label="Unassign" 
+                                      message={`Are you sure you want to unassign ${teacherName} from the subject "${subject.name}"?`} 
+                                    />
+                                  </form>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        )}
+                      </td>
+                      <td style={{ textAlign: 'right', verticalAlign: 'top', paddingTop: '16px' }}>
+                        <form action={deleteSubjectAction}>
+                          <input type="hidden" name="subject_id" value={subject.id} />
+                          <DeleteFormButton message={`Are you sure you want to completely remove the subject "${subject.name}"? This action cannot be undone.`} />
                         </form>
                       </td>
                     </tr>

@@ -7,10 +7,12 @@ import styles from './dashboard.module.css'
 
 export default function DeleteFormButton({ 
   message = "Are you sure you want to remove this item?",
-  label = "Remove"
+  label = "Remove",
+  variant = "outline"
 }: { 
   message?: string,
-  label?: string
+  label?: string,
+  variant?: 'outline' | 'text'
 }) {
   const { pending } = useFormStatus()
   const [showModal, setShowModal] = useState(false)
@@ -27,29 +29,40 @@ export default function DeleteFormButton({
     }
   }, [pending, wasPending])
 
+  const buttonStyle = variant === 'outline' ? {
+    padding: '6px 12px', 
+    display: 'inline-flex', 
+    alignItems: 'center', 
+    gap: '6px', 
+    fontSize: '12px', 
+    borderRadius: '100px',
+    color: '#ef4444',
+    borderColor: '#fca5a5',
+    backgroundColor: '#fef2f2',
+    opacity: pending ? 0.7 : 1,
+    cursor: pending ? 'not-allowed' : 'pointer'
+  } : {
+    color: '#ef4444', 
+    background: 'none', 
+    border: 'none', 
+    cursor: pending ? 'not-allowed' : 'pointer', 
+    fontSize: '12px', 
+    textDecoration: 'underline', 
+    padding: 0,
+    opacity: pending ? 0.7 : 1,
+  };
+
   return (
     <>
       <button 
         type="button" 
         disabled={pending}
         onClick={() => setShowModal(true)}
-        className={styles.btnOutline} 
-        style={{ 
-          padding: '6px 12px', 
-          display: 'inline-flex', 
-          alignItems: 'center', 
-          gap: '6px', 
-          fontSize: '12px', 
-          borderRadius: '100px',
-          color: '#ef4444',
-          borderColor: '#fca5a5',
-          backgroundColor: '#fef2f2',
-          opacity: pending ? 0.7 : 1,
-          cursor: pending ? 'not-allowed' : 'pointer'
-        }}
+        className={variant === 'outline' ? styles.btnOutline : ''} 
+        style={buttonStyle}
       >
-        <Trash2 size={14} /> 
-        {pending && !showModal ? 'Removing...' : label}
+        {variant === 'outline' && <Trash2 size={14} />}
+        {pending && !showModal ? (variant === 'text' ? '...' : 'Removing...') : label}
       </button>
 
       {showModal && (
