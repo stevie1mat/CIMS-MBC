@@ -69,7 +69,7 @@ export async function deleteAttempt(id: number, quiz_id?: string | number) {
   
   revalidatePath('/dashboard/reports')
   if (quiz_id) {
-    revalidatePath(`/dashboard/quizzes/${quiz_id}/attempts`)
+    revalidatePath(`/dashboard/exams/${quiz_id}/attempts`)
   }
   return { success: true }
 }

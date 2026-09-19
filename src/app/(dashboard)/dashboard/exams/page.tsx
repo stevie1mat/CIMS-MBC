@@ -31,7 +31,7 @@ export default async function QuizzesPage() {
   // For students, immediately redirect to the live exam or show a simple empty state
   if (!isStaff) {
     if (liveQuizzes.length > 0) {
-      redirect(`/dashboard/quizzes/${liveQuizzes[0].id}`)
+      redirect(`/dashboard/exams/${liveQuizzes[0].id}`)
     }
 
     return (
@@ -82,12 +82,12 @@ export default async function QuizzesPage() {
         <div>
           <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>{isStaff ? 'Manage Exams' : 'Available Exams'}</h1>
           <p style={{ color: '#64748b', margin: 0 }}>
-            {isStaff ? 'Create and manage all test and assignment quizzes.' : 'Take an exam to test your knowledge.'}
+            {isStaff ? 'Create and manage all exams.' : 'Take an exam to test your knowledge.'}
           </p>
         </div>
         
         {isAdmin && (
-          <Link href="/dashboard/quizzes/new">
+          <Link href="/dashboard/exams/new">
             <button className={styles.btnPrimary} style={{ padding: '0.6rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
               <Plus size={18} /> Create Exam
             </button>
@@ -142,7 +142,7 @@ export default async function QuizzesPage() {
                             <FileText size={17} color="#3b82f6" />
                           </div>
                           <div>
-                            <Link href={isAdmin ? `/dashboard/quizzes/${q.id}/edit` : `/dashboard/quizzes/${q.id}`} style={{ textDecoration: 'none' }}>
+                            <Link href={isAdmin ? `/dashboard/exams/${q.id}/edit` : `/dashboard/exams/${q.id}`} style={{ textDecoration: 'none' }}>
                               <strong style={{ color: '#0f172a', display: 'block', marginBottom: '2px' }}>{q.name}</strong>
                             </Link>
                             {q.description && <p className={styles.quizDescription}>{q.description}</p>}
@@ -178,22 +178,22 @@ export default async function QuizzesPage() {
                       <td style={{ padding: '1rem' }}>
                         <div className={styles.tableActions}>
                           {!isStaff ? (
-                            <Link href={`/dashboard/quizzes/${q.id}`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Attempt">
+                            <Link href={`/dashboard/exams/${q.id}`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Attempt">
                               <PlayCircle size={14} /> Attempt
                             </Link>
                           ) : (
                             <>
                               {isAdmin && (
                                 <>
-                                  <Link href={`/dashboard/quizzes/${q.id}/edit`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Edit Exam">
+                                  <Link href={`/dashboard/exams/${q.id}/edit`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Edit Exam">
                                     <Edit size={14} /> Edit
                                   </Link>
-                                  <Link href={`/dashboard/quizzes/${q.id}/manage`} className={styles.actionButton} title="Manage Questions">
+                                  <Link href={`/dashboard/exams/${q.id}/manage`} className={styles.actionButton} title="Manage Questions">
                                     <List size={14} /> Questions
                                   </Link>
                                 </>
                               )}
-                              <Link href={`/dashboard/quizzes/${q.id}/results`} className={`${styles.actionButton} ${styles.actionButtonSuccess}`} style={{ backgroundColor: '#10b981', color: 'white', border: 'none' }} title="View Marksheet">
+                              <Link href={`/dashboard/exams/${q.id}/results`} className={`${styles.actionButton} ${styles.actionButtonSuccess}`} style={{ backgroundColor: '#10b981', color: 'white', border: 'none' }} title="View Marksheet">
                                 <TableProperties size={14} /> Marksheet
                               </Link>
                               {isAdmin && (

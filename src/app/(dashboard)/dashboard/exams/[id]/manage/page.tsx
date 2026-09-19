@@ -33,7 +33,7 @@ export default async function ManageQuizQuestionsPage({ params }: ManageQuizQues
               <UploadCloud size={18} /> Bulk Upload More
             </button>
           </Link>
-          <Link href="/dashboard/quizzes">
+          <Link href="/dashboard/exams">
             <button className={styles.btnOutline} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <ArrowLeft size={18} /> Back to Exams
             </button>

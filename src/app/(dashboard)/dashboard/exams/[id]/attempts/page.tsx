@@ -9,7 +9,7 @@ import DeleteAttemptButton from './DeleteAttemptButton'
 import ExportButtons from './ExportButtons'
 
 export const metadata = {
-  title: 'Quiz Attempts | MBC Portal',
+  title: 'Exam Attempts | MBC Portal',
 }
 
 type QuizAttemptsPageProps = {
@@ -31,7 +31,7 @@ export default async function QuizAttemptsPage({ params }: QuizAttemptsPageProps
     getQuizAttempts(id)
   ])
 
-  if (!quiz) redirect('/dashboard/quizzes')
+  if (!quiz) redirect('/dashboard/exams')
 
   return (
     <div style={{ paddingBottom: '2rem' }}>
@@ -40,9 +40,9 @@ export default async function QuizAttemptsPage({ params }: QuizAttemptsPageProps
           <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>Attempts</h1>
           <p style={{ color: '#64748b', margin: 0 }}>{quiz.name}</p>
         </div>
-        <Link href={`/dashboard/quizzes/${id}/edit`}>
+        <Link href={`/dashboard/exams/${id}/edit`}>
           <button className={styles.btnOutline} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ArrowLeft size={18} /> Back to Quiz
+            <ArrowLeft size={18} /> Back to Exam
           </button>
         </Link>
       </div>
@@ -118,7 +118,7 @@ export default async function QuizAttemptsPage({ params }: QuizAttemptsPageProps
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
                               }}
-                              title="View Answers"
+                              title="Show Marksheet"
                             >
                               <Eye size={16} /> View
                             </button>

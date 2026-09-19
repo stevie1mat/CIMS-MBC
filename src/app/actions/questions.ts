@@ -139,7 +139,7 @@ export async function uploadQuestions(quizId: number | string, formData: FormDat
       processedCount++
     }
 
-    revalidatePath(`/dashboard/quizzes/${quizId}/manage`)
+    revalidatePath(`/dashboard/exams/${quizId}/manage`)
     if (processedCount === 0 && failedRows.length > 0) {
       return { error: `No questions were uploaded. First error on row ${failedRows[0].row}: ${failedRows[0].message}` }
     }
@@ -186,7 +186,7 @@ export async function deleteQuestion(id: number | string, quizId?: number | stri
   const { error } = await supabase.from('questions').delete().eq('id', Number(id))
   if (error) return { error: error.message }
   if (quizId) {
-    revalidatePath(`/dashboard/quizzes/${quizId}/manage`)
+    revalidatePath(`/dashboard/exams/${quizId}/manage`)
   }
   return { success: true }
 }

@@ -117,7 +117,7 @@ export default async function QuestionsPage() {
                       </td>
                       <td style={{ padding: '1rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                          <Link href={`/dashboard/quizzes/${q.id}/manage`}>
+                          <Link href={`/dashboard/exams/${q.id}/manage`}>
                             <button className={styles.btnOutline} style={{ padding: '0.35rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.875rem' }}>
                               Manage <ArrowRight size={14} />
                             </button>

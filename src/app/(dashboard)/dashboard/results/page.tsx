@@ -71,8 +71,8 @@ export default async function StudentResultsPage() {
                     <td>{r.score_obtained}</td>
                     <td>
                       <div className={styles.tableActions} style={{ justifyContent: 'flex-start' }}>
-                        <Link href={`/dashboard/results/${r.id}`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="View Answers">
-                           View Answers
+                        <Link href={`/dashboard/results/${r.id}`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Show Marksheet">
+                           Show Marksheet
                         </Link>
                       </div>
                     </td>

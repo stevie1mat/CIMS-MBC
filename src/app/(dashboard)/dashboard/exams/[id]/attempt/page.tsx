@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import AttemptClient from './AttemptClient'
 
 export const metadata = {
-  title: 'Quiz Attempt | MBC Portal',
+  title: 'Exam Attempt | MBC Portal',
 }
 
 type QuizAttemptPageProps = {
@@ -28,7 +28,7 @@ export default async function QuizAttemptPage({ params }: QuizAttemptPageProps) 
 
   if (!attempt) {
     // No open attempt found, redirect to quiz details
-    redirect(`/dashboard/quizzes/${id}`)
+    redirect(`/dashboard/exams/${id}`)
   }
 
   // Fetch quiz details with questions and options
@@ -51,7 +51,7 @@ export default async function QuizAttemptPage({ params }: QuizAttemptPageProps) 
     .eq('id', Number(id))
     .single()
 
-  if (!quiz) redirect('/dashboard/quizzes')
+  if (!quiz) redirect('/dashboard/exams')
 
   return <AttemptClient quiz={quiz} attempt={attempt} />
 }

@@ -38,7 +38,7 @@ export async function createQuiz(formData: FormData) {
     
   if (error) return { error: error.message }
   
-  revalidatePath('/dashboard/quizzes')
+  revalidatePath('/dashboard/exams')
   return { success: true, quiz }
 }
 
@@ -87,9 +87,9 @@ export async function updateQuiz(id: number | string, formData: FormData) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/dashboard/quizzes')
-  revalidatePath(`/dashboard/quizzes/${id}`)
-  revalidatePath(`/dashboard/quizzes/${id}/edit`)
+  revalidatePath('/dashboard/exams')
+  revalidatePath(`/dashboard/exams/${id}`)
+  revalidatePath(`/dashboard/exams/${id}/edit`)
   return { success: true, quiz }
 }
 
@@ -116,9 +116,9 @@ export async function scheduleQuizLive(formData: FormData) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/dashboard/quizzes')
-  revalidatePath(`/dashboard/quizzes/${quizId}`)
-  revalidatePath(`/dashboard/quizzes/${quizId}/edit`)
+  revalidatePath('/dashboard/exams')
+  revalidatePath(`/dashboard/exams/${quizId}`)
+  revalidatePath(`/dashboard/exams/${quizId}/edit`)
   return { success: true, quiz }
 }
 
@@ -126,7 +126,7 @@ export async function deleteQuiz(id: number | string) {
   const supabase = await createClient()
   const { error } = await supabase.from('quizzes').delete().eq('id', Number(id))
   if (error) return { error: error.message }
-  revalidatePath('/dashboard/quizzes')
+  revalidatePath('/dashboard/exams')
   return { success: true }
 }
 
@@ -167,7 +167,7 @@ export async function addQuestionToQuiz(quiz_id: number | string, question_id: n
     }])
     
   if (error) return { error: error.message }
-  revalidatePath(`/dashboard/quizzes/${quiz_id}`)
+  revalidatePath(`/dashboard/exams/${quiz_id}`)
   return { success: true }
 }
 
@@ -179,6 +179,6 @@ export async function removeQuestionFromQuiz(quiz_id: number | string, question_
     .match({ quiz_id, question_id })
     
   if (error) return { error: error.message }
-  revalidatePath(`/dashboard/quizzes/${quiz_id}`)
+  revalidatePath(`/dashboard/exams/${quiz_id}`)
   return { success: true }
 }

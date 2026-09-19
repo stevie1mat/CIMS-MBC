@@ -310,7 +310,7 @@ export default async function AdminUserProfilePage({ params }: UserPageProps) {
                             <td style={{ color: '#991b1b', fontWeight: 600 }}>{exam.failed}</td>
                             <td>{Number(exam.averagePercentage || 0).toFixed(1)}%</td>
                             <td style={{ textAlign: 'right' }}>
-                              <Link href={`/dashboard/quizzes/${exam.id}/attempts`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`}>
+                              <Link href={`/dashboard/exams/${exam.id}/attempts`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`}>
                                 <FileText size={14} /> View Results
                               </Link>
                             </td>

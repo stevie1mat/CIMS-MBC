@@ -22,10 +22,10 @@ export default function QuizForm() {
       if (result.error) {
         setError(result.error)
       } else {
-        router.push(`/dashboard/quizzes/${result.quiz.id}/edit`)
+        router.push(`/dashboard/exams/${result.quiz.id}/edit`)
       }
     } catch (err) {
-      setError(err.message || 'Failed to create quiz')
+      setError(err.message || 'Failed to create exam')
     } finally {
       setLoading(false)
     }

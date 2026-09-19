@@ -35,7 +35,7 @@ export default async function EditQuizPage({ params }: EditQuizPageProps) {
     <div className={styles.editPage}>
       <div className={styles.editPageHeader}>
         <div>
-          <h1>Edit Quiz</h1>
+          <h1>Edit Exam</h1>
           <p>{quiz.name}</p>
         </div>
       </div>
@@ -65,13 +65,13 @@ export default async function EditQuizPage({ params }: EditQuizPageProps) {
         <div className={styles.panelHeader}>
           <h3 className={styles.panelTitle}>Quiz Settings</h3>
           <div className={styles.panelActions}>
-            <Link href={`/dashboard/quizzes/${quiz.id}/attempts`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`}>
+            <Link href={`/dashboard/exams/${quiz.id}/attempts`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`}>
               <List size={14} /> Attempts
             </Link>
-            <Link href={`/dashboard/quizzes/${quiz.id}/manage`} className={styles.actionButton}>
+            <Link href={`/dashboard/exams/${quiz.id}/manage`} className={styles.actionButton}>
               <FileText size={14} /> Questions
             </Link>
-            <Link href="/dashboard/quizzes" className={styles.actionButton}>
+            <Link href="/dashboard/exams" className={styles.actionButton}>
               <ArrowLeft size={14} /> Quizzes
             </Link>
           </div>

@@ -24,7 +24,7 @@ export default async function QuizPortalPage({ params }: QuizPageProps) {
   const isStudent = role === 'student'
 
   if (!isStudent) {
-    redirect('/dashboard/quizzes')
+    redirect('/dashboard/exams')
   }
 
   const quiz = await getQuiz(id)
@@ -66,9 +66,9 @@ export default async function QuizPortalPage({ params }: QuizPageProps) {
           <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>Exam</h1>
           <p style={{ color: '#64748b', margin: 0 }}>{quiz.name}</p>
         </div>
-        <Link href="/dashboard/quizzes">
+        <Link href="/dashboard/exams">
           <button className={styles.btnOutline} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ArrowLeft size={18} /> Back to Quizzes
+            <ArrowLeft size={18} /> Back to Exams
           </button>
         </Link>
       </div>

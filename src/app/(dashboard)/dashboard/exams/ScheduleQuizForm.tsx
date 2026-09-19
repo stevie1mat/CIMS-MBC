@@ -23,11 +23,11 @@ export default function ScheduleQuizForm({ quizzes }) {
       if (result.error) {
         setError(result.error)
       } else {
-        setMessage('Quiz schedule updated for all students.')
+        setMessage('Exam schedule updated for all students.')
         router.refresh()
       }
     } catch (err) {
-      setError(err.message || 'Failed to schedule quiz')
+      setError(err.message || 'Failed to schedule exam')
     } finally {
       setLoading(false)
     }
@@ -41,7 +41,7 @@ export default function ScheduleQuizForm({ quizzes }) {
         </span>
         <div>
           <h3>Live Schedule</h3>
-          <p>Set one quiz live for all students.</p>
+          <p>Set one exam live for all students.</p>
         </div>
       </div>
 
@@ -49,7 +49,7 @@ export default function ScheduleQuizForm({ quizzes }) {
         <label className={`${styles.formField} ${styles.scheduleField}`}>
           <span>Exam</span>
           <select name="quiz_id" className={`${styles.input} ${styles.scheduleInput}`} required defaultValue="">
-            <option value="" disabled>Select a quiz</option>
+            <option value="" disabled>Select an exam</option>
             {quizzes.map((quiz) => (
               <option key={quiz.id} value={quiz.id}>{quiz.name}</option>
             ))}

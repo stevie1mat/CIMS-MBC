@@ -20,7 +20,7 @@ export default function StartQuizButton({ quizId, openAttemptExists }: { quizId:
         setError(result.error)
         setLoading(false)
       } else {
-        router.push(`/dashboard/quizzes/${quizId}/attempt`)
+        router.push(`/dashboard/exams/${quizId}/attempt`)
       }
     } catch (err) {
       setError('An unexpected error occurred.')

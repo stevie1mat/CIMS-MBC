@@ -35,7 +35,7 @@ export default async function AdminView({ user }: { user: any }) {
   const metrics = {
     totalUsers: totalUsers || 0,
     qbankSize: qbankSize || 0,
-    registeredQuizzes: registeredExams || 0,
+    registeredQuizzes: registeredQuizzes || 0,
     activeUsers,
     inactiveUsers,
     totalAssignments: totalAssignments || 0
@@ -79,7 +79,7 @@ export default async function AdminView({ user }: { user: any }) {
           value={metrics.registeredQuizzes}
           icon={<FileText size={32} />}
           colorClass="cardYellow"
-          href="/dashboard/quizzes"
+          href="/dashboard/exams"
         />
       </div>
 

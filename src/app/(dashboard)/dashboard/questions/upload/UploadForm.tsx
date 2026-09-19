@@ -65,7 +65,7 @@ export default function UploadForm({ quizzes }) {
         if(fileInputRef.current) fileInputRef.current.value = ''
         // Redirect after a short delay
         setTimeout(() => {
-          router.push(`/dashboard/quizzes/${quizId}/manage`)
+          router.push(`/dashboard/exams/${quizId}/manage`)
         }, 1500)
       }
     } catch (err) {

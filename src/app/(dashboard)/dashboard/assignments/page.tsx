@@ -12,6 +12,7 @@ export default async function AssignmentsPage() {
   const assignments = await getAssignments()
   const role = await getUserRole()
   const isStaff = role === 'admin' || role === 'teacher' || role === 'super_admin'
+  const isAdmin = role === 'admin' || role === 'super_admin'
 
   // Format date
   const formatDate = (dateString) => {
@@ -105,23 +106,25 @@ export default async function AssignmentsPage() {
                         ) : (
                           <>
                             <Link href={`/dashboard/assignments/${a.id}`}>
-                              <button className={styles.btnOutline} style={{ padding: '0.25rem 0.5rem' }} title="View Details">
-                                <Eye size={16} />
+                              <button className={styles.btnOutline} style={{ padding: '0.25rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }} title="View Details">
+                                <Eye size={16} /> View
                               </button>
                             </Link>
                             <Link href={`/dashboard/assignments/${a.id}/submissions`}>
-                              <button className={styles.btnOutline} style={{ padding: '0.25rem 0.5rem' }} title="View Submissions">
-                                <List size={16} />
+                              <button className={styles.btnOutline} style={{ padding: '0.25rem 0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }} title="View Submissions">
+                                <List size={16} /> Submissions
                               </button>
                             </Link>
-                            <form action={async () => {
-                              'use server'
-                              await deleteAssignment(a.id)
-                            }}>
-                              <button className={styles.btnOutline} style={{ padding: '0.25rem 0.5rem', color: '#ef4444', borderColor: '#ef4444' }} title="Delete">
-                                <Trash2 size={16} />
-                              </button>
-                            </form>
+                            {isAdmin && (
+                              <form action={async () => {
+                                'use server'
+                                await deleteAssignment(a.id)
+                              }}>
+                                <button className={styles.btnOutline} style={{ padding: '0.25rem 0.5rem', color: '#ef4444', borderColor: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.35rem' }} title="Delete">
+                                  <Trash2 size={16} /> Delete
+                                </button>
+                              </form>
+                            )}
                           </>
                         )}
                       </div>

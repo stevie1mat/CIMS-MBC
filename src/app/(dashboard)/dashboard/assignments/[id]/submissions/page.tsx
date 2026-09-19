@@ -26,13 +26,20 @@ export default async function AssignmentSubmissionsPage({ params }: AssignmentSu
   const submissions = await getSubmissions(id) as any[]
   const supabase = await createClient()
 
-  // Generate public URLs for files
-  const submissionsWithUrls = submissions.map(sub => {
-    const { data } = supabase.storage
-      .from(sub.attachment_bucket)
-      .getPublicUrl(sub.attachment_path)
-    return { ...sub, fileUrl: data.publicUrl }
-  })
+  // Generate public or signed URLs for files
+  const submissionsWithUrls = await Promise.all(submissions.map(async (sub) => {
+    if (sub.attachment_bucket === 'student-submissions') {
+      const { data } = await supabase.storage
+        .from(sub.attachment_bucket)
+        .createSignedUrl(sub.attachment_path, 60 * 60)
+      return { ...sub, fileUrl: data?.signedUrl || null }
+    } else {
+      const { data } = supabase.storage
+        .from(sub.attachment_bucket)
+        .getPublicUrl(sub.attachment_path)
+      return { ...sub, fileUrl: data.publicUrl }
+    }
+  }))
 
   // Format date
   const formatDate = (dateString: string) => {

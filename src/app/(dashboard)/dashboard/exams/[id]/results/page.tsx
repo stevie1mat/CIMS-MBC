@@ -22,7 +22,7 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
   const role = await getUserRole()
   const isStaff = role === 'admin' || role === 'teacher' || role === 'super_admin'
   if (!isStaff) {
-    redirect('/dashboard/quizzes')
+    redirect('/dashboard/exams')
   }
 
   const supabase = await createClient()
@@ -57,7 +57,7 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
           <p style={{ color: '#64748b', margin: 0, fontWeight: 500 }}>{quiz.name}</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Link href="/dashboard/quizzes">
+          <Link href="/dashboard/exams">
             <button className={styles.btnPrimary} style={{ padding: '0.6rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
               <ArrowLeft size={18} /> Back to Exams
             </button>

@@ -24,7 +24,7 @@ export default function EditQuizForm({ quiz }) {
       if (result.error) {
         setError(result.error)
       } else {
-        router.push('/dashboard/quizzes')
+        router.push('/dashboard/exams')
         router.refresh()
       }
     } catch (err) {
@@ -151,7 +151,7 @@ export default function EditQuizForm({ quiz }) {
       </section>
 
       <div className={styles.formActions}>
-        <button type="button" className={styles.btnOutline} onClick={() => router.push('/dashboard/quizzes')}>
+        <button type="button" className={styles.btnOutline} onClick={() => router.push('/dashboard/exams')}>
           Cancel
         </button>
         <button type="submit" className={styles.btnPrimary} disabled={loading}>
