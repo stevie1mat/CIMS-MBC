@@ -26,7 +26,7 @@ export default async function AttendancePage({ searchParams }: any) {
 
   const searchParamsObj = await searchParams;
   const today = getISTDateString();
-  const timeframe = (searchParamsObj?.timeframe as 'day' | 'week' | 'month') || 'day';
+  const timeframe = (searchParamsObj?.timeframe as 'day' | 'week' | 'month') || 'month';
   const activeTab = role === 'teacher' ? 'students' : (searchParamsObj?.tab || 'all');
 
   let selectedDate = searchParamsObj?.date || today;
