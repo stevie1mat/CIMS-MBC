@@ -94,9 +94,10 @@ export default async function QuizAttemptsPage({ params }: QuizAttemptsPageProps
                     <td style={{ padding: '1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#475569', fontWeight: 500 }}>
                         <Clock size={16} />
-                        {new Date(attempt.started_at).toLocaleDateString('en-GB', {
-                          month: 'short', day: 'numeric', year: 'numeric'
-                        })}
+                        {new Date(attempt.started_at).toLocaleString('en-IN', {
+                          timeZone: 'Asia/Kolkata',
+                          month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                        })} (IST)
                       </div>
                     </td>
                     <td style={{ padding: '1rem', textAlign: 'right' }}>

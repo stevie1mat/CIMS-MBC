@@ -60,15 +60,19 @@ export default async function QuizzesPage() {
     const startsAt = new Date(quiz.starts_at)
     const endsAt = quiz.ends_at ? new Date(quiz.ends_at) : null
 
+    const formatIST = (d: Date) => {
+      return d.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' (IST)'
+    }
+
     if (endsAt && endsAt < now) {
-      return { label: 'Ended', className: styles.statusBadgeMuted, meta: endsAt.toLocaleString() }
+      return { label: 'Ended', className: styles.statusBadgeMuted, meta: formatIST(endsAt) }
     }
 
     if (startsAt > now) {
-      return { label: 'Scheduled', className: styles.statusBadgeMuted, meta: startsAt.toLocaleString() }
+      return { label: 'Scheduled', className: styles.statusBadgeMuted, meta: formatIST(startsAt) }
     }
 
-    return { label: 'Live', className: styles.statusBadgeSuccess, meta: startsAt.toLocaleString() }
+    return { label: 'Live', className: styles.statusBadgeSuccess, meta: formatIST(startsAt) }
   }
 
   const visibleQuizzes = quizzes

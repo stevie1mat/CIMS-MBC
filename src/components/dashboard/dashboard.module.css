@@ -1409,7 +1409,7 @@
 /* MBC Specific Layout */
 .bannerContainer {
   height: 280px;
-  background-image: url('https://mbcmumbai.com/wp-content/uploads/2021/08/IMG-0091-2.jpg');
+  background-image: url('/campus_bg.jpg');
   background-size: cover;
   background-position: center;
   border-radius: 20px;

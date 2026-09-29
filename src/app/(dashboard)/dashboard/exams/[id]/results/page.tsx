@@ -103,7 +103,7 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
                     ? `${student.first_name} ${student.last_name || ''}`.trim() 
                     : 'Unknown Student'
                   const email = student?.email || 'N/A'
-                  const date = new Date(attempt.created_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+                  const date = new Date(attempt.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' }) + ' (IST)'
                   
                   const isPass = (attempt.percentage_obtained || 0) >= 50
                   

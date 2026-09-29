@@ -18,14 +18,15 @@ export default async function StudentResultsPage() {
   const results = await getStudentResults()
 
   // Format date
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-GB', {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
-    })
+    }) + ' (IST)'
   }
 
   // Format time (MM:SS)
