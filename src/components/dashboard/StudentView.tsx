@@ -186,7 +186,7 @@ export default async function StudentView({
               className={styles.imageCardImg}
             />
             <span className={styles.imageCardTitle}>My Attendance</span>
-            <Link href="/dashboard/attendance" style={{ textDecoration: 'none' }}>
+            <Link href="/dashboard/my-attendance" style={{ textDecoration: 'none' }}>
               <button className={styles.btnOutlinePink}>View Now</button>
             </Link>
           </div>
