@@ -63,7 +63,7 @@ export default async function Login() {
         <div className={styles.loginFormContainer}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
             <img
-              src="https://mbcmumbai.com/wp-content/uploads/2021/08/WhatsApp_Image_2021-08-20_at_17.24.14-removebg-preview.png"
+              src="/mbc-logo.png"
               alt="MBC Logo"
               width={120}
               height={120}
