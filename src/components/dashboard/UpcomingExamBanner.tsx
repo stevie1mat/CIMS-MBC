@@ -47,7 +47,12 @@ export default function UpcomingExamBanner({ quiz }: { quiz: any }) {
   }
 
   const startDate = new Date(quiz.starts_at)
-  const isToday = new Date().toDateString() === startDate.toDateString()
+  
+  const dateOptions: Intl.DateTimeFormatOptions = { timeZone: 'Asia/Kolkata', month: 'long', day: 'numeric', year: 'numeric' }
+  const timeOptions: Intl.DateTimeFormatOptions = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' }
+  
+  const dateStr = startDate.toLocaleDateString('en-IN', dateOptions)
+  const timeStr = startDate.toLocaleTimeString('en-IN', timeOptions)
 
   return (
     <div style={{ 
@@ -69,8 +74,7 @@ export default function UpcomingExamBanner({ quiz }: { quiz: any }) {
         
         <h2 style={{ fontSize: '2.5rem', margin: '0 0 0.5rem 0', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1 }}>{quiz.name}</h2>
         <p style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: '2rem' }}>
-          Scheduled for {isToday ? 'Today at ' : `${startDate.toLocaleDateString()} at `} 
-          {startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          Scheduled for {dateStr} at {timeStr} (IST)
         </p>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>

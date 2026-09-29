@@ -18,8 +18,10 @@ export default function ScheduleQuizForm({ quizzes, defaultQuizId = "" }: { quiz
     if (!dateString) return ''
     const d = new Date(dateString)
     if (isNaN(d.getTime())) return ''
-    // format to YYYY-MM-DDThh:mm in local time
-    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+    // Force format to YYYY-MM-DDThh:mm strictly in Indian Standard Time (UTC+5:30)
+    // Add 330 minutes (5.5 hours) to the UTC time
+    const istMs = d.getTime() + (330 * 60000)
+    return new Date(istMs).toISOString().slice(0, 16)
   }
 
   const defaultStartsAt = formatDateForInput(defaultQuiz?.starts_at)
@@ -32,7 +34,20 @@ export default function ScheduleQuizForm({ quizzes, defaultQuizId = "" }: { quiz
     setError('')
 
     try {
-      const result = await scheduleQuizLive(new FormData(event.currentTarget))
+      const formData = new FormData(event.currentTarget)
+      
+      const startsAt = formData.get('starts_at') as string
+      if (startsAt) {
+        // Parse the input strictly as IST (+05:30)
+        formData.set('starts_at', new Date(`${startsAt}+05:30`).toISOString())
+      }
+      
+      const endsAt = formData.get('ends_at') as string
+      if (endsAt) {
+        formData.set('ends_at', new Date(`${endsAt}+05:30`).toISOString())
+      }
+
+      const result = await scheduleQuizLive(formData)
       if (result.error) {
         setError(result.error)
       } else {
@@ -73,12 +88,12 @@ export default function ScheduleQuizForm({ quizzes, defaultQuizId = "" }: { quiz
           <input type="hidden" name="quiz_id" value={quizzes[0]?.id || defaultQuizId} />
         )}
         <label className={`${styles.formField} ${styles.scheduleField}`}>
-          <span>Available From</span>
+          <span>Available From (IST)</span>
           <input type="datetime-local" name="starts_at" className={`${styles.input} ${styles.scheduleInput}`} required defaultValue={defaultStartsAt} />
         </label>
 
         <label className={`${styles.formField} ${styles.scheduleField}`}>
-          <span>Available Until</span>
+          <span>Available Until (IST)</span>
           <input type="datetime-local" name="ends_at" className={`${styles.input} ${styles.scheduleInput}`} defaultValue={defaultEndsAt} />
         </label>
 
