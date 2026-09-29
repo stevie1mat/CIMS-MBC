@@ -194,6 +194,37 @@ export async function createUser(formData: FormData) {
   redirect(`/dashboard/users/${newUserId}`)
 }
 
+export async function resetUserPassword(userId: string, newPassword: string) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Unauthorized' }
+
+  if (!newPassword || newPassword.length < 6) {
+    return { error: 'Password must be at least 6 characters.' }
+  }
+
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!serviceRoleKey) return { error: 'SUPABASE_SERVICE_ROLE_KEY is not configured.' }
+
+  const adminSupabase = createSupabaseClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    serviceRoleKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  )
+
+  const { error } = await adminSupabase.auth.admin.updateUserById(userId, {
+    password: newPassword,
+  })
+
+  if (error) return { error: error.message }
+
+  return { success: true }
+}
+
 export async function deleteUser(userId: string) {
   const role = await getUserRole()
   if (role !== 'admin' && role !== 'super_admin') return { error: 'Unauthorized' }
