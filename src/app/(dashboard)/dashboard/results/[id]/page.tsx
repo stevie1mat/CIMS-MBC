@@ -39,11 +39,10 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
   const backHref = isStaff ? `/dashboard/exams/${quiz.id}/attempts` : '/dashboard/results'
   const backText = isStaff ? 'Back to Attempts' : 'Back to Results'
 
-  const isLegacy = !!attempt.legacy_rid
   const totalQuestions = questions.length
   const correctCount = attempt.score_obtained || 0
-  const incorrectCount = isLegacy ? 0 : totalQuestions - correctCount
-  const percentage = isLegacy ? (attempt.percentage_obtained || 0) : (totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0)
+  const incorrectCount = totalQuestions - correctCount
+  const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0
 
   const now = new Date()
   const hasExamEnded = quiz.ends_at ? new Date(quiz.ends_at) < now : true // If no end date, it's open-ended, so allow immediately
@@ -102,13 +101,12 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
               </div>
             </div>
             <div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{isLegacy ? correctCount : `${correctCount}/${totalQuestions}`}</div>
+              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{correctCount}/{totalQuestions}</div>
               <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Marks Obtained</div>
             </div>
           </div>
 
           {/* Correct */}
-          {!isLegacy && (
             <div style={{
               background: '#f0fdf4',
               borderRadius: '16px',
@@ -128,10 +126,8 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
                 <div style={{ fontSize: '0.7rem', color: '#86efac', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Correct</div>
               </div>
             </div>
-          )}
 
           {/* Incorrect */}
-          {!isLegacy && (
             <div style={{
               background: '#fef2f2',
               borderRadius: '16px',
@@ -147,16 +143,15 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
                 <XCircle size={22} color="#dc2626" />
               </div>
               <div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#dc2626' }}>{isLegacy ? 'N/A' : incorrectCount}</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#dc2626' }}>{incorrectCount}</div>
                 <div style={{ fontSize: '0.7rem', color: '#fca5a5', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Incorrect</div>
               </div>
             </div>
-          )}
         </div>
       </div>
 
       {/* Questions Header */}
-      {canViewReview && !isLegacy ? (
+      {canViewReview ? (
         <>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', marginTop: '2rem' }}>
             <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
@@ -322,7 +317,7 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
             })}
           </div>
         </>
-      ) : isLegacy ? null : (
+      ) : (
         <div style={{ marginTop: '3rem', padding: '3rem 2rem', backgroundColor: '#f8fafc', borderRadius: '16px', textAlign: 'center', border: '1px solid #e2e8f0' }}>
           <AlertCircle size={48} color="#94a3b8" style={{ margin: '0 auto 1rem auto' }} />
           {quiz.view_answer === false ? (
