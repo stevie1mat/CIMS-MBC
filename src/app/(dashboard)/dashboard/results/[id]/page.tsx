@@ -150,8 +150,7 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
               <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#dc2626' }}>{isLegacy ? 'N/A' : incorrectCount}</div>
               <div style={{ fontSize: '0.7rem', color: '#fca5a5', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Incorrect</div>
             </div>
-              </div>
-            </div>
+          </div>
           )}
         </div>
       </div>
