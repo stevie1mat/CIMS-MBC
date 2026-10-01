@@ -39,10 +39,11 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
   const backHref = isStaff ? `/dashboard/exams/${quiz.id}/attempts` : '/dashboard/results'
   const backText = isStaff ? 'Back to Attempts' : 'Back to Results'
 
+  const isLegacy = !!attempt.legacy_rid
   const totalQuestions = questions.length
   const correctCount = attempt.score_obtained || 0
-  const incorrectCount = totalQuestions - correctCount
-  const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0
+  const incorrectCount = isLegacy ? 0 : totalQuestions - correctCount
+  const percentage = isLegacy ? (attempt.percentage_obtained || 0) : (totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0)
 
   const now = new Date()
   const hasExamEnded = quiz.ends_at ? new Date(quiz.ends_at) < now : true // If no end date, it's open-ended, so allow immediately
@@ -101,7 +102,7 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
               </div>
             </div>
             <div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{correctCount}/{totalQuestions}</div>
+              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{isLegacy ? correctCount : `${correctCount}/${totalQuestions}`}</div>
               <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Marks Obtained</div>
             </div>
           </div>
@@ -143,7 +144,7 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
               <XCircle size={22} color="#dc2626" />
             </div>
             <div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#dc2626' }}>{incorrectCount}</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#dc2626' }}>{isLegacy ? 'N/A' : incorrectCount}</div>
               <div style={{ fontSize: '0.7rem', color: '#fca5a5', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Incorrect</div>
             </div>
           </div>
@@ -151,7 +152,7 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
       </div>
 
       {/* Questions Header */}
-      {canViewReview ? (
+      {canViewReview && !isLegacy ? (
         <>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', marginTop: '2rem' }}>
             <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
