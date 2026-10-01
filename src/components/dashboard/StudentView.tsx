@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import AttendClassButton from './AttendClassButton';
 
-import FeesPrompt from './FeesPrompt';
+
 import styles from './dashboard.module.css';
 import { createClient } from '@/lib/supabase/server';
 import UpcomingExamBanner from './UpcomingExamBanner';
@@ -51,9 +51,7 @@ export default async function StudentView({
 
   return (
     <div>
-      {!feesPaid ? (
-        <FeesPrompt />
-      ) : null}
+
       
       {/* Hero Banner Image */}
       <div className={styles.bannerContainer} />
