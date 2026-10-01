@@ -108,7 +108,8 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
           </div>
 
           {/* Correct */}
-          <div style={{
+          {!isLegacy && (
+            <div style={{
             background: '#f0fdf4',
             borderRadius: '16px',
             padding: '1.25rem 1.5rem',
@@ -127,9 +128,11 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
               <div style={{ fontSize: '0.7rem', color: '#86efac', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Correct</div>
             </div>
           </div>
+          )}
 
           {/* Incorrect */}
-          <div style={{
+          {!isLegacy && (
+            <div style={{
             background: '#fef2f2',
             borderRadius: '16px',
             padding: '1.25rem 1.5rem',
@@ -147,7 +150,9 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
               <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#dc2626' }}>{isLegacy ? 'N/A' : incorrectCount}</div>
               <div style={{ fontSize: '0.7rem', color: '#fca5a5', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Incorrect</div>
             </div>
-          </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -318,7 +323,7 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
             })}
           </div>
         </>
-      ) : (
+      ) : isLegacy ? null : (
         <div style={{ marginTop: '3rem', padding: '3rem 2rem', backgroundColor: '#f8fafc', borderRadius: '16px', textAlign: 'center', border: '1px solid #e2e8f0' }}>
           <AlertCircle size={48} color="#94a3b8" style={{ margin: '0 auto 1rem auto' }} />
           {quiz.view_answer === false ? (
