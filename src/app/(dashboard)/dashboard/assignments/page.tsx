@@ -115,16 +115,14 @@ export default async function AssignmentsPage() {
                                 <List size={16} /> Submissions
                               </button>
                             </Link>
-                            {isAdmin && (
-                              <form action={async () => {
-                                'use server'
-                                await deleteAssignment(a.id)
-                              }}>
-                                <button className={styles.btnOutline} style={{ padding: '0.25rem 0.5rem', color: '#ef4444', borderColor: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.35rem' }} title="Delete">
-                                  <Trash2 size={16} /> Delete
-                                </button>
-                              </form>
-                            )}
+                            <form action={async () => {
+                              'use server'
+                              await deleteAssignment(a.id)
+                            }}>
+                              <button className={styles.btnOutline} style={{ padding: '0.25rem 0.5rem', color: '#ef4444', borderColor: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.35rem' }} title="Delete">
+                                <Trash2 size={16} /> Delete
+                              </button>
+                            </form>
                           </>
                         )}
                       </div>
