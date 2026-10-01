@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import AttendClassButton from './AttendClassButton';
-import RealEmailPrompt from './RealEmailPrompt';
+
 import FeesPrompt from './FeesPrompt';
 import styles from './dashboard.module.css';
 import { createClient } from '@/lib/supabase/server';
@@ -51,9 +51,7 @@ export default async function StudentView({
 
   return (
     <div>
-      {!realEmail ? (
-        <RealEmailPrompt />
-      ) : !feesPaid ? (
+      {!feesPaid ? (
         <FeesPrompt />
       ) : null}
       

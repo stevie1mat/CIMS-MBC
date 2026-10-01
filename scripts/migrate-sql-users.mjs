@@ -86,7 +86,7 @@ async function upsertProfile(user, authUserId) {
 
 async function runMigration() {
   console.log('Reading SQL file...');
-  const content = readFileSync(resolve(__dirname, '..', 'sql/u306526696_website.sql'), 'utf8');
+  const content = readFileSync(resolve(__dirname, '..', 'sql/u306526696_website.20260926031910 2.sql'), 'utf8');
 
   // Find all INSERT INTO `savsoft_users` blocks
   const insertIndex = content.indexOf('INSERT INTO `savsoft_users`');
