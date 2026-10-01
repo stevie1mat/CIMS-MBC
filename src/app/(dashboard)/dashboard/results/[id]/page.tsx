@@ -59,7 +59,7 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
         <ArrowLeft size={18} /> {backText}
       </Link>
 
-      {/* Score Summary Card */}
+      {/* Score Summary Card - Light */}
       <div style={{
         background: '#ffffff',
         borderRadius: '24px',
@@ -69,132 +69,46 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
         boxShadow: '0 4px 24px rgba(0, 0, 0, 0.04)'
       }}>
         <p style={{ margin: '0 0 0.25rem 0', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 700, color: '#94a3b8' }}>
-          {isLegacy ? 'Past Exam Result' : 'Exam Review'}
+          Exam Review
         </p>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, margin: '0 0 1.75rem 0', lineHeight: 1.3, color: '#0f172a' }}>
           {quiz.name}
         </h1>
 
-        {isLegacy ? (
-          <>
-            {/* Legacy Result - Rich Layout */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
-              {/* Score */}
-              <div style={{
-                background: '#f8fafc',
-                borderRadius: '16px',
-                padding: '1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1.25rem',
-                border: '1px solid #e2e8f0',
-              }}>
-                <div style={{
-                  width: '64px', height: '64px', borderRadius: '50%',
-                  background: `conic-gradient(#6366f1 ${percentage}%, #e2e8f0 0%)`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <div style={{
-                    width: '50px', height: '50px', borderRadius: '50%',
-                    background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '0.95rem', fontWeight: 800, color: '#0f172a'
-                  }}>
-                    {percentage}%
-                  </div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{correctCount}</div>
-                  <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Marks Obtained</div>
-                </div>
-              </div>
-
-              {/* Time Taken */}
-              {attempt.total_time_seconds > 0 && (
-                <div style={{
-                  background: '#eff6ff',
-                  borderRadius: '16px',
-                  padding: '1.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  border: '1px solid #bfdbfe',
-                }}>
-                  <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: '#dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1d4ed8' }}>
-                      {Math.floor(attempt.total_time_seconds / 60)}:{String(attempt.total_time_seconds % 60).padStart(2, '0')}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#93c5fd', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Time Taken</div>
-                  </div>
-                </div>
-              )}
-
-              {/* Date */}
-              {attempt.started_at && (
-                <div style={{
-                  background: '#faf5ff',
-                  borderRadius: '16px',
-                  padding: '1.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  border: '1px solid #e9d5ff',
-                }}>
-                  <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: '#f3e8ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#6d28d9' }}>
-                      {new Date(attempt.started_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' })}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#c4b5fd', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Exam Date</div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Legacy notice */}
-            <div style={{ marginTop: '1.5rem', padding: '0.75rem 1rem', background: '#f1f5f9', borderRadius: '10px', fontSize: '0.8rem', color: '#64748b', textAlign: 'center' }}>
-              This result was imported from the previous MBC portal. Detailed question-level data is not available.
-            </div>
-          </>
-        ) : (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'stretch' }}>
-            {/* Score Circle */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'stretch' }}>
+          {/* Score Circle */}
+          <div style={{
+            background: '#f8fafc',
+            borderRadius: '16px',
+            padding: '1.25rem 1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1.25rem',
+            border: '1px solid #e2e8f0',
+            minWidth: '200px'
+          }}>
             <div style={{
-              background: '#f8fafc',
-              borderRadius: '16px',
-              padding: '1.25rem 1.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1.25rem',
-              border: '1px solid #e2e8f0',
-              minWidth: '200px'
+              width: '64px', height: '64px', borderRadius: '50%',
+              background: `conic-gradient(#6366f1 ${percentage}%, #e2e8f0 0%)`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0
             }}>
               <div style={{
-                width: '64px', height: '64px', borderRadius: '50%',
-                background: `conic-gradient(#6366f1 ${percentage}%, #e2e8f0 0%)`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0
+                width: '50px', height: '50px', borderRadius: '50%',
+                background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '0.95rem', fontWeight: 800, color: '#0f172a'
               }}>
-                <div style={{
-                  width: '50px', height: '50px', borderRadius: '50%',
-                  background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '0.95rem', fontWeight: 800, color: '#0f172a'
-                }}>
-                  {percentage}%
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{correctCount}/{totalQuestions}</div>
-                <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Marks Obtained</div>
+                {percentage}%
               </div>
             </div>
+            <div>
+              <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{isLegacy ? correctCount : `${correctCount}/${totalQuestions}`}</div>
+              <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Marks Obtained</div>
+            </div>
+          </div>
 
-            {/* Correct */}
+          {/* Correct */}
+          {!isLegacy && (
             <div style={{
               background: '#f0fdf4',
               borderRadius: '16px',
@@ -214,8 +128,10 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
                 <div style={{ fontSize: '0.7rem', color: '#86efac', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Correct</div>
               </div>
             </div>
+          )}
 
-            {/* Incorrect */}
+          {/* Incorrect */}
+          {!isLegacy && (
             <div style={{
               background: '#fef2f2',
               borderRadius: '16px',
@@ -231,12 +147,12 @@ export default async function AnswerSheetPage({ params }: AnswerSheetPageProps) 
                 <XCircle size={22} color="#dc2626" />
               </div>
               <div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#dc2626' }}>{incorrectCount}</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#dc2626' }}>{isLegacy ? 'N/A' : incorrectCount}</div>
                 <div style={{ fontSize: '0.7rem', color: '#fca5a5', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Incorrect</div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Questions Header */}
