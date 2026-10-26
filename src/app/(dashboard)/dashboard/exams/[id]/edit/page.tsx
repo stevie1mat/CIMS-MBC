@@ -20,14 +20,14 @@ export default async function EditQuizPage({ params }: EditQuizPageProps) {
   const { id } = await params
   const quiz = await getQuiz(id)
   const role = await getUserRole()
-  const isStaff = role === 'admin' || role === 'teacher' || role === 'super_admin'
+  const isStaff = role === 'admin' || role === 'super_admin'
 
   if (!isStaff) {
     return (
       <div className={styles.panel}>
         <div className={styles.panelBody}>
           <h2 className={styles.panelTitle}>Access denied</h2>
-          <p style={{ color: '#64748b', marginTop: '0.75rem' }}>Only staff can edit exams.</p>
+          <p style={{ color: '#64748b', marginTop: '0.75rem' }}>Only administrators can edit exams.</p>
         </div>
       </div>
     )

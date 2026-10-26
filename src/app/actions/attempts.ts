@@ -1,9 +1,11 @@
 'use server'
 
+import { getUserRole } from './auth'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function startQuizAttempt(quiz_id: number | string) {
+  if (await getUserRole() === 'teacher') return { error: 'Teachers have read-only access to exams.' }
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   
@@ -68,6 +70,7 @@ export async function startQuizAttempt(quiz_id: number | string) {
 }
 
 export async function submitQuizAnswers(attempt_id: number | string, answers: Record<string, string | number>) {
+  if (await getUserRole() === 'teacher') return { error: 'Teachers have read-only access to exams.' }
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -176,4 +179,56 @@ export async function submitQuizAnswers(attempt_id: number | string, answers: Re
 
   revalidatePath('/dashboard/results')
   return { success: true }
+}
+
+export async function autoCloseExpiredAttempts(quiz_id: number | string) {
+  if (await getUserRole() === 'teacher') return
+  const supabase = await createClient()
+
+  // Get the quiz
+  const { data: quiz } = await supabase
+    .from('quizzes')
+    .select('id, duration_minutes, ends_at, pass_percentage')
+    .eq('id', Number(quiz_id))
+    .single()
+
+  if (!quiz) return
+
+  // Find open attempts
+  const { data: openAttempts } = await supabase
+    .from('quiz_attempts')
+    .select('id, started_at')
+    .eq('quiz_id', Number(quiz_id))
+    .eq('status', 'open')
+
+  if (!openAttempts || openAttempts.length === 0) return
+
+  const now = new Date().getTime()
+  const durationMs = (quiz.duration_minutes || 0) * 60 * 1000
+  const gracePeriodMs = 2 * 60 * 1000 // 2 minutes grace period
+  const isQuizOverallEnded = quiz.ends_at && new Date(quiz.ends_at).getTime() < now
+
+  for (const attempt of openAttempts) {
+    const startedAt = new Date(attempt.started_at).getTime()
+    const attemptEndAt = startedAt + durationMs
+    const hasExpired = now > (attemptEndAt + gracePeriodMs)
+
+    if (hasExpired || isQuizOverallEnded) {
+      const endedAt = new Date().toISOString()
+      const totalTimeSeconds = Math.floor((new Date(endedAt).getTime() - startedAt) / 1000)
+      
+      // Since answers are not auto-saved to DB during the exam, 
+      // closing it from the server means 0 score.
+      await supabase
+        .from('quiz_attempts')
+        .update({
+          status: 'fail',
+          ended_at: endedAt,
+          total_time_seconds: Math.min(totalTimeSeconds, (quiz.duration_minutes || 0) * 60),
+          score_obtained: 0,
+          percentage_obtained: 0
+        })
+        .eq('id', attempt.id)
+    }
+  }
 }

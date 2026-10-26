@@ -8,6 +8,7 @@ import MetricCard from '@/components/dashboard/MetricCard'
 import styles from '@/components/dashboard/dashboard.module.css'
 import ExportButtons from '../attempts/ExportButtons'
 import DeleteAttemptButton from '../attempts/DeleteAttemptButton'
+import { autoCloseExpiredAttempts } from '@/app/actions/attempts'
 
 export const metadata = {
   title: 'Exam Marksheet | MBC Portal',
@@ -22,6 +23,7 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
   
   // Verify access
   const role = await getUserRole()
+  const isAdmin = role === 'admin' || role === 'super_admin'
   const isStaff = role === 'admin' || role === 'teacher' || role === 'super_admin'
   if (!isStaff) {
     redirect('/dashboard/exams')
@@ -29,6 +31,9 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
 
   const supabase = await createClient()
   const quiz = await getQuiz(id)
+
+  // Auto-close any expired open attempts before displaying results
+  if (isAdmin) await autoCloseExpiredAttempts(id)
 
   const { data: attempts, error } = await supabase
     .from('quiz_attempts')
@@ -59,7 +64,7 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
           <p style={{ color: '#64748b', margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>Marksheet</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Link href={`/dashboard/exams/${id}/edit`} style={{ textDecoration: 'none' }}>
+          <Link href={isAdmin ? `/dashboard/exams/${id}/edit` : `/dashboard/exams/${id}`} style={{ textDecoration: 'none' }}>
             <button className={styles.btnPrimary} style={{ padding: '0.6rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
               <ArrowLeft size={18} /> Back to Exam
             </button>
@@ -93,7 +98,7 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
                 <tr>
                   <td colSpan={7} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No attempts yet.</p>
-                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>Students haven't taken this exam.</p>
+                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>Students haven&apos;t taken this exam.</p>
                   </td>
                 </tr>
               ) : (
@@ -147,7 +152,7 @@ export default async function ExamMarksheetPage({ params }: ExamMarksheetPagePro
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             View
                           </Link>
-                          <DeleteAttemptButton attemptId={attempt.id} quizId={id} />
+                          {isAdmin && <DeleteAttemptButton attemptId={attempt.id} quizId={id} />}
                         </div>
                       </td>
                     </tr>

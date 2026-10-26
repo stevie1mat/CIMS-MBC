@@ -20,6 +20,7 @@ export default async function QuizAttemptsPage({ params }: QuizAttemptsPageProps
   const { id } = await params
   
   const role = await getUserRole()
+  const isAdmin = role === 'admin' || role === 'super_admin'
   const isStaff = role === 'admin' || role === 'teacher' || role === 'super_admin'
 
   if (!isStaff) {
@@ -40,7 +41,7 @@ export default async function QuizAttemptsPage({ params }: QuizAttemptsPageProps
           <h1 style={{ fontSize: '2rem', margin: '0 0 0.25rem 0', color: '#0f172a' }}>{quiz.name}</h1>
           <p style={{ color: '#64748b', margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>Attempts</p>
         </div>
-        <Link href={`/dashboard/exams/${id}/edit`} style={{ textDecoration: 'none' }}>
+        <Link href={isAdmin ? `/dashboard/exams/${id}/edit` : `/dashboard/exams/${id}`}  style={{ textDecoration: 'none' }}>
           <button className={styles.btnPrimary} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ArrowLeft size={18} /> Back to Exam
           </button>
@@ -125,7 +126,7 @@ export default async function QuizAttemptsPage({ params }: QuizAttemptsPageProps
                             </button>
                           </Link>
                         )}
-                        <DeleteAttemptButton attemptId={attempt.id} quizId={id} />
+                        {isAdmin && <DeleteAttemptButton attemptId={attempt.id} quizId={id} />}
                       </div>
                     </td>
                   </tr>

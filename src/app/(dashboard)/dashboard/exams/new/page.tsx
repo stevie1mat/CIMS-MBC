@@ -1,5 +1,7 @@
 import QuizForm from './QuizForm'
 import styles from '@/components/dashboard/dashboard.module.css'
+import { getUserRole } from '@/app/actions/auth'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
@@ -9,6 +11,9 @@ export const metadata = {
 }
 
 export default async function NewQuizPage() {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') redirect('/dashboard/exams')
+
   const supabase = await createClient()
   
   const [{ data: subjects }, { data: assignments }] = await Promise.all([

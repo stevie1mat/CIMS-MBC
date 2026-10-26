@@ -23,13 +23,16 @@ export default async function QuizPortalPage({ params }: QuizPageProps) {
   const role = await getUserRole()
   const isStudent = role === 'student'
 
-  if (!isStudent) {
+  const isTeacher = role === 'teacher'
+
+  if (!isStudent && !isTeacher) {
     redirect('/dashboard/exams')
   }
 
   const quiz = await getQuiz(id)
   const now = new Date()
   const isLive = quiz.starts_at && new Date(quiz.starts_at) <= now && (!quiz.ends_at || new Date(quiz.ends_at) >= now)
+  const hasEnded = !!quiz.ends_at && new Date(quiz.ends_at) < now
   const questionCount = quiz.quiz_questions.length
   const attemptText = quiz.maximum_attempts === 1 ? 'You will have only 1 attempt.' : `You will have ${quiz.maximum_attempts} attempts.`
   const studentSubject = quiz.student_subject || 'Leading with Integrity'
@@ -125,13 +128,18 @@ export default async function QuizPortalPage({ params }: QuizPageProps) {
             <div className={styles.quizDetailSide}>
               <div className={styles.quizReadinessCard}>
                 <span className={`${styles.statusBadge} ${isLive ? styles.statusBadgeSuccess : styles.statusBadgeWarning}`}>
-                  {isLive ? 'Live' : quiz.starts_at ? 'Scheduled' : 'Not scheduled'}
+                  {hasEnded ? 'Ended' : isLive ? 'Live' : quiz.starts_at ? 'Scheduled' : 'Not scheduled'}
                 </span>
-                <h4>{isLive ? 'Start when ready' : 'Not available yet'}</h4>
-                <p>{isLive ? 'Review the instructions before beginning your attempt.' : 'This quiz will be available when staff make it live.'}</p>
+                <h4>{isTeacher ? 'Exam overview' : isLive ? 'Start when ready' : 'Not available yet'}</h4>
+                <p>{isTeacher ? 'View student attempts, scores, and answer sheets for this exam.' : isLive ? 'Review the instructions before beginning your attempt.' : 'This quiz will be available when staff make it live.'}</p>
               </div>
 
-              {isLive ? (
+              {isTeacher && (
+                <Link href={`/dashboard/exams/${id}/attempts`} className={styles.btnPrimary} style={{ display: 'inline-flex', marginTop: '1rem' }}>
+                  View Results
+                </Link>
+              )}
+              {isStudent && isLive ? (
                 canAttempt ? (
                   <StartQuizButton quizId={quiz.id} openAttemptExists={!!openAttempt} />
                 ) : (

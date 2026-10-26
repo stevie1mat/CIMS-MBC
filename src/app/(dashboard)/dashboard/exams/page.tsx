@@ -1,12 +1,9 @@
-import { getQuizzes, deleteQuiz } from '@/app/actions/quizzes'
+import { getQuizzes } from '@/app/actions/quizzes'
 import { getUserRole } from '@/app/actions/auth'
 import styles from '@/components/dashboard/dashboard.module.css'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Plus, Edit, List, PlayCircle, FileText, CheckCircle, Clock, AlertCircle, TableProperties } from 'lucide-react'
-import MetricCard from '@/components/dashboard/MetricCard'
-import DeleteQuizButton from '@/components/dashboard/DeleteQuizButton'
-import ScheduleQuizForm from './ScheduleQuizForm'
+import { Plus, Edit, Eye, PlayCircle, FileText, CheckCircle, Clock, AlertCircle, TableProperties } from 'lucide-react'
 
 export const metadata = {
   title: 'Exams | MBC Portal',
@@ -76,7 +73,6 @@ export default async function QuizzesPage() {
   }
 
   const visibleQuizzes = quizzes
-  const activeQuizzes = liveQuizzes.length;
 
   return (
     <div style={{ paddingBottom: '2rem' }}>
@@ -84,9 +80,9 @@ export default async function QuizzesPage() {
       {/* Page Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>{isStaff ? 'Manage Exams' : 'Available Exams'}</h1>
+          <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>{isAdmin ? 'Manage Exams' : 'Exams'}</h1>
           <p style={{ color: '#64748b', margin: 0 }}>
-            {isStaff ? 'Create and manage all exams.' : 'Take an exam to test your knowledge.'}
+            {isAdmin ? 'Create and manage all exams.' : 'View exams and student results.'}
           </p>
         </div>
         
@@ -126,7 +122,7 @@ export default async function QuizzesPage() {
                   <td colSpan={isStaff ? 5 : 4} style={{ textAlign: 'center', padding: '3rem 1rem', color: '#64748b' }}>
                     <FileText size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto', display: 'block' }} />
                     <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 500 }}>No exams available</p>
-                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>{isAdmin ? 'Click "Create Exam" to add one.' : 'Check back when an exam is live.'}</p>
+                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem' }}>{isAdmin ? 'Click "Create Exam" to add one.' : 'No exams are available to view yet.'}</p>
                   </td>
                 </tr>
               ) : (
@@ -183,6 +179,16 @@ export default async function QuizzesPage() {
                             </Link>
                           ) : (
                             <>
+                              {!isAdmin && (
+                                <>
+                                  <Link href={`/dashboard/exams/${q.id}`} className={styles.actionButton} title="View Exam">
+                                    <Eye size={14} /> View Exam
+                                  </Link>
+                                  <Link href={`/dashboard/exams/${q.id}/attempts`} className={styles.actionButton} title="View Results">
+                                    <TableProperties size={14} /> View Results
+                                  </Link>
+                                </>
+                              )}
                               {isAdmin && (
                                 <>
                                   <Link href={`/dashboard/exams/${q.id}/edit`} className={`${styles.actionButton} ${styles.actionButtonPrimary}`} title="Edit Exam">

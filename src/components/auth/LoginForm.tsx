@@ -21,13 +21,15 @@ export default function LoginForm() {
         </div>
       )}
 
+      {/* Prevent Keeper from injecting lock elements before React hydrates. */}
       <div className={styles.inputGroup}>
         <label className={styles.inputLabel}>EMAIL</label>
         <input 
           type="email" 
           name="email"
+          autoComplete="username"
           placeholder="hello@example.com" 
-          className={styles.input} 
+          className={`${styles.input} keeper-ignore`}
           required 
           disabled={isPending}
         />
@@ -38,8 +40,9 @@ export default function LoginForm() {
           <input 
             type={showPassword ? "text" : "password"} 
             name="password"
+            autoComplete="current-password"
             placeholder="••••••••" 
-            className={styles.input} 
+            className={`${styles.input} keeper-ignore`}
             required 
             disabled={isPending}
           />

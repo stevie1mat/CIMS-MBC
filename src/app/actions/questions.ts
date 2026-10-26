@@ -1,5 +1,7 @@
 'use server'
 
+import { requireTeacherExamAccess } from '@/lib/exam-access'
+import { getUserRole } from './auth'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import * as xlsx from 'xlsx'
@@ -17,6 +19,8 @@ const getQuestionTypeString = (index: any) => {
 }
 
 export async function uploadQuestions(quizId: number | string, formData: FormData) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
@@ -153,6 +157,7 @@ export async function uploadQuestions(quizId: number | string, formData: FormDat
 }
 
 export async function getQuestionsByQuiz(quizId: number | string) {
+  await requireTeacherExamAccess(quizId)
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('questions')
@@ -182,6 +187,8 @@ export async function getQuestions() {
 }
 
 export async function deleteQuestion(id: number | string, quizId?: number | string) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
   const { error } = await supabase.from('questions').delete().eq('id', Number(id))
   if (error) return { error: error.message }
@@ -192,6 +199,8 @@ export async function deleteQuestion(id: number | string, quizId?: number | stri
 }
 
 export async function bulkDeleteQuestions(ids: (number | string)[], quizId?: number | string) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
   
   // supabase .in() requires an array of values
@@ -213,6 +222,8 @@ export async function updateQuestion(
   description: string,
   options: { id?: number; text: string; isCorrect: boolean }[]
 ) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
   
   // 1. Update the question record

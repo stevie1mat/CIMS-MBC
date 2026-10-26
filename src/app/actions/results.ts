@@ -1,5 +1,7 @@
 'use server'
 
+import { getTeacherExamIds, requireTeacherExamAccess } from '@/lib/exam-access'
+import { getUserRole } from './auth'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
@@ -37,10 +39,12 @@ export async function getAllResults() {
     .order('ended_at', { ascending: false })
 
   if (error) throw new Error(error.message)
-  return data
+  const teacherExamIds = await getTeacherExamIds()
+  return teacherExamIds === null ? data : data.filter(attempt => teacherExamIds.includes(attempt.quiz_id))
 }
 
 export async function getQuizAttempts(quiz_id: string | number) {
+  await requireTeacherExamAccess(quiz_id)
   const supabase = await createClient()
 
   // For admins/teachers to view attempts for a specific quiz
@@ -58,6 +62,8 @@ export async function getQuizAttempts(quiz_id: string | number) {
 }
 
 export async function deleteAttempt(id: number, quiz_id?: string | number) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
   
   const { error } = await supabase
@@ -101,5 +107,6 @@ export async function getAttemptDetails(id: number) {
     console.error("Error in getAttemptDetails:", error)
     return null
   }
+  await requireTeacherExamAccess(data.quiz_id)
   return data
 }

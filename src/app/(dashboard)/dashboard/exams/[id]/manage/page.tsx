@@ -1,6 +1,8 @@
 import { getQuiz } from '@/app/actions/quizzes'
 import { getQuestionsByQuiz, deleteQuestion } from '@/app/actions/questions'
 import styles from '@/components/dashboard/dashboard.module.css'
+import { getUserRole } from '@/app/actions/auth'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, CheckCircle, FileText, HelpCircle, ListChecks, Trash2, UploadCloud } from 'lucide-react'
 import MetricCard from '@/components/dashboard/MetricCard'
@@ -16,6 +18,9 @@ type ManageQuizQuestionsPageProps = {
 }
 
 export default async function ManageQuizQuestionsPage({ params }: ManageQuizQuestionsPageProps) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') redirect('/dashboard/exams')
+
   const { id } = await params
   const quiz = await getQuiz(id)
   const questions = await getQuestionsByQuiz(id)

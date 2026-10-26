@@ -1,5 +1,7 @@
 'use server'
 
+import { getTeacherExamIds, requireTeacherExamAccess } from '@/lib/exam-access'
+import { getUserRole } from './auth'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -13,10 +15,13 @@ export async function getQuizzes() {
   `).order('created_at', { ascending: false })
   
   if (error) throw new Error(error.message)
-  return data
+  const teacherExamIds = await getTeacherExamIds()
+  return teacherExamIds === null ? data : data.filter(quiz => teacherExamIds.includes(quiz.id))
 }
 
 export async function createQuiz(formData: FormData) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
   
   const name = formData.get('name') as string
@@ -48,6 +53,8 @@ export async function createQuiz(formData: FormData) {
 }
 
 export async function updateQuiz(id: number | string, formData: FormData) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
 
   const name = formData.get('name') as string
@@ -99,6 +106,8 @@ export async function updateQuiz(id: number | string, formData: FormData) {
 }
 
 export async function scheduleQuizLive(formData: FormData) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
 
   const quizId = formData.get('quiz_id') as string
@@ -128,6 +137,8 @@ export async function scheduleQuizLive(formData: FormData) {
 }
 
 export async function deleteQuiz(id: number | string) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
   const { error } = await supabase.from('quizzes').delete().eq('id', Number(id))
   if (error) return { error: error.message }
@@ -136,6 +147,7 @@ export async function deleteQuiz(id: number | string) {
 }
 
 export async function getQuiz(id: number | string): Promise<any> {
+  await requireTeacherExamAccess(id)
   const supabase = await createClient()
   const { data, error } = await supabase.from('quizzes').select(`
     *,
@@ -159,6 +171,8 @@ export async function getQuiz(id: number | string): Promise<any> {
 }
 
 export async function addQuestionToQuiz(quiz_id: number | string, question_id: number | string, correct_score = 1, incorrect_score = 0) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
   // Ensure we insert into quiz_questions using untyped insert if it's missing from Database types,
   // but it seems quiz_questions does not exist in types or it's a join table.
@@ -178,6 +192,8 @@ export async function addQuestionToQuiz(quiz_id: number | string, question_id: n
 }
 
 export async function removeQuestionFromQuiz(quiz_id: number | string, question_id: number | string) {
+  const role = await getUserRole()
+  if (role !== 'admin' && role !== 'super_admin') return { error: 'Only administrators can manage exams.' }
   const supabase = await createClient()
   const { error } = await supabase
     .from('quiz_questions' as any)
